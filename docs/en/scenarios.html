@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenarios - Scenarium Documentation</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <section class="section">
+                <h1>📄 Scenarios</h1>
+                <p class="lead">Learn how to create and structure JSON scenarios for your Telegram bots.</p>
+                
+                <h2>What is a Scenario?</h2>
+                <p>A scenario is a JSON file that describes the behavior of your Telegram bot. It defines menus, actions, and the flow of user interaction.</p>
+                
+                <h2>Scenario Structure</h2>
+                <p>A scenario consists of several main sections:</p>
+                
+                <div class="code-block">
+                    <h3>Basic Structure</h3>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "Navigate",
+      "menuItem": "Main"
+    }
+  ],
+  "menuItems": {
+    "Main": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Welcome to the bot!"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Main Sections</h2>
+                
+                <h3>onStartActions</h3>
+                <p>Actions that are executed when the bot starts or when a user sends /start command.</p>
+                
+                <h3>menuItems</h3>
+                <p>Defines all available menus and their behavior. Each menu can have:</p>
+                <ul>
+                    <li><code>onNavigation</code> - Actions when user enters the menu</li>
+                    <li><code>onInput</code> - Actions when user sends text input</li>
+                    <li><code>onCallback</code> - Actions when user clicks inline buttons</li>
+                </ul>
+                
+                <h2>Example Scenario</h2>
+                <div class="example-card">
+                    <h3>Simple Welcome Bot</h3>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "Navigate",
+      "menuItem": "Welcome"
+    }
+  ],
+  "menuItems": {
+    "Welcome": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Hello! Welcome to our bot!",
+        "inlineActions": [
+          {
+            "title": "Get Help",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "Help"
+            }
+          }
+        ]
+      }
+    },
+    "Help": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "This is the help section. How can I assist you?"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

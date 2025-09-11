@@ -48,7 +48,7 @@
                                     <td>boolean</td>
                                     <td>❌</td>
                                     <td>false</td>
-                                    <td>Удалить предыдущее сообщение</td>
+                                    <td>Remove previous message</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -57,14 +57,14 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Простой возврат</h3>
+                        <h3>Simple return</h3>
                         <pre><code class="language-json">{
   "action": "Back"
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Возврат с удалением сообщения</h3>
+                        <h3>Return with message deletion</h3>
                         <pre><code class="language-json">{
   "action": "Back",
   "removePreviousMessage": true
@@ -72,10 +72,10 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>В inline-кнопке</h3>
+                        <h3>In inline button</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Выберите действие:",
+  "text": "Choose an action:",
   "inlineActions": [
     {
       "title": "⬅️ Back",
@@ -87,39 +87,39 @@
 }</code></pre>
                     </div>
 
-                    <h2>🔄 Логика работы</h2>
+                    <h2>🔄 How it works</h2>
                     <div class="info-card">
-                        <h3>Стек навигации</h3>
-                        <p>При выполнении Back система:</p>
+                        <h3>Navigation stack</h3>
+                        <p>When executing Back, the system:</p>
                         <ul>
-                            <li>Проверяет наличие элементов в стеке навигации</li>
-                            <li>Если стек содержит более 1 элемента - удаляет последний</li>
-                            <li>Переходит к предыдущему элементу меню</li>
-                            <li>Если стек пуст или содержит только 1 элемент - выполняет fallback</li>
+                            <li>Checks for elements in the navigation stack</li>
+                            <li>If stack contains more than 1 element - removes the last one</li>
+                            <li>Navigates to the previous menu item</li>
+                            <li>If stack is empty or contains only 1 element - executes fallback</li>
                         </ul>
                     </div>
 
                     <div class="info-card">
-                        <h3>Fallback к начальным действиям</h3>
-                        <p>При отсутствии элементов в стеке:</p>
+                        <h3>Fallback to initial actions</h3>
+                        <p>When there are no elements in the stack:</p>
                         <ul>
-                            <li>Очищается текущее меню и стек</li>
+                            <li>Current menu and stack are cleared</li>
                             <li>Выполняются действия из <code>onStartActions</code></li>
                             <li>Если <code>onStartActions</code> отсутствуют - отправляется сообщение о возврате</li>
                         </ul>
                     </div>
 
-                    <h2>⚠️ Важные замечания</h2>
+                    <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Стек навигации:</strong> Должен содержать минимум 2 элемента для возврата</li>
-                            <li><strong>Удаление сообщений:</strong> Нельзя удалить сообщения старше 48 часов</li>
-                            <li><strong>Fallback:</strong> При пустом стеке выполняется возврат к началу</li>
-                            <li><strong>Производительность:</strong> Частое удаление сообщений может замедлить работу</li>
+                            <li><strong>Navigation stack:</strong> Must contain at least 2 elements for return</li>
+                            <li><strong>Удаление сообщений:</strong> Cannot delete messages older than 48 hours</li>
+                            <li><strong>Fallback:</strong> When stack is empty, return to beginning is executed</li>
+                            <li><strong>Производительность:</strong> Frequent message deletion may slow down performance</li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Связанные действия</h2>
+                    <h2>🔗 Related actions</h2>
                     <div class="related-actions">
                         <a href="navigate.html" class="related-action">
                             <h4>Navigate</h4>
@@ -127,13 +127,13 @@
                         </a>
                         <a href="send-message.html" class="related-action">
                             <h4>SendMessage</h4>
-                            <p>Отправка сообщений после возврата</p>
+                            <p>Send messages after return</p>
                         </a>
                     </div>
 
                     <div class="navigation-links">
                         <a href="navigate.html" class="nav-button prev">← Navigate</a>
-                        <a href="request-input.html" class="nav-button next">Следующее: RequestInput →</a>
+                        <a href="request-input.html" class="nav-button next">Next: RequestInput →</a>
                     </div>
                 </section>
             

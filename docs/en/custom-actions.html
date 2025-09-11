@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Actions - Scenarium Documentation</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <section class="section">
+                <h1>⚡ Custom Actions</h1>
+                <p class="lead">Learn how to create and register custom actions for your Telegram bots.</p>
+                
+                <h2>What are Custom Actions?</h2>
+                <p>Custom actions allow you to extend Scenarium with your own functionality. You can create actions that perform specific tasks not covered by built-in actions.</p>
+                
+                <h2>Creating a Custom Action</h2>
+                <p>To create a custom action, you need to implement the <code>ICustomAction</code> interface:</p>
+                
+                <div class="code-block">
+                    <h3>Custom Action Interface</h3>
+                    <pre><code class="language-typescript">interface ICustomAction {
+  name: string;
+  execute(context: ProcessingContext): Promise<void>;
+}</code></pre>
+                </div>
+                
+                <h2>Example: Weather Action</h2>
+                <div class="example-card">
+                    <h3>Weather Action Implementation</h3>
+                    <pre><code class="language-typescript">import { ICustomAction, ProcessingContext } from 'scenarium';
+
+export class WeatherAction implements ICustomAction {
+  name = 'Weather';
+  
+  async execute(context: ProcessingContext): Promise<void> {
+    const city = context.localContext.data.city || 'Moscow';
+    const weather = await this.getWeather(city);
+    
+    await context.bot.sendMessage(context.userId, 
+      `Weather in ${city}: ${weather.temperature}°C, ${weather.description}`
+    );
+  }
+  
+  private async getWeather(city: string) {
+    // Your weather API logic here
+    return {
+      temperature: 20,
+      description: 'Sunny'
+    };
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Registering Custom Actions</h2>
+                <p>Use the <code>RegistryManager</code> to register your custom actions:</p>
+                
+                <div class="code-block">
+                    <h3>Registration Example</h3>
+                    <pre><code class="language-typescript">import { RegistryManager } from 'scenarium';
+import { WeatherAction } from './WeatherAction';
+
+// Register the custom action
+RegistryManager.registerAction(new WeatherAction());</code></pre>
+                </div>
+                
+                <h2>Using Custom Actions in Scenarios</h2>
+                <p>Once registered, you can use your custom action in scenarios:</p>
+                
+                <div class="example-card">
+                    <h3>Scenario with Custom Action</h3>
+                    <pre><code class="language-json">{
+  "menuItems": {
+    "Weather": {
+      "onNavigation": {
+        "action": "Weather",
+        "city": "London"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Best Practices</h2>
+                <ul>
+                    <li>Use descriptive names for your actions</li>
+                    <li>Handle errors gracefully</li>
+                    <li>Use the context object to access user data and bot instance</li>
+                    <li>Keep actions focused on a single responsibility</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

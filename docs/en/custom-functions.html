@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Functions - Scenarium Documentation</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <section class="section">
+                <h1>🔧 Custom Functions</h1>
+                <p class="lead">Learn how to create and register custom functions for text interpolation and data processing.</p>
+                
+                <h2>What are Custom Functions?</h2>
+                <p>Custom functions allow you to process data and perform calculations that can be used in text interpolation. They are called using the <code>{{functionName:param1:param2}}</code> syntax.</p>
+                
+                <h2>Creating a Custom Function</h2>
+                <p>To create a custom function, implement the <code>ICustomFunction</code> interface:</p>
+                
+                <div class="code-block">
+                    <h3>Custom Function Interface</h3>
+                    <pre><code class="language-typescript">interface ICustomFunction {
+  name: string;
+  execute(params: string[]): string | Promise<string>;
+}</code></pre>
+                </div>
+                
+                <h2>Example: Math Functions</h2>
+                <div class="example-card">
+                    <h3>Math Function Implementation</h3>
+                    <pre><code class="language-typescript">import { ICustomFunction } from 'scenarium';
+
+export class MathFunction implements ICustomFunction {
+  name = 'Math';
+  
+  execute(params: string[]): string {
+    if (params.length < 2) return '0';
+    
+    const operation = params[0];
+    const numbers = params.slice(1).map(Number);
+    
+    switch (operation) {
+      case 'add':
+        return numbers.reduce((a, b) => a + b, 0).toString();
+      case 'multiply':
+        return numbers.reduce((a, b) => a * b, 1).toString();
+      case 'max':
+        return Math.max(...numbers).toString();
+      case 'min':
+        return Math.min(...numbers).toString();
+      default:
+        return '0';
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Registering Custom Functions</h2>
+                <p>Use the <code>RegistryManager</code> to register your custom functions:</p>
+                
+                <div class="code-block">
+                    <h3>Registration Example</h3>
+                    <pre><code class="language-typescript">import { RegistryManager } from 'scenarium';
+import { MathFunction } from './MathFunction';
+
+// Register the custom function
+RegistryManager.registerFunction(new MathFunction());</code></pre>
+                </div>
+                
+                <h2>Using Custom Functions in Text</h2>
+                <p>Once registered, you can use your custom function in message text:</p>
+                
+                <div class="example-card">
+                    <h3>Text with Custom Function</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "The sum of 5 and 3 is {{Math:add:5:3}}, and the maximum is {{Math:max:5:3:8}}"
+}</code></pre>
+                </div>
+                
+                <h2>Example: Date Function</h2>
+                <div class="example-card">
+                    <h3>Date Function Implementation</h3>
+                    <pre><code class="language-typescript">export class DateFunction implements ICustomFunction {
+  name = 'Date';
+  
+  execute(params: string[]): string {
+    const format = params[0] || 'YYYY-MM-DD';
+    const date = new Date();
+    
+    switch (format) {
+      case 'YYYY-MM-DD':
+        return date.toISOString().split('T')[0];
+      case 'DD/MM/YYYY':
+        return date.toLocaleDateString('en-GB');
+      case 'time':
+        return date.toLocaleTimeString();
+      default:
+        return date.toISOString();
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Best Practices</h2>
+                <ul>
+                    <li>Use clear, descriptive names for your functions</li>
+                    <li>Handle invalid parameters gracefully</li>
+                    <li>Keep functions pure when possible (no side effects)</li>
+                    <li>Use async functions for operations that require external data</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

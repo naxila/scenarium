@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кастомные действия - Документация Scenarium</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <section class="section">
+                <h1>⚡ Кастомные действия</h1>
+                <p class="lead">Узнайте, как создавать и регистрировать кастомные действия для ваших Telegram-ботов.</p>
+                
+                <h2>Что такое кастомные действия?</h2>
+                <p>Кастомные действия позволяют расширить Scenarium собственной функциональностью. Вы можете создавать действия, которые выполняют специфические задачи, не покрытые встроенными действиями.</p>
+                
+                <h2>Создание кастомного действия</h2>
+                <p>Для создания кастомного действия необходимо реализовать интерфейс <code>ICustomAction</code>:</p>
+                
+                <div class="code-block">
+                    <h3>Интерфейс кастомного действия</h3>
+                    <pre><code class="language-typescript">interface ICustomAction {
+  name: string;
+  execute(context: ProcessingContext): Promise<void>;
+}</code></pre>
+                </div>
+                
+                <h2>Пример: Действие погоды</h2>
+                <div class="example-card">
+                    <h3>Реализация действия погоды</h3>
+                    <pre><code class="language-typescript">import { ICustomAction, ProcessingContext } from 'scenarium';
+
+export class WeatherAction implements ICustomAction {
+  name = 'Weather';
+  
+  async execute(context: ProcessingContext): Promise<void> {
+    const city = context.localContext.data.city || 'Moscow';
+    const weather = await this.getWeather(city);
+    
+    await context.bot.sendMessage(context.userId, 
+      `Погода в ${city}: ${weather.temperature}°C, ${weather.description}`
+    );
+  }
+  
+  private async getWeather(city: string) {
+    // Ваша логика API погоды здесь
+    return {
+      temperature: 20,
+      description: 'Солнечно'
+    };
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Регистрация кастомных действий</h2>
+                <p>Используйте <code>RegistryManager</code> для регистрации ваших кастомных действий:</p>
+                
+                <div class="code-block">
+                    <h3>Пример регистрации</h3>
+                    <pre><code class="language-typescript">import { RegistryManager } from 'scenarium';
+import { WeatherAction } from './WeatherAction';
+
+// Регистрируем кастомное действие
+RegistryManager.registerAction(new WeatherAction());</code></pre>
+                </div>
+                
+                <h2>Использование кастомных действий в сценариях</h2>
+                <p>После регистрации вы можете использовать ваше кастомное действие в сценариях:</p>
+                
+                <div class="example-card">
+                    <h3>Сценарий с кастомным действием</h3>
+                    <pre><code class="language-json">{
+  "menuItems": {
+    "Weather": {
+      "onNavigation": {
+        "action": "Weather",
+        "city": "London"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Лучшие практики</h2>
+                <ul>
+                    <li>Используйте описательные имена для ваших действий</li>
+                    <li>Обрабатывайте ошибки корректно</li>
+                    <li>Используйте объект контекста для доступа к данным пользователя и экземпляру бота</li>
+                    <li>Сосредоточьте действия на одной ответственности</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

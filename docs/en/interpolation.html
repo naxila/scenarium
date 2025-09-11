@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interpolation - Scenarium Documentation</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <section class="section">
+                <h1>🔗 Interpolation</h1>
+                <p class="lead">Learn how to use variable interpolation and functions in your bot messages.</p>
+                
+                <h2>What is Interpolation?</h2>
+                <p>Interpolation allows you to insert dynamic values and execute functions in your message text using the <code>{{variableName}}</code> syntax.</p>
+                
+                <h2>Available Variables</h2>
+                
+                <h3>userContext</h3>
+                <p>Contains information about the current user:</p>
+                <ul>
+                    <li><code>{{userContext.userId}}</code> - User's Telegram ID</li>
+                    <li><code>{{userContext.data.name}}</code> - User's name</li>
+                    <li><code>{{userContext.currentMenu}}</code> - Current menu name</li>
+                    <li><code>{{userContext.data.lastMessageId}}</code> - Last message ID</li>
+                </ul>
+                
+                <h3>scenarioContext</h3>
+                <p>Contains scenario configuration data:</p>
+                <ul>
+                    <li><code>{{scenarioContext.data.apiUrl}}</code> - API URL</li>
+                    <li><code>{{scenarioContext.data.version}}</code> - Scenario version</li>
+                </ul>
+                
+                <h3>localContext</h3>
+                <p>Contains local execution data:</p>
+                <ul>
+                    <li><code>{{localContext.messageId}}</code> - Current message ID</li>
+                    <li><code>{{localContext.response}}</code> - API response</li>
+                    <li><code>{{localContext.error}}</code> - Error message</li>
+                </ul>
+                
+                <h3>input</h3>
+                <p>Contains user input data:</p>
+                <ul>
+                    <li><code>{{input.userName}}</code> - Entered name</li>
+                    <li><code>{{input.email}}</code> - Entered email</li>
+                </ul>
+                
+                <h2>Using Functions</h2>
+                <p>You can call functions using the <code>{{functionName:param1:param2}}</code> syntax:</p>
+                
+                <div class="example-card">
+                    <h3>Built-in Functions</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Hello {{userContext.data.name}}! Today is {{Date:YYYY-MM-DD}} and the sum of 5 and 3 is {{Math:add:5:3}}"
+}</code></pre>
+                </div>
+                
+                <h2>Example Scenarios</h2>
+                
+                <div class="example-card">
+                    <h3>Personalized Welcome</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Welcome, {{userContext.data.name}}! You are currently in the {{userContext.currentMenu}} menu."
+}</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>Dynamic API Response</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "API Response: {{localContext.response}}"
+}</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>User Input Processing</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Thank you, {{input.userName}}! We received your email: {{input.email}}"
+}</code></pre>
+                </div>
+                
+                <h2>Nested Interpolation</h2>
+                <p>You can use interpolation within function parameters:</p>
+                
+                <div class="example-card">
+                    <h3>Nested Example</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Hello {{userContext.data.name}}! The current time is {{Date:time}} and your ID is {{userContext.userId}}"
+}</code></pre>
+                </div>
+                
+                <h2>Error Handling</h2>
+                <p>If a variable or function is not found, it will be replaced with an empty string. Make sure to handle missing data gracefully:</p>
+                
+                <div class="example-card">
+                    <h3>Safe Interpolation</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Hello {{userContext.data.name || 'User'}}! Welcome to our bot."
+}</code></pre>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples - Scenarium Documentation</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <section class="section">
+                <h1>💡 Examples</h1>
+                <p class="lead">Practical examples and use cases for building Telegram bots with Scenarium.</p>
+                
+                <h2>Basic Examples</h2>
+                
+                <div class="example-card">
+                    <h3>Simple Welcome Bot</h3>
+                    <p>A basic bot that greets users and provides navigation.</p>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "Navigate",
+      "menuItem": "Main"
+    }
+  ],
+  "menuItems": {
+    "Main": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Welcome to our bot! Choose an option:",
+        "inlineActions": [
+          {
+            "title": "About",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "About"
+            }
+          },
+          {
+            "title": "Help",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "Help"
+            }
+          }
+        ]
+      }
+    },
+    "About": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "This is a Scenarium bot example."
+      }
+    },
+    "Help": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Need help? Contact our support team."
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>User Registration Bot</h3>
+                    <p>A bot that collects user information step by step.</p>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "Navigate",
+      "menuItem": "Welcome"
+    }
+  ],
+  "menuItems": {
+    "Welcome": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Welcome! Let's get you registered.",
+        "inlineActions": [
+          {
+            "title": "Start Registration",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "GetName"
+            }
+          }
+        ]
+      }
+    },
+    "GetName": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Please enter your name:"
+      },
+      "onInput": {
+        "action": "Store",
+        "key": "name",
+        "value": "{{input.text}}",
+        "onSuccess": {
+          "action": "Navigate",
+          "menuItem": "GetEmail"
+        }
+      }
+    },
+    "GetEmail": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Please enter your email:"
+      },
+      "onInput": {
+        "action": "Store",
+        "key": "email",
+        "value": "{{input.text}}",
+        "onSuccess": {
+          "action": "Navigate",
+          "menuItem": "Confirmation"
+        }
+      }
+    },
+    "Confirmation": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Thank you, {{userContext.data.name}}! Your email is {{userContext.data.email}}"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Advanced Examples</h2>
+                
+                <div class="example-card">
+                    <h3>API Integration Bot</h3>
+                    <p>A bot that fetches data from external APIs.</p>
+                    <pre><code class="language-json">{
+  "menuItems": {
+    "Weather": {
+      "onNavigation": {
+        "action": "RequestApi",
+        "url": "https://api.weather.com/current",
+        "params": {
+          "city": "{{userContext.data.city || 'Moscow'}}"
+        },
+        "onSuccess": {
+          "action": "SendMessage",
+          "text": "Weather in {{userContext.data.city || 'Moscow'}}: {{localContext.response.temperature}}°C, {{localContext.response.description}}"
+        },
+        "onError": {
+          "action": "SendMessage",
+          "text": "Sorry, couldn't fetch weather data. Please try again later."
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>Multi-language Bot</h3>
+                    <p>A bot that supports multiple languages using custom functions.</p>
+                    <pre><code class="language-json">{
+  "menuItems": {
+    "Language": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "{{Translate:hello:{{userContext.data.language || 'en'}}}}",
+        "inlineActions": [
+          {
+            "title": "English",
+            "onClick": {
+              "action": "Store",
+              "key": "language",
+              "value": "en",
+              "onSuccess": {
+                "action": "Navigate",
+                "menuItem": "Main"
+              }
+            }
+          },
+          {
+            "title": "Русский",
+            "onClick": {
+              "action": "Store",
+              "key": "language",
+              "value": "ru",
+              "onSuccess": {
+                "action": "Navigate",
+                "menuItem": "Main"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <h2>Best Practices</h2>
+                <ul>
+                    <li>Use descriptive menu names</li>
+                    <li>Handle errors gracefully</li>
+                    <li>Provide clear navigation paths</li>
+                    <li>Use interpolation for dynamic content</li>
+                    <li>Test your scenarios thoroughly</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
