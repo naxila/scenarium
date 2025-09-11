@@ -21,11 +21,18 @@
     "json",
     "scenarium"
   ],
-  "author": "Your Name",
+  "author": {
+    "name": "Scenarium Team",
+    "email": "scenarium@example.com"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/scenarium.git"
+    "url": "https://github.com/your-username/scenarium.git"
+  },
+  "homepage": "https://github.com/your-username/scenarium#readme",
+  "bugs": {
+    "url": "https://github.com/your-username/scenarium/issues"
   },
   "dependencies": {
     "node-telegram-bot-api": "^0.64.0"

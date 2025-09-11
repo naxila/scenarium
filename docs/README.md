@@ -1,13 +1,13 @@
-# 📚 Документация Telegram Bot Constructor
+# 📚 Scenarium Documentation
 
-Этот каталог содержит полную документацию для проекта Telegram Bot Constructor.
+This directory contains complete documentation for the Scenarium project.
 
-## 🚀 Быстрый запуск
+## 🚀 Quick Start
 
-### Локальный просмотр
+### Local Viewing
 
-1. Откройте файл `index.html` в браузере
-2. Или запустите локальный сервер:
+1. Open the `index.html` file in your browser
+2. Or run a local server:
 
 ```bash
 # Python 3
@@ -22,40 +22,40 @@ php -S localhost:8000
 
 ### GitHub Pages
 
-1. Убедитесь, что файлы находятся в папке `docs/` в корне репозитория
-2. В настройках репозитория включите GitHub Pages
-3. Выберите источник "Deploy from a branch" и папку "docs"
-4. Документация будет доступна по адресу: `https://your-username.github.io/telegram-bot-constructor`
+1. Make sure files are in the `docs/` folder in the repository root
+2. Enable GitHub Pages in repository settings
+3. Select source "Deploy from a branch" and folder "docs"
+4. Documentation will be available at: `https://your-username.github.io/scenarium`
 
-## 📁 Структура документации
+## 📁 Documentation Structure
 
 ```
 docs/
-├── index.html          # Главная страница документации
-├── styles.css          # Стили документации
-├── script.js           # JavaScript для интерактивности
-├── _config.yml         # Конфигурация для GitHub Pages
-└── README.md           # Этот файл
+├── index.html          # Main documentation page
+├── styles.css          # Documentation styles
+├── script.js           # JavaScript for interactivity
+├── _config.yml         # GitHub Pages configuration
+└── README.md           # This file
 ```
 
-## 🎨 Особенности
+## 🎨 Features
 
-- **Адаптивный дизайн** - работает на всех устройствах
-- **Боковое меню** - удобная навигация по разделам
-- **Поиск** - быстрый поиск по содержимому
-- **Подсветка синтаксиса** - красивое оформление кода
-- **Копирование кода** - кнопки для копирования примеров
-- **Плавная прокрутка** - комфортная навигация
-- **Мобильное меню** - удобство на мобильных устройствах
+- **Responsive design** - works on all devices
+- **Sidebar navigation** - convenient navigation through sections
+- **Search** - quick search through content
+- **Syntax highlighting** - beautiful code formatting
+- **Code copying** - buttons for copying examples
+- **Smooth scrolling** - comfortable navigation
+- **Mobile menu** - convenience on mobile devices
 
-## 🔧 Настройка
+## 🔧 Configuration
 
-### Изменение темы
+### Changing Theme
 
-Отредактируйте файл `styles.css`:
+Edit the `styles.css` file:
 
 ```css
-/* Основные цвета */
+/* Main colors */
 :root {
   --primary-color: #667eea;
   --secondary-color: #764ba2;
@@ -64,52 +64,52 @@ docs/
 }
 ```
 
-### Добавление новых разделов
+### Adding New Sections
 
-1. Добавьте секцию в `index.html`:
+1. Add a section to `index.html`:
 
 ```html
 <section id="new-section" class="section">
-  <h2>Новый раздел</h2>
-  <!-- Содержимое -->
+  <h2>New Section</h2>
+  <!-- Content -->
 </section>
 ```
 
-2. Добавьте ссылку в навигацию:
+2. Add a link to navigation:
 
 ```html
 <li class="nav-item">
-  <a href="#new-section" class="nav-link">Новый раздел</a>
+  <a href="#new-section" class="nav-link">New Section</a>
 </li>
 ```
 
-### Настройка поиска
+### Search Configuration
 
-Поиск работает автоматически по всем текстовым элементам. Для улучшения результатов можно:
+Search works automatically on all text elements. To improve results you can:
 
-1. Добавить атрибуты `data-search` к элементам
-2. Настроить фильтрацию в `script.js`
+1. Add `data-search` attributes to elements
+2. Configure filtering in `script.js`
 
-## 📝 Обновление документации
+## 📝 Updating Documentation
 
-### Добавление новых действий
+### Adding New Actions
 
-1. Добавьте описание в раздел "Действия" в `index.html`
-2. Создайте карточку действия с параметрами и примерами
-3. Обновите навигацию при необходимости
+1. Add description to "Actions" section in `index.html`
+2. Create an action card with parameters and examples
+3. Update navigation if necessary
 
-### Добавление новых функций
+### Adding New Functions
 
-1. Добавьте описание в раздел "Функции" в `index.html`
-2. Создайте карточку функции с параметрами и примерами
-3. Обновите навигацию при необходимости
+1. Add description to "Functions" section in `index.html`
+2. Create a function card with parameters and examples
+3. Update navigation if necessary
 
-## 🚀 Развертывание
+## 🚀 Deployment
 
 ### GitHub Pages
 
-1. Убедитесь, что все файлы в папке `docs/`
-2. Зафиксируйте изменения:
+1. Make sure all files are in the `docs/` folder
+2. Commit changes:
 
 ```bash
 git add docs/
@@ -117,68 +117,68 @@ git commit -m "Update documentation"
 git push origin main
 ```
 
-3. GitHub Pages автоматически обновит сайт
+3. GitHub Pages will automatically update the site
 
-### Другие платформы
+### Other Platforms
 
-- **Netlify**: Перетащите папку `docs/` в Netlify
-- **Vercel**: Подключите репозиторий и укажите папку `docs/`
-- **GitHub Pages**: Используйте Actions для автоматического развертывания
+- **Netlify**: Drag the `docs/` folder to Netlify
+- **Vercel**: Connect the repository and specify the `docs/` folder
+- **GitHub Pages**: Use Actions for automatic deployment
 
-## 🔍 SEO оптимизация
+## 🔍 SEO Optimization
 
-Документация оптимизирована для поисковых систем:
+Documentation is optimized for search engines:
 
-- Семантическая разметка HTML5
-- Мета-теги для описания и ключевых слов
-- Структурированные данные
-- Быстрая загрузка
-- Мобильная адаптивность
+- HTML5 semantic markup
+- Meta tags for description and keywords
+- Structured data
+- Fast loading
+- Mobile responsiveness
 
-## 📱 Мобильная версия
+## 📱 Mobile Version
 
-Документация полностью адаптивна:
+Documentation is fully responsive:
 
-- Боковое меню сворачивается на мобильных устройствах
-- Кнопка мобильного меню появляется автоматически
-- Оптимизированные размеры шрифтов и отступов
-- Сенсорная навигация
+- Sidebar menu collapses on mobile devices
+- Mobile menu button appears automatically
+- Optimized font sizes and spacing
+- Touch navigation
 
-## 🎯 Производительность
+## 🎯 Performance
 
-- Минимальные HTTP-запросы
-- Оптимизированные изображения
-- Кеширование статических ресурсов
-- Ленивая загрузка контента
+- Minimal HTTP requests
+- Optimized images
+- Static resource caching
+- Lazy content loading
 
-## 🐛 Устранение неполадок
+## 🐛 Troubleshooting
 
-### Проблемы с навигацией
+### Navigation Issues
 
-1. Проверьте, что все ссылки начинаются с `#`
-2. Убедитесь, что ID секций совпадают с href ссылок
-3. Проверьте консоль браузера на ошибки JavaScript
+1. Check that all links start with `#`
+2. Make sure section IDs match href links
+3. Check browser console for JavaScript errors
 
-### Проблемы со стилями
+### Style Issues
 
-1. Убедитесь, что файл `styles.css` загружается
-2. Проверьте, что нет конфликтов CSS
-3. Очистите кеш браузера
+1. Make sure `styles.css` file is loading
+2. Check for CSS conflicts
+3. Clear browser cache
 
-### Проблемы с поиском
+### Search Issues
 
-1. Проверьте, что JavaScript включен
-2. Убедитесь, что нет ошибок в консоли
-3. Проверьте, что элементы содержат текстовый контент
+1. Check that JavaScript is enabled
+2. Make sure there are no console errors
+3. Check that elements contain text content
 
-## 📞 Поддержка
+## 📞 Support
 
-Если у вас есть вопросы или проблемы с документацией:
+If you have questions or issues with the documentation:
 
-1. Создайте Issue в репозитории
-2. Опишите проблему подробно
-3. Приложите скриншоты если необходимо
+1. Create an Issue in the repository
+2. Describe the problem in detail
+3. Attach screenshots if necessary
 
-## 📄 Лицензия
+## 📄 License
 
-Документация распространяется под той же лицензией, что и основной проект.
+Documentation is distributed under the same license as the main project.

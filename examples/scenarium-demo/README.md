@@ -1,37 +1,37 @@
-# Scenarium Demo - Быстрый старт
+# Scenarium Demo - Quick Start
 
-Демонстрационный проект для быстрого запуска Telegram бота с помощью библиотеки [Scenarium](https://www.npmjs.com/package/scenarium).
+Demonstration project for quickly launching a Telegram bot using the [Scenarium](https://www.npmjs.com/package/scenarium) library.
 
-## 🚀 Запуск за 3 команды
+## 🚀 Launch in 3 commands
 
 ```bash
 npm install
 cp env.template .env
-# Отредактируйте .env и добавьте токен бота: BOT_TOKEN=your_token_here
+# Edit .env and add bot token: BOT_TOKEN=your_token_here
 npm start
 ```
 
-**Готово!** Отправьте `/start` боту в Telegram.
+**Done!** Send `/start` to the bot in Telegram.
 
-## ⚠️ Важно: Настройка токена
+## ⚠️ Important: Token Setup
 
-1. **Получите токен** у [@BotFather](https://t.me/BotFather) в Telegram
-2. **Создайте файл .env** из шаблона: `cp env.template .env`
-3. **Добавьте токен** в .env файл: `BOT_TOKEN=your_actual_token_here`
-4. **Запустите** бота: `npm start`
+1. **Get token** from [@BotFather](https://t.me/BotFather) in Telegram
+2. **Create .env file** from template: `cp env.template .env`
+3. **Add token** to .env file: `BOT_TOKEN=your_actual_token_here`
+4. **Start** the bot: `npm start`
 
-## 📁 Структура проекта
+## 📁 Project Structure
 
 ```
 scenarium-demo/
-├── index.js               # Главный файл (запуск бота)
+├── index.js               # Main file (bot startup)
 ├── scenarios/
-│   └── hello-world.json   # Простой сценарий
-├── env.template           # Шаблон .env
-└── package.json          # Зависимости
+│   └── hello-world.json   # Simple scenario
+├── env.template           # .env template
+└── package.json          # Dependencies
 ```
 
-## 🎯 Код
+## 🎯 Code
 
 ```javascript
 const { BotFactory } = require('scenarium');
@@ -41,24 +41,24 @@ async function startBot() {
   const token = process.env.BOT_TOKEN;
   const bot = await BotFactory.createBotFromFile('./scenarios/hello-world.json', token);
   await bot.start();
-  console.log('✅ Бот запущен!');
+  console.log('✅ Bot started!');
 }
 
 startBot().catch(console.error);
 ```
 
-## 🚀 Команды
+## 🚀 Commands
 
-- `npm start` - Запуск бота
-- `node index.js` - Запуск бота
+- `npm start` - Start the bot
+- `node index.js` - Start the bot
 
-## 🔧 Настройка
+## 🔧 Setup
 
-1. Получите токен у [@BotFather](https://t.me/BotFather)
-2. Скопируйте `env.template` в `.env`
-3. Добавьте токен в `.env`
-4. Запустите `npm start`
+1. Get token from [@BotFather](https://t.me/BotFather)
+2. Copy `env.template` to `.env`
+3. Add token to `.env`
+4. Run `npm start`
 
 ---
 
-**Готово!** Теперь у вас есть работающий Telegram бот! 🎉
+**Done!** Now you have a working Telegram bot! 🎉

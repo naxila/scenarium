@@ -1,45 +1,45 @@
-# Примеры использования Scenarium
+# Scenarium Usage Examples
 
-Этот каталог содержит примеры использования библиотеки `scenarium` для создания Telegram ботов.
+This directory contains usage examples of the `scenarium` library for creating Telegram bots.
 
-## 📁 Структура
+## 📁 Structure
 
-- **`scenarium-demo/`** - Простой демонстрационный проект с базовым ботом
+- **`scenarium-demo/`** - Simple demonstration project with a basic bot
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-### 1. Перейдите в папку с примером
+### 1. Navigate to the example folder
 ```bash
 cd scenarium-demo
 ```
 
-### 2. Установите зависимости
+### 2. Install dependencies
 ```bash
 npm install
 ```
 
-### 3. Настройте токен бота
-Скопируйте `env.template` в `.env` и добавьте токен вашего бота:
+### 3. Configure bot token
+Copy `env.template` to `.env` and add your bot token:
 ```bash
 cp env.template .env
 ```
 
-Отредактируйте `.env`:
+Edit `.env`:
 ```
 TELEGRAM_BOT_TOKEN=your_bot_token_here
 ```
 
-### 4. Запустите бота
+### 4. Start the bot
 ```bash
 node index.js
 ```
 
-## 📖 Документация
+## 📖 Documentation
 
-Полная документация доступна в корне пакета `scenarium`:
-- [Основной README](../README.md)
+Complete documentation is available in the `scenarium` package root:
+- [Main README](../README.md)
 - [API Reference](../docs/)
 
-## 🤝 Вклад в развитие
+## 🤝 Contributing
 
-Если у вас есть интересные примеры использования, создайте Pull Request!
+If you have interesting usage examples, create a Pull Request!
