@@ -46,25 +46,25 @@
                                     <td><code>messageId</code></td>
                                     <td>string | function</td>
                                     <td>❌</td>
-                                    <td>Message ID to update (по умолчанию: последнее сообщение)</td>
+                                    <td>Message ID to update (default: last message)</td>
                                 </tr>
                                 <tr>
                                     <td><code>text</code></td>
                                     <td>string | object</td>
                                     <td>✅</td>
-                                    <td>Новый текст сообщения</td>
+                                    <td>New message text</td>
                                 </tr>
                                 <tr>
                                     <td><code>inlineActions</code></td>
                                     <td>array</td>
                                     <td>❌</td>
-                                    <td>Новые inline-кнопки</td>
+                                    <td>New inline buttons</td>
                                 </tr>
                                 <tr>
                                     <td><code>onSuccess</code></td>
                                     <td>action</td>
                                     <td>❌</td>
-                                    <td>Действие при успешном обновлении</td>
+                                    <td>Action on successful update</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -73,24 +73,24 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Простое обновление</h3>
+                        <h3>Simple update</h3>
                         <pre><code class="language-json">{
   "action": "UpdateMessage",
-  "text": "Сообщение обновлено!"
+  "text": "Message updated!"
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Обновление с новыми кнопками</h3>
+                        <h3>Update with new buttons</h3>
                         <pre><code class="language-json">{
   "action": "UpdateMessage",
-  "text": "Выберите новое действие:",
+  "text": "Choose new action:",
   "inlineActions": [
     {
-      "title": "✅ Готово",
+      "title": "✅ Done",
       "onClick": {
         "action": "SendMessage",
-        "text": "Операция завершена!"
+        "text": "Operation completed!"
       }
     }
   ]
@@ -98,7 +98,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Обновление конкретного сообщения</h3>
+                        <h3>Update specific message</h3>
                         <pre><code class="language-json">{
   "action": "UpdateMessage",
   "messageId": "{{localContext.messageId}}",
@@ -107,13 +107,13 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Обновление с функцией в тексте</h3>
+                        <h3>Update with function in text</h3>
                         <pre><code class="language-json">{
   "action": "UpdateMessage",
   "text": {
     "function": "JoinToString",
     "values": [
-      "Время: ",
+      "Time: ",
       "{{localContext.currentTime}}",
       "\nStatus: ",
       "{{localContext.status}}"
@@ -124,35 +124,35 @@
 
                     <h2>🔧 How it works</h2>
                     <div class="info-card">
-                        <h3>Определение ID сообщения</h3>
-                        <p>Система определяет ID сообщения в следующем порядке:</p>
+                        <h3>Message ID determination</h3>
+                        <p>The system determines Message ID in the following order:</p>
                         <ul>
-                            <li>Если указан <code>messageId</code> - использует его</li>
-                            <li>Если <code>messageId</code> - функция - выполняет её</li>
-                            <li>Иначе использует <code>localContext.messageId</code></li>
-                            <li>В крайнем случае - <code>userContext.data.lastMessageId</code></li>
+                            <li>If <code>messageId</code> is specified - uses it</li>
+                            <li>If <code>messageId</code> is a function - executes it</li>
+                            <li>Otherwise uses <code>localContext.messageId</code></li>
+                            <li>As last resort - <code>userContext.data.lastMessageId</code></li>
                         </ul>
                     </div>
 
                     <div class="info-card">
-                        <h3>Процесс обновления</h3>
-                        <p>При обновлении сообщения:</p>
+                        <h3>Update process</h3>
+                        <p>When updating message:</p>
                         <ul>
-                            <li>Все параметры интерполируются</li>
-                            <li>Выполняются функции в тексте</li>
-                            <li>Обновляется текст и inline-кнопки</li>
-                            <li>Сохраняется новый ID сообщения</li>
+                            <li>All parameters are interpolated</li>
+                            <li>Functions in text are executed</li>
+                            <li>Text and inline buttons are updated</li>
+                            <li>New Message ID is saved</li>
                         </ul>
                     </div>
 
                     <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>ID сообщения:</strong> Должен быть валидным ID существующего сообщения</li>
-                            <li><strong>Ограничения Telegram:</strong> Нельзя обновить сообщения старше 48 часов</li>
-                            <li><strong>Форматирование:</strong> Поддерживается Markdown и HTML</li>
-                            <li><strong>Inline-кнопки:</strong> Полностью заменяют предыдущие кнопки</li>
-                            <li><strong>Ошибки:</strong> При ошибке обновления действие игнорируется</li>
+                            <li><strong>Message ID:</strong> Must be a valid ID of existing message</li>
+                            <li><strong>Telegram limitations:</strong> Cannot update messages older than 48 hours</li>
+                            <li><strong>Formatting:</strong> Markdown and HTML are supported</li>
+                            <li><strong>Inline buttons:</strong> Completely replace previous buttons</li>
+                            <li><strong>Errors:</strong> On update error, action is ignored</li>
                         </ul>
                     </div>
 
@@ -160,17 +160,17 @@
                     <div class="related-actions">
                         <a href="send-message.html" class="related-action">
                             <h4>SendMessage</h4>
-                            <p>Отправка новых сообщений</p>
+                            <p>Sending new messages</p>
                         </a>
                         <a href="delete-message.html" class="related-action">
                             <h4>DeleteMessage</h4>
-                            <p>Удаление сообщений</p>
+                            <p>Deleting messages</p>
                         </a>
                     </div>
 
                     <div class="navigation-links">
                         <a href="cancel-awaiting-input.html" class="nav-button prev">← CancelAwaitingInput</a>
-                        <a href="delete-message.html" class="nav-button next">Следующее: DeleteMessage →</a>
+                        <a href="delete-message.html" class="nav-button next">Next: DeleteMessage →</a>
                     </div>
                 </section>
             

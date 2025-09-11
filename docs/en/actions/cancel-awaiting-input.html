@@ -43,7 +43,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="4" style="text-align: center; color: #6c757d;">Нет параметров</td>
+                                    <td colspan="4" style="text-align: center; color: #6c757d;">No parameters</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -52,17 +52,17 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Простая отмена</h3>
+                        <h3>Simple cancellation</h3>
                         <pre><code class="language-json">{
   "action": "CancelAwaitingInput"
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Отмена с уведомлением</h3>
+                        <h3>Cancellation with notification</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Ввод отменен",
+  "text": "Input cancelled",
   "onSuccess": {
     "action": "CancelAwaitingInput"
   }
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Отмена с возвратом в меню</h3>
+                        <h3>Cancellation with menu return</h3>
                         <pre><code class="language-json">{
   "action": "CancelAwaitingInput"
 },
@@ -82,34 +82,34 @@
 
                     <h2>🔧 How it works</h2>
                     <div class="info-card">
-                        <h3>Очистка состояния</h3>
-                        <p>При выполнении CancelAwaitingInput система:</p>
+                        <h3>State clearing</h3>
+                        <p>When executing CancelAwaitingInput, the system:</p>
                         <ul>
-                            <li>Очищает состояние ожидания ввода в сессии пользователя</li>
-                            <li>Удаляет связанные с ожиданием данные</li>
-                            <li>Возвращает бота в нормальный режим работы</li>
-                            <li>Позволяет обрабатывать новые команды и действия</li>
+                            <li>Clears input waiting state in user session</li>
+                            <li>Removes data associated with waiting</li>
+                            <li>Returns bot to normal operation mode</li>
+                            <li>Allows processing new commands and actions</li>
                         </ul>
                     </div>
 
                     <div class="info-card">
-                        <h3>Когда использовать</h3>
-                        <p>CancelAwaitingInput полезно в случаях:</p>
+                        <h3>When to use</h3>
+                        <p>CancelAwaitingInput is useful in cases:</p>
                         <ul>
-                            <li>Пользователь не отвечает длительное время</li>
-                            <li>Произошла ошибка в процессе ожидания</li>
-                            <li>Пользователь выбрал действие отмены</li>
-                            <li>Нужно принудительно завершить ожидание</li>
+                            <li>User doesn't respond for a long time</li>
+                            <li>An error occurred during waiting</li>
+                            <li>User selected cancel action</li>
+                            <li>Need to forcibly complete waiting</li>
                         </ul>
                     </div>
 
                     <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Безопасность:</strong> Действие выполняется только если есть активное ожидание ввода</li>
-                            <li><strong>Состояние:</strong> После отмены все данные ожидания удаляются</li>
-                            <li><strong>Повторное использование:</strong> Можно использовать несколько раз подряд</li>
-                            <li><strong>Производительность:</strong> Действие выполняется мгновенно</li>
+                            <li><strong>Security:</strong> Action executes only if there's active input waiting</li>
+                            <li><strong>State:</strong> After cancellation, all waiting data is removed</li>
+                            <li><strong>Reuse:</strong> Can be used multiple times in a row</li>
+                            <li><strong>Performance:</strong> Action executes instantly</li>
                         </ul>
                     </div>
 
@@ -121,17 +121,17 @@
                         </a>
                         <a href="navigate.html" class="related-action">
                             <h4>Navigate</h4>
-                            <p>Переход в другое меню после отмены</p>
+                            <p>Navigate to another menu after cancellation</p>
                         </a>
                         <a href="send-message.html" class="related-action">
                             <h4>SendMessage</h4>
-                            <p>Уведомление об отмене ввода</p>
+                            <p>Notification about input cancellation</p>
                         </a>
                     </div>
 
                     <div class="navigation-links">
                         <a href="request-input.html" class="nav-button prev">← RequestInput</a>
-                        <a href="update-message.html" class="nav-button next">Следующее: UpdateMessage →</a>
+                        <a href="update-message.html" class="nav-button next">Next: UpdateMessage →</a>
                     </div>
                 </section>
             

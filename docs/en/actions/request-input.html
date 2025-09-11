@@ -54,7 +54,7 @@
                                     <td><code>hint</code></td>
                                     <td>string</td>
                                     <td>❌</td>
-                                    <td>'Введите значение:'</td>
+                                    <td>'Enter value:'</td>
                                     <td>Hint for the user</td>
                                 </tr>
                                 <tr>
@@ -62,7 +62,7 @@
                                     <td>action</td>
                                     <td>❌</td>
                                     <td>-</td>
-                                    <td>Действие при получении ввода</td>
+                                    <td>Action when input is received</td>
                                 </tr>
                                 <tr>
                                     <td><code>onCancel</code></td>
@@ -75,22 +75,22 @@
                                     <td><code>cancelText</code></td>
                                     <td>string</td>
                                     <td>❌</td>
-                                    <td>'Отмена'</td>
-                                    <td>Button text отмены</td>
+                                    <td>'Cancel'</td>
+                                    <td>Cancel button text</td>
                                 </tr>
                                 <tr>
                                     <td><code>removeHintOnCancel</code></td>
                                     <td>boolean</td>
                                     <td>❌</td>
                                     <td>false</td>
-                                    <td>Удалить подсказку при отмене</td>
+                                    <td>Remove hint on cancel</td>
                                 </tr>
                                 <tr>
                                     <td><code>clearInputOnDone</code></td>
                                     <td>boolean</td>
                                     <td>❌</td>
                                     <td>false</td>
-                                    <td>Очистить ввод после обработки</td>
+                                    <td>Clear input after processing</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -99,42 +99,42 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Простой запрос имени</h3>
+                        <h3>Simple name request</h3>
                         <pre><code class="language-json">{
   "action": "RequestInput",
   "key": "userName",
   "hint": "What is your name?",
   "onDone": {
     "action": "SendMessage",
-    "text": "Приятно познакомиться, {{input.userName}}!"
+    "text": "Nice to meet you, {{input.userName}}!"
   }
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Запрос с отменой</h3>
+                        <h3>Request with cancellation</h3>
                         <pre><code class="language-json">{
   "action": "RequestInput",
   "key": "email",
-  "hint": "Введите ваш email:",
+  "hint": "Enter your email:",
   "onDone": {
     "action": "SendMessage",
-    "text": "Email сохранен: {{input.email}}"
+    "text": "Email saved: {{input.email}}"
   },
   "onCancel": {
     "action": "SendMessage",
-    "text": "Ввод email отменен"
+    "text": "Email input cancelled"
   },
-  "cancelText": "❌ Отмена"
+  "cancelText": "❌ Cancel"
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Запрос с сохранением в хранилище</h3>
+                        <h3>Request with storage saving</h3>
                         <pre><code class="language-json">{
   "action": "RequestInput",
   "key": "phone",
-  "hint": "Введите номер телефона:",
+  "hint": "Enter phone number:",
   "onDone": {
     "action": "Store",
     "key": "userPhone",
@@ -148,21 +148,21 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Запрос с очисткой после ввода</h3>
+                        <h3>Request with input clearing</h3>
                         <pre><code class="language-json">{
   "action": "RequestInput",
   "key": "tempData",
-  "hint": "Введите временные данные:",
+  "hint": "Enter temporary data:",
   "clearInputOnDone": true,
   "onDone": {
     "action": "SendMessage",
-    "text": "Данные обработаны: {{input.tempData}}"
+    "text": "Data processed: {{input.tempData}}"
   }
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Многоэтапный ввод</h3>
+                        <h3>Multi-step input</h3>
                         <pre><code class="language-json">{
   "action": "RequestInput",
   "key": "age",
@@ -170,10 +170,10 @@
   "onDone": {
     "action": "RequestInput",
     "key": "city",
-    "hint": "В каком городе вы живете?",
+    "hint": "What city do you live in?",
     "onDone": {
       "action": "SendMessage",
-      "text": "Спасибо! Вам {{input.age}} лет, вы живете в {{input.city}}"
+      "text": "Thank you! You are {{input.age}} years old, you live in {{input.city}}"
     }
   }
 }</code></pre>
@@ -181,44 +181,44 @@
 
                     <h2>🔄 How it works</h2>
                     <div class="info-card">
-                        <h3>Состояние ожидания ввода</h3>
-                        <p>При выполнении RequestInput система:</p>
+                        <h3>Input waiting state</h3>
+                        <p>When executing RequestInput, the system:</p>
                         <ul>
-                            <li>Сохраняет состояние ожидания ввода в сессии пользователя</li>
-                            <li>Отправляет подсказку с кнопкой отмены (если настроено)</li>
-                            <li>Переводит бота в режим ожидания текстового ввода</li>
-                            <li>Блокирует обработку других действий до получения ввода</li>
+                            <li>Saves input waiting state in user session</li>
+                            <li>Sends hint with cancel button (if configured)</li>
+                            <li>Puts bot in text input waiting mode</li>
+                            <li>Blocks processing of other actions until input is received</li>
                         </ul>
                     </div>
 
                     <div class="info-card">
-                        <h3>Обработка ввода</h3>
-                        <p>При получении текста от пользователя:</p>
+                        <h3>Input processing</h3>
+                        <p>When receiving text from user:</p>
                         <ul>
-                            <li>Сохраняется в <code>{{input.key}}</code> где key - указанный ключ</li>
-                            <li>Выполняется действие <code>onDone</code> если настроено</li>
-                            <li>Очищается состояние ожидания ввода</li>
-                            <li>При <code>clearInputOnDone: true</code> ввод удаляется из сессии</li>
+                            <li>Saved in <code>{{input.key}}</code> where key is the specified key</li>
+                            <li>Executes <code>onDone</code> action if configured</li>
+                            <li>Clears input waiting state</li>
+                            <li>When <code>clearInputOnDone: true</code> input is removed from session</li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Доступные переменные</h2>
+                    <h2>🔗 Available Variables</h2>
                     <div class="variables-grid">
                         <div class="variable-card">
                             <h4>input</h4>
                             <ul>
-                                <li><code>{{input.userName}}</code> - Введенное имя</li>
-                                <li><code>{{input.email}}</code> - Введенный email</li>
-                                <li><code>{{input.phone}}</code> - Введенный телефон</li>
-                                <li><code>{{input.[key]}}</code> - Любой введенный ключ</li>
+                                <li><code>{{input.userName}}</code> - Entered name</li>
+                                <li><code>{{input.email}}</code> - Entered email</li>
+                                <li><code>{{input.phone}}</code> - Entered phone</li>
+                                <li><code>{{input.[key]}}</code> - Any entered key</li>
                             </ul>
                         </div>
                         <div class="variable-card">
                             <h4>userContext</h4>
                             <ul>
-                                <li><code>{{userContext.userId}}</code> - ID пользователя</li>
-                                <li><code>{{userContext.currentMenu}}</code> - Текущее меню</li>
-                                <li><code>{{userContext.data}}</code> - Данные пользователя</li>
+                                <li><code>{{userContext.userId}}</code> - User ID</li>
+                                <li><code>{{userContext.currentMenu}}</code> - Current menu</li>
+                                <li><code>{{userContext.data}}</code> - User data</li>
                             </ul>
                         </div>
                     </div>
@@ -226,11 +226,11 @@
                     <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Ключ обязателен:</strong> Параметр <code>key</code> должен быть строкой</li>
-                            <li><strong>Одно ожидание:</strong> Одновременно может быть активно только одно ожидание ввода</li>
-                            <li><strong>Отмена ввода:</strong> Новый RequestInput отменяет предыдущий</li>
-                            <li><strong>Таймаут:</strong> Нет автоматического таймаута, пользователь должен ввести текст или отменить</li>
-                            <li><strong>Валидация:</strong> Нет встроенной валидации, проверка должна быть в onDone</li>
+                            <li><strong>Key required:</strong> Parameter <code>key</code> must be a string</li>
+                            <li><strong>Single waiting:</strong> Only one input waiting can be active at a time</li>
+                            <li><strong>Input cancellation:</strong> New RequestInput cancels the previous one</li>
+                            <li><strong>Timeout:</strong> No automatic timeout, user must enter text or cancel</li>
+                            <li><strong>Validation:</strong> No built-in validation, checking should be in onDone</li>
                         </ul>
                     </div>
 
@@ -242,17 +242,17 @@
                         </a>
                         <a href="store.html" class="related-action">
                             <h4>Store</h4>
-                            <p>Сохранение введенных данных</p>
+                            <p>Save entered data</p>
                         </a>
                         <a href="send-message.html" class="related-action">
                             <h4>SendMessage</h4>
-                            <p>Отправка сообщений с результатами</p>
+                            <p>Sending messages with results</p>
                         </a>
                     </div>
 
                     <div class="navigation-links">
                         <a href="back.html" class="nav-button prev">← Back</a>
-                        <a href="cancel-awaiting-input.html" class="nav-button next">Следующее: CancelAwaitingInput →</a>
+                        <a href="cancel-awaiting-input.html" class="nav-button next">Next: CancelAwaitingInput →</a>
                     </div>
                 </section>
             

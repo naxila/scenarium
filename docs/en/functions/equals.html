@@ -46,19 +46,19 @@
                                     <td><code>values</code></td>
                                     <td>array</td>
                                     <td>✅</td>
-                                    <td>Массив значений для сравнения</td>
+                                    <td>Array of values to compare</td>
                                 </tr>
                                 <tr>
                                     <td><code>trueResult</code></td>
                                     <td>any</td>
                                     <td>❌</td>
-                                    <td>Результат при равенстве всех значений</td>
+                                    <td>Result when all values are equal</td>
                                 </tr>
                                 <tr>
                                     <td><code>falseResult</code></td>
                                     <td>any</td>
                                     <td>❌</td>
-                                    <td>Результат при неравенстве значений</td>
+                                    <td>Result when values are not equal</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -67,37 +67,37 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Простое сравнение</h3>
+                        <h3>Simple comparison</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
   "values": ["{{userContext.data.role}}", "admin"],
-  "trueResult": "Добро пожаловать, администратор!",
-  "falseResult": "Доступ ограничен"
+  "trueResult": "Welcome, administrator!",
+  "falseResult": "Access denied"
 }</code></pre>
-                        <p><strong>Результат:</strong> Строка в зависимости от роли пользователя</p>
+                        <p><strong>Result:</strong> String depending on user role</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>Проверка статуса</h3>
+                        <h3>Status check</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
   "values": ["{{userContext.data.status}}", "active"],
-  "trueResult": "✅ Аккаунт активен",
-  "falseResult": "❌ Аккаунт заблокирован"
+  "trueResult": "✅ Account is active",
+  "falseResult": "❌ Account is blocked"
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Сравнение без результатов</h3>
+                        <h3>Comparison without results</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
   "values": ["{{input.password}}", "{{userContext.data.password}}"]
 }</code></pre>
-                        <p><strong>Результат:</strong> <code>true</code> или <code>false</code></p>
+                        <p><strong>Result:</strong> <code>true</code> or <code>false</code></p>
                     </div>
 
                     <div class="example-card">
-                        <h3>Множественное сравнение</h3>
+                        <h3>Multiple comparison</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
   "values": [
@@ -106,13 +106,13 @@
     "admin",
     "active"
   ],
-  "trueResult": "Полный доступ разрешен",
-  "falseResult": "Недостаточно прав"
+  "trueResult": "Full access granted",
+  "falseResult": "Insufficient permissions"
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>С вложенными функциями</h3>
+                        <h3>With nested functions</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
   "values": ["{{userContext.data.language}}", "ru"],
@@ -128,18 +128,18 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Проверка ввода пользователя</h3>
+                        <h3>User input check</h3>
                         <pre><code class="language-json">{
   "action": "RequestInput",
   "key": "age",
-  "hint": "Введите ваш возраст:",
+  "hint": "Enter your age:",
   "onDone": {
     "action": "SendMessage",
     "text": {
       "function": "Equals",
       "values": ["{{input.age}}", "18"],
-      "trueResult": "Вы совершеннолетний",
-      "falseResult": "Вам еще нет 18 лет"
+      "trueResult": "You are an adult",
+      "falseResult": "You are under 18"
     }
   }
 }</code></pre>
@@ -147,30 +147,30 @@
 
                     <h2>🔧 How it works</h2>
                     <div class="info-card">
-                        <h3>Сравнение значений</h3>
-                        <p>Функция сравнивает все значения в массиве <code>values</code>:</p>
+                        <h3>Compare values</h3>
+                        <p>Function compares all values in the <code>values</code> array:</p>
                         <ul>
-                            <li>Все значения интерполируются перед сравнением</li>
-                            <li>Сравнение происходит строго (<code>===</code>)</li>
-                            <li>Если все значения равны - возвращается <code>trueResult</code></li>
-                            <li>Если хотя бы одно значение отличается - возвращается <code>falseResult</code></li>
+                            <li>All values are interpolated before comparison</li>
+                            <li>Comparison is strict (<code>===</code>)</li>
+                            <li>If all values are equal - returns <code>trueResult</code></li>
+                            <li>If at least one value differs - returns <code>falseResult</code></li>
                         </ul>
                     </div>
 
                     <div class="info-card">
-                        <h3>Обработка результатов</h3>
-                        <p>Результаты <code>trueResult</code> и <code>falseResult</code>:</p>
+                        <h3>Result processing</h3>
+                        <p>Results <code>trueResult</code> and <code>falseResult</code>:</p>
                         <ul>
-                            <li>Могут быть любыми типами данных</li>
-                            <li>Поддерживают интерполяцию переменных</li>
-                                <li>Могут содержать вложенные функции</li>
-                            <li>Если результат не указан - возвращается <code>true</code> или <code>false</code></li>
+                            <li>Can be any data types</li>
+                            <li>Support variable interpolation</li>
+                            <li>Can contain nested functions</li>
+                            <li>If result not specified - returns <code>true</code> or <code>false</code></li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Использование в действиях</h2>
+                    <h2>🔗 Usage in actions</h2>
                     <div class="example-card">
-                        <h3>Условная навигация</h3>
+                        <h3>Conditional navigation</h3>
                         <pre><code class="language-json">{
   "action": "Navigate",
   "menuItem": {
@@ -183,7 +183,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Условное сохранение</h3>
+                        <h3>Conditional saving</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "accessLevel",
@@ -197,14 +197,14 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Условный текст сообщения</h3>
+                        <h3>Conditional message text</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
   "text": {
     "function": "Equals",
     "values": ["{{userContext.data.notifications}}", "enabled"],
-    "trueResult": "🔔 Уведомления включены",
-    "falseResult": "🔕 Уведомления отключены"
+    "trueResult": "🔔 Notifications enabled",
+    "falseResult": "🔕 Notifications disabled"
   }
 }</code></pre>
                     </div>
@@ -212,19 +212,19 @@
                     <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Строгое сравнение:</strong> Используется строгое сравнение (<code>===</code>)</li>
-                            <li><strong>Типы данных:</strong> "1" и 1 считаются разными значениями</li>
-                            <li><strong>Пустые значения:</strong> null, undefined и "" считаются разными</li>
-                            <li><strong>Массив значений:</strong> Должен содержать минимум 2 элемента</li>
-                            <li><strong>Производительность:</strong> Все значения интерполируются перед сравнением</li>
+                            <li><strong>Strict comparison:</strong> Uses strict comparison (<code>===</code>)</li>
+                            <li><strong>Data types:</strong> "1" and 1 are considered different values</li>
+                            <li><strong>Empty values:</strong> null, undefined and "" are considered different</li>
+                            <li><strong>Values array:</strong> Must contain at least 2 elements</li>
+                            <li><strong>Performance:</strong> All values are interpolated before comparison</li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Связанные функции</h2>
+                    <h2>🔗 Related functions</h2>
                     <div class="related-actions">
                         <a href="join-to-string.html" class="related-action">
                             <h4>JoinToString</h4>
-                            <p>Объединение значений в строку</p>
+                            <p>Joining values into string</p>
                         </a>
                         <a href="read-storage.html" class="related-action">
                             <h4>ReadStorage</h4>
@@ -234,7 +234,7 @@
 
                     <div class="navigation-links">
                         <a href="join-to-string.html" class="nav-button prev">← JoinToString</a>
-                        <a href="read-storage.html" class="nav-button next">Следующее: ReadStorage →</a>
+                        <a href="read-storage.html" class="nav-button next">Next: ReadStorage →</a>
                     </div>
                 </section>
             

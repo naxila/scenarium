@@ -22,10 +22,10 @@
                         <div class="info-card">
                             <h3>🎯 Purpose</h3>
                             <ul>
-                                <li>Загрузка сценариев из файлов</li>
-                                <li>Импорт сценариев из URL</li>
-                                <li>Восстановление персональных настроек</li>
-                                <li>Синхронизация сценариев</li>
+                                <li>Load сценариев из файлов</li>
+                                <li>Import сценариев из URL</li>
+                                <li>Restore персональных настроек</li>
+                                <li>Synchronization сценариев</li>
                             </ul>
                         </div>
                     </div>
@@ -35,9 +35,9 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Параметр</th>
-                                    <th>Тип</th>
-                                    <th>Обязательный</th>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
                                     <th>Description</th>
                                 </tr>
                             </thead>
@@ -52,13 +52,13 @@
                                     <td><code>onSuccess</code></td>
                                     <td>action</td>
                                     <td>❌</td>
-                                    <td>Действие при успешной загрузке</td>
+                                    <td>Action при успешной загрузке</td>
                                 </tr>
                                 <tr>
                                     <td><code>onFailure</code></td>
                                     <td>action</td>
                                     <td>❌</td>
-                                    <td>Действие при ошибке загрузки</td>
+                                    <td>Action при ошибке загрузки</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -67,7 +67,7 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Загрузка из URL</h3>
+                        <h3>Load из URL</h3>
                         <pre><code class="language-json">{
   "action": "UploadPersonalScenario",
   "source": "https://example.com/scenarios/user-scenario.json",
@@ -77,13 +77,13 @@
   },
   "onFailure": {
     "action": "SendMessage",
-    "text": "Ошибка загрузки сценария"
+    "text": "Error загрузки сценария"
   }
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Загрузка с интерполяцией</h3>
+                        <h3>Load с интерполяцией</h3>
                         <pre><code class="language-json">{
   "action": "UploadPersonalScenario",
   "source": "https://api.example.com/scenarios/{{userContext.data.userId}}.json",
@@ -107,7 +107,7 @@
                     </div>
 
                     <div class="info-card">
-                        <h3>Обработка ошибок</h3>
+                        <h3>Error handling</h3>
                         <p>При ошибке загрузки:</p>
                         <ul>
                             <li>Логируется ошибка в консоль</li>
@@ -120,10 +120,10 @@
                     <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Безопасность:</strong> Загружаемые сценарии должны быть проверены</li>
-                            <li><strong>Валидация:</strong> Сценарий должен быть валидным JSON</li>
-                            <li><strong>Совместимость:</strong> Сценарий должен быть совместим с системой</li>
-                            <li><strong>Производительность:</strong> Загрузка происходит асинхронно</li>
+                            <li><strong>Security:</strong> Загружаемые сценарии должны быть проверены</li>
+                            <li><strong>Validation:</strong> Сценарий должен быть валидным JSON</li>
+                            <li><strong>Compatibility:</strong> Сценарий должен быть совместим с системой</li>
+                            <li><strong>Performance:</strong> Load происходит асинхронно</li>
                         </ul>
                     </div>
 
@@ -141,7 +141,7 @@
 
                     <div class="navigation-links">
                         <a href="remove-personal-scenario.html" class="nav-button prev">← RemovePersonalScenario</a>
-                        <a href="custom.html" class="nav-button next">Следующее: CustomAction →</a>
+                        <a href="custom.html" class="nav-button next">Next: CustomAction →</a>
                     </div>
                 </section>
             
