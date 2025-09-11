@@ -46,13 +46,13 @@
                                     <td><code>key</code></td>
                                     <td>string</td>
                                     <td>✅</td>
-                                    <td>Ключ для чтения данных</td>
+                                    <td>Key to read data</td>
                                 </tr>
                                 <tr>
                                     <td><code>fallbackValue</code></td>
                                     <td>any</td>
                                     <td>❌</td>
-                                    <td>Значение по умолчанию если ключ не найден</td>
+                                    <td>Default value if key not found</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -61,49 +61,49 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Простое чтение</h3>
+                        <h3>Simple reading</h3>
                         <pre><code class="language-json">{
   "function": "ReadStorage",
   "key": "userName"
 }</code></pre>
-                        <p><strong>Результат:</strong> Сохраненное имя пользователя или <code>undefined</code></p>
+                        <p><strong>Result:</strong> Saved username or <code>undefined</code></p>
                     </div>
 
                     <div class="example-card">
-                        <h3>С значением по умолчанию</h3>
+                        <h3>With default value</h3>
                         <pre><code class="language-json">{
   "function": "ReadStorage",
   "key": "userName",
   "fallbackValue": "Guest"
 }</code></pre>
-                        <p><strong>Результат:</strong> Сохраненное имя или "Guest"</p>
+                        <p><strong>Result:</strong> Saved name or "Guest"</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>Чтение настроек</h3>
+                        <h3>Reading settings</h3>
                         <pre><code class="language-json">{
   "function": "ReadStorage",
   "key": "userPreferences",
   "fallbackValue": {
     "theme": "light",
-    "language": "ru",
+    "language": "en",
     "notifications": true
   }
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Чтение временных данных</h3>
+                        <h3>Reading temporary data</h3>
                         <pre><code class="language-json">{
   "function": "ReadStorage",
   "key": "tempToken",
   "fallbackValue": null
 }</code></pre>
-                        <p><strong>Note:</strong> Если <code>clearAfterRead: true</code>, значение удалится после чтения</p>
+                        <p><strong>Note:</strong> If <code>clearAfterRead: true</code>, value will be deleted after reading</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>В составе других функций</h3>
+                        <h3>As part of other functions</h3>
                         <pre><code class="language-json">{
   "function": "JoinToString",
   "values": [
@@ -119,7 +119,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Условная логика</h3>
+                        <h3>Conditional logic</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
   "values": [
@@ -130,52 +130,52 @@
     },
     "admin"
   ],
-  "trueResult": "Доступ разрешен",
-  "falseResult": "Доступ запрещен"
+  "trueResult": "Access granted",
+  "falseResult": "Access denied"
 }</code></pre>
                     </div>
 
                     <h2>🔧 How it works</h2>
                     <div class="info-card">
-                        <h3>Поиск данных</h3>
-                        <p>Function ищет данные в <code>userContext.data.__storage[key]</code>:</p>
+                        <h3>Data search</h3>
+                        <p>Function searches data in <code>userContext.data.__storage[key]</code>:</p>
                         <ul>
-                            <li>Если ключ найден - возвращается <code>value</code></li>
-                            <li>Если ключ не найден - возвращается <code>fallbackValue</code></li>
-                            <li>Если <code>fallbackValue</code> не указан - возвращается <code>undefined</code></li>
+                            <li>If key found - returns <code>value</code></li>
+                            <li>If key not found - returns <code>fallbackValue</code></li>
+                            <li>If <code>fallbackValue</code> not specified - returns <code>undefined</code></li>
                         </ul>
                     </div>
 
                     <div class="info-card">
-                        <h3>Автоматическая очистка</h3>
-                        <p>Если при сохранении было указано <code>clearAfterRead: true</code>:</p>
+                        <h3>Automatic cleanup</h3>
+                        <p>If <code>clearAfterRead: true</code> was specified when saving:</p>
                         <ul>
-                            <li>Значение возвращается пользователю</li>
-                            <li>Сразу после чтения ключ удаляется из хранилища</li>
-                            <li>Повторное чтение вернет <code>fallbackValue</code></li>
+                            <li>Value is returned to user</li>
+                            <li>Key is immediately removed from storage after reading</li>
+                            <li>Repeated reading will return <code>fallbackValue</code></li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Использование в действиях</h2>
+                    <h2>🔗 Usage in actions</h2>
                     <div class="example-card">
-                        <h3>В SendMessage</h3>
+                        <h3>In SendMessage</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
   "text": {
     "function": "JoinToString",
     "values": [
-      "Ваши настройки:\n",
-      "Тема: ",
+      "Your settings:\n",
+      "Theme: ",
       {
         "function": "ReadStorage",
         "key": "theme",
-        "fallbackValue": "светлая"
+        "fallbackValue": "light"
       },
-      "\nЯзык: ",
+      "\nLanguage: ",
       {
         "function": "ReadStorage",
         "key": "language",
-        "fallbackValue": "русский"
+        "fallbackValue": "english"
       }
     ]
   }
@@ -183,7 +183,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>В Store</h3>
+                        <h3>In Store</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "lastLogin",
@@ -191,11 +191,11 @@
     "function": "JoinToString",
     "values": [
       "{{localContext.currentDate}}",
-      " (предыдущий: ",
+      " (previous: ",
       {
         "function": "ReadStorage",
         "key": "lastLogin",
-        "fallbackValue": "никогда"
+        "fallbackValue": "never"
       },
       ")"
     ]
@@ -204,7 +204,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>В Navigate</h3>
+                        <h3>In Navigate</h3>
                         <pre><code class="language-json">{
   "action": "Navigate",
   "menuItem": {
@@ -215,18 +215,18 @@
 }</code></pre>
                     </div>
 
-                    <h2>🗂️ Структура хранилища</h2>
+                    <h2>🗂️ Storage structure</h2>
                     <div class="info-card">
-                        <h3>Формат данных</h3>
-                        <p>Данные в хранилище имеют следующую структуру:</p>
+                        <h3>Data format</h3>
+                        <p>Data in storage has the following structure:</p>
                         <pre><code class="language-json">{
   "__storage": {
     "userName": {
-      "value": "Иван",
+      "value": "John",
       "clearAfterRead": false
     },
     "tempData": {
-      "value": "временные данные",
+      "value": "temporary data",
       "clearAfterRead": true
     }
   }
@@ -236,32 +236,28 @@
                     <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Ключ обязателен:</strong> Parameter <code>key</code> должен быть строкой</li>
-                            <li><strong>Локальное хранилище:</strong> Данные доступны только в рамках сессии пользователя</li>
-                            <li><strong>Typeы данных:</strong> Возвращаются данные в том виде, в котором были сохранены</li>
-                            <li><strong>Clear:</strong> При <code>clearAfterRead: true</code> значение удаляется после первого чтения</li>
-                            <li><strong>Performance:</strong> Чтение происходит синхронно</li>
+                            <li><strong>Key required:</strong> Parameter <code>key</code> must be a string</li>
+                            <li><strong>Local storage:</strong> Data is available only within user session</li>
+                            <li><strong>Data types:</strong> Data is returned in the same format as it was saved</li>
+                            <li><strong>Clear:</strong> When <code>clearAfterRead: true</code> value is deleted after first reading</li>
+                            <li><strong>Performance:</strong> Reading happens synchronously</li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Related actions и функции</h2>
+                    <h2>🔗 Related actions and functions</h2>
                     <div class="related-actions">
                         <a href="../actions/store.html" class="related-action">
                             <h4>Store</h4>
-                            <p>Store data в хранилище</p>
+                            <p>Store data in storage</p>
                         </a>
                         <a href="equals.html" class="related-action">
                             <h4>Equals</h4>
-                            <p>Сравнение прочитанных данных</p>
+                            <p>Compare read data</p>
                         </a>
                         <a href="join-to-string.html" class="related-action">
                             <h4>JoinToString</h4>
-                            <p>Объединение прочитанных данных в строку</p>
+                            <p>Join read data into string</p>
                         </a>
-                    </div>
-
-                    <div class="navigation-links">
-                        <a href="equals.html" class="nav-button prev">← Equals</a>
                     </div>
                 </section>
             

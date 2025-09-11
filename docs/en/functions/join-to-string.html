@@ -55,21 +55,21 @@
                                     <td>string</td>
                                     <td>❌</td>
                                     <td>''</td>
-                                    <td>Separator между элементами</td>
+                                    <td>Separator between elements</td>
                                 </tr>
                                 <tr>
                                     <td><code>prefix</code></td>
                                     <td>string</td>
                                     <td>❌</td>
                                     <td>''</td>
-                                    <td>Префикс для результирующей строки</td>
+                                    <td>Prefix for resulting string</td>
                                 </tr>
                                 <tr>
                                     <td><code>suffix</code></td>
                                     <td>string</td>
                                     <td>❌</td>
                                     <td>''</td>
-                                    <td>Суффикс для результирующей строки</td>
+                                    <td>Suffix for resulting string</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -81,35 +81,35 @@
                         <h3>Simple join</h3>
                         <pre><code class="language-json">{
   "function": "JoinToString",
-  "values": ["Привет", "мир", "!"]
+  "values": ["Hello", "world", "!"]
 }</code></pre>
-                        <p><strong>Результат:</strong> "Приветмир!"</p>
+                        <p><strong>Result:</strong> "Helloworld!"</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>С разделителем</h3>
+                        <h3>With separator</h3>
                         <pre><code class="language-json">{
   "function": "JoinToString",
-  "values": ["Яблоко", "Банан", "Апельсин"],
+  "values": ["Apple", "Banana", "Orange"],
   "separator": ", "
 }</code></pre>
-                        <p><strong>Результат:</strong> "Яблоко, Банан, Апельсин"</p>
+                        <p><strong>Result:</strong> "Apple, Banana, Orange"</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>С префиксом и суффиксом</h3>
+                        <h3>With prefix and suffix</h3>
                         <pre><code class="language-json">{
   "function": "JoinToString",
-  "values": ["Привет", "{{userContext.data.name}}", "!"],
+  "values": ["Hello", "{{userContext.data.name}}", "!"],
   "separator": " ",
   "prefix": "👋 ",
   "suffix": " 👋"
 }</code></pre>
-                        <p><strong>Результат:</strong> "👋 Привет Иван! 👋"</p>
+                        <p><strong>Result:</strong> "👋 Hello John! 👋"</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>С переменными и функциями</h3>
+                        <h3>With variables and functions</h3>
                         <pre><code class="language-json">{
   "function": "JoinToString",
   "values": [
@@ -121,75 +121,75 @@
     {
       "function": "Equals",
       "values": ["{{userContext.data.status}}", "active"],
-      "trueResult": "Активен",
-      "falseResult": "Неактивен"
+      "trueResult": "Active",
+      "falseResult": "Inactive"
     }
   ],
   "separator": "\n"
 }</code></pre>
-                        <p><strong>Результат:</strong> Многострочный текст с информацией о пользователе</p>
+                        <p><strong>Result:</strong> Multi-line text with user information</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>Create списка</h3>
+                        <h3>Create list</h3>
                         <pre><code class="language-json">{
   "function": "JoinToString",
   "values": [
-    "• Задача 1",
-    "• Задача 2", 
-    "• Задача 3"
+    "• Task 1",
+    "• Task 2", 
+    "• Task 3"
   ],
   "separator": "\n",
-  "prefix": "📋 Список задач:\n",
-  "suffix": "\n\nВсего: 3 задачи"
+  "prefix": "📋 Task list:\n",
+  "suffix": "\n\nTotal: 3 tasks"
 }</code></pre>
-                        <p><strong>Результат:</strong> Форматированный список задач</p>
+                        <p><strong>Result:</strong> Formatted task list</p>
                     </div>
 
-                    <h2>🔧 Обработка значений</h2>
+                    <h2>🔧 Value processing</h2>
                     <div class="info-card">
-                        <h3>Typeы значений</h3>
-                        <p>Function обрабатывает различные типы значений в массиве:</p>
+                        <h3>Value types</h3>
+                        <p>Function processes different types of values in array:</p>
                         <ul>
-                            <li><strong>Строки:</strong> Интерполируются с переменными</li>
-                            <li><strong>Functions:</strong> Выполняются и результат преобразуется в строку</li>
-                            <li><strong>Числа:</strong> Преобразуются в строку</li>
-                            <li><strong>null/undefined:</strong> Игнорируются</li>
+                            <li><strong>Strings:</strong> Interpolated with variables</li>
+                            <li><strong>Functions:</strong> Executed and result converted to string</li>
+                            <li><strong>Numbers:</strong> Converted to string</li>
+                            <li><strong>null/undefined:</strong> Ignored</li>
                         </ul>
                     </div>
 
                     <div class="info-card">
-                        <h3>Фильтрация пустых значений</h3>
-                        <p>Автоматически фильтруются:</p>
+                        <h3>Empty value filtering</h3>
+                        <p>Automatically filtered:</p>
                         <ul>
-                            <li>Пустые строки (<code>""</code>)</li>
-                            <li>Значения <code>null</code></li>
-                            <li>Значения <code>undefined</code></li>
-                            <li>Результаты функций, возвращающие пустые строки</li>
+                            <li>Empty strings (<code>""</code>)</li>
+                            <li><code>null</code> values</li>
+                            <li><code>undefined</code> values</li>
+                            <li>Function results returning empty strings</li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Использование в действиях</h2>
+                    <h2>🔗 Usage in actions</h2>
                     <div class="example-card">
-                        <h3>В SendMessage</h3>
+                        <h3>In SendMessage</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
   "text": {
     "function": "JoinToString",
     "values": [
-      "Добро пожаловать, ",
+      "Welcome, ",
       "{{userContext.data.name}}",
       "!",
-      "\n\nВаш баланс: ",
+      "\n\nYour balance: ",
       "{{userContext.data.balance}}",
-      " руб."
+      " rub."
     ]
   }
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>В Store</h3>
+                        <h3>In Store</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "userSummary",
@@ -198,7 +198,7 @@
     "values": [
       "Name: {{userContext.data.name}}",
       "Email: {{userContext.data.email}}",
-      "Телефон: {{userContext.data.phone}}"
+      "Phone: {{userContext.data.phone}}"
     ],
     "separator": " | "
   }
@@ -208,15 +208,15 @@
                     <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Массив значений:</strong> Parameter <code>values</code> должен быть массивом</li>
-                            <li><strong>Interpolation:</strong> Все строки в массиве интерполируются перед объединением</li>
-                            <li><strong>Functions:</strong> Вложенные функции выполняются асинхронно</li>
-                            <li><strong>Ошибки:</strong> При ошибке в функции элемент игнорируется</li>
-                            <li><strong>Performance:</strong> Большие массивы могут замедлить выполнение</li>
+                            <li><strong>Values array:</strong> Parameter <code>values</code> must be an array</li>
+                            <li><strong>Interpolation:</strong> All strings in array are interpolated before joining</li>
+                            <li><strong>Functions:</strong> Nested functions are executed asynchronously</li>
+                            <li><strong>Errors:</strong> On function error, element is ignored</li>
+                            <li><strong>Performance:</strong> Large arrays may slow down execution</li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Связанные функции</h2>
+                    <h2>🔗 Related functions</h2>
                     <div class="related-actions">
                         <a href="equals.html" class="related-action">
                             <h4>Equals</h4>
@@ -228,9 +228,6 @@
                         </a>
                     </div>
 
-                    <div class="navigation-links">
-                        <a href="equals.html" class="nav-button next">Next: Equals →</a>
-                    </div>
                 </section>
             
         </div>
