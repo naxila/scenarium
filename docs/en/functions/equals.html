@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equals - Telegram Bot Constructor</title>
+    <title>Equals - Scenarium - Telegram Bot Constructor</title>
     <link rel="stylesheet" href="../styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -11,29 +11,29 @@
 </head>
 <body>
     <div class="container">
-        <!-- Боковое меню -->
+        <!-- Sidebar Menu -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h1>🤖 Telegram Bot Constructor</h1>
-                <p class="version">v1.0.0</p>
+                <h1>🤖 Scenarium - Telegram Bot Constructor</h1>
+                <p class="version">v0.1.0-beta</p>
             </div>
             
             <div class="sidebar-content">
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                        <a href="../index.html" class="nav-link">📋 Overview</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                        <a href="../index.html#scenarios" class="nav-link">📝 Scenarios</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Interpolation</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                        <a href="../index.html#examples" class="nav-link">💡 Examples</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <a href="../index.html#actions" class="nav-link">⚡ Actions</a>
                         <ul class="submenu">
                             <li><a href="../actions/send-message.html" class="nav-link">SendMessage</a></li>
                             <li><a href="../actions/navigate.html" class="nav-link">Navigate</a></li>
@@ -52,7 +52,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <a href="../index.html#functions" class="nav-link">🔧 Functions</a>
                         <ul class="submenu">
                             <li><a href="join-to-string.html" class="nav-link">JoinToString</a></li>
                             <li><a href="equals.html" class="nav-link active">Equals</a></li>
@@ -68,11 +68,11 @@
             <div class="content">
                 <section class="section">
                     <h1>🔍 Equals</h1>
-                    <p class="lead">Сравнение значений с условным результатом и поддержкой интерполяции переменных.</p>
+                    <p class="lead">Compare values with conditional result и поддержкой интерполяции переменных.</p>
                     
                     <div class="action-info">
                         <div class="info-card">
-                            <h3>📋 Описание</h3>
+                            <h3>📋 Description</h3>
                             <p>Equals - это функция для сравнения массива значений с возвратом условного результата. Поддерживает интерполяцию переменных и вложенные функции в результатах.</p>
                         </div>
                         
@@ -87,7 +87,7 @@
                         </div>
                     </div>
 
-                    <h2>⚙️ Параметры</h2>
+                    <h2>⚙️ Parameters</h2>
                     <div class="params-table">
                         <table>
                             <thead>
@@ -95,7 +95,7 @@
                                     <th>Параметр</th>
                                     <th>Тип</th>
                                     <th>Обязательный</th>
-                                    <th>Описание</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,7 +121,7 @@
                         </table>
                     </div>
 
-                    <h2>💡 Примеры использования</h2>
+                    <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
                         <h3>Простое сравнение</h3>
@@ -175,7 +175,7 @@
   "values": ["{{userContext.data.language}}", "ru"],
   "trueResult": {
     "function": "JoinToString",
-    "values": ["Привет, ", "{{userContext.data.name}}", "!"]
+    "values": ["Hello, ", "{{userContext.data.name}}", "!"]
   },
   "falseResult": {
     "function": "JoinToString",
@@ -285,7 +285,7 @@
                         </a>
                         <a href="read-storage.html" class="related-action">
                             <h4>ReadStorage</h4>
-                            <p>Чтение данных из хранилища</p>
+                            <p>Read data from storage</p>
                         </a>
                     </div>
 

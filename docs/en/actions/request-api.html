@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RequestApi - Telegram Bot Constructor</title>
+    <title>RequestApi - Scenarium - Telegram Bot Constructor</title>
     <link rel="stylesheet" href="../styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -11,32 +11,32 @@
 </head>
 <body>
     <div class="container">
-        <!-- Боковое меню -->
+        <!-- Sidebar Menu -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h1>🤖 Telegram Bot Constructor</h1>
-                <p class="version">v1.0.0</p>
+                <h1>🤖 Scenarium - Telegram Bot Constructor</h1>
+                <p class="version">v0.1.0-beta</p>
             </div>
             
             <div class="sidebar-content">
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                        <a href="../index.html" class="nav-link">📋 Overview</a>
                     </li>
                     <li class="nav-item">
                         <a href="../index.html#quick-start" class="nav-link">🚀 Быстрый старт</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                        <a href="../index.html#scenarios" class="nav-link">📝 Scenarios</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Interpolation</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                        <a href="../index.html#examples" class="nav-link">💡 Examples</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <a href="../index.html#actions" class="nav-link">⚡ Actions</a>
                         <ul class="submenu">
                             <li><a href="send-message.html" class="nav-link">SendMessage</a></li>
                             <li><a href="navigate.html" class="nav-link">Navigate</a></li>
@@ -55,7 +55,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <a href="../index.html#functions" class="nav-link">🔧 Functions</a>
                         <ul class="submenu">
                             <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
                             <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
@@ -75,7 +75,7 @@
                     
                     <div class="action-info">
                         <div class="info-card">
-                            <h3>📋 Описание</h3>
+                            <h3>📋 Description</h3>
                             <p>RequestApi - это действие для выполнения HTTP запросов к внешним API. Поддерживает все HTTP методы, интерполяцию параметров и обработку ответов.</p>
                         </div>
                         
@@ -90,7 +90,7 @@
                         </div>
                     </div>
 
-                    <h2>⚙️ Параметры</h2>
+                    <h2>⚙️ Parameters</h2>
                     <div class="params-table">
                         <table>
                             <thead>
@@ -99,7 +99,7 @@
                                     <th>Тип</th>
                                     <th>Обязательный</th>
                                     <th>По умолчанию</th>
-                                    <th>Описание</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,7 +177,7 @@
                         </table>
                     </div>
 
-                    <h2>💡 Примеры использования</h2>
+                    <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
                         <h3>Простой GET запрос</h3>
@@ -251,7 +251,7 @@
   },
   "onFailure": {
     "action": "SendMessage",
-    "text": "Ошибка: {{error.message}}"
+    "text": "Error: {{error.message}}"
   }
 }</code></pre>
                     </div>
@@ -319,7 +319,7 @@
                         </a>
                         <a href="store.html" class="related-action">
                             <h4>Store</h4>
-                            <p>Сохранение данных API</p>
+                            <p>Store data API</p>
                         </a>
                     </div>
 

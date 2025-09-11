@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scenarium - Telegram Bot Constructor Documentation</title>
+    <title>Scenarium - Scenarium - Telegram Bot Constructor Documentation</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -111,7 +111,7 @@
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon">🔗</div>
-                            <h3>Интерполяция</h3>
+                            <h3>Interpolation</h3>
                             <p>Динамическая подстановка переменных в тексты и параметры</p>
                         </div>
                     </div>
@@ -224,14 +224,14 @@ startBot().catch(console.error);</code></pre>
 
 
 
-                <!-- Сценарии -->
+                <!-- Scenarios -->
                 <section id="scenarios" class="section">
-                    <h2>📝 Сценарии</h2>
+                    <h2>📝 Scenarios</h2>
                     
                     <h3>Структура сценария</h3>
                     <p>Сценарий - это JSON-файл, описывающий поведение бота:</p>
                     <pre><code class="language-json">{
-  "onStartActions": [...],     // Действия при запуске
+  "onStartActions": [...],     // Actions при запуске
   "menuItems": {...},          // Элементы меню
   "functions": {...},          // Пользовательские функции
   "data": {...}               // Общие данные
@@ -250,10 +250,10 @@ startBot().catch(console.error);</code></pre>
     "Main": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "Добро пожаловать!",
+        "text": "Welcome!",
         "inlineActions": [
           {
-            "title": "Профиль",
+            "title": "Profile",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Profile"
@@ -728,10 +728,10 @@ const bot = BotFactory.createFromScenario({
     "Welcome": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "👋 Добро пожаловать в опросник!",
+        "text": "👋 Welcome to the survey!",
         "inlineActions": [
           {
-            "title": "Начать опрос",
+            "title": "Start Survey",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Question1"
@@ -744,7 +744,7 @@ const bot = BotFactory.createFromScenario({
       "onNavigation": {
         "action": "RequestInput",
         "key": "name",
-        "hint": "Как вас зовут?",
+        "hint": "What is your name?",
         "onDone": {
           "action": "Navigate",
           "menuItem": "Question2"
@@ -759,7 +759,7 @@ const bot = BotFactory.createFromScenario({
       "onNavigation": {
         "action": "RequestInput",
         "key": "age",
-        "hint": "Сколько вам лет?",
+        "hint": "How old are you?",
         "onDone": {
           "action": "Navigate",
           "menuItem": "Results"
@@ -769,10 +769,10 @@ const bot = BotFactory.createFromScenario({
     "Results": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "Спасибо за участие! Ваши ответы:\nИмя: {{input.name}}\nВозраст: {{input.age}}",
+        "text": "Thank you for participating! Your answers:\nName: {{input.name}}\nAge: {{input.age}}",
         "inlineActions": [
           {
-            "title": "Назад в начало",
+            "title": "Back to Start",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Welcome"
@@ -799,10 +799,10 @@ const bot = BotFactory.createFromScenario({
     "Main": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "🌐 Бот с API интеграцией",
+        "text": "🌐 Bot with API Integration",
         "inlineActions": [
           {
-            "title": "Получить погоду",
+            "title": "Get Weather",
             "onClick": {
               "action": "RequestApi",
               "method": "GET",
@@ -816,11 +816,11 @@ const bot = BotFactory.createFromScenario({
               },
               "onSuccess": {
                 "action": "SendMessage",
-                "text": "🌤️ Погода в Москве:\nТемпература: {{response.body.main.temp}}°C\nОписание: {{response.body.weather.0.description}}"
+                "text": "🌤️ Weather in Moscow:\nTemperature: {{response.body.main.temp}}°C\nDescription: {{response.body.weather.0.description}}"
               },
               "onFailure": {
                 "action": "SendMessage",
-                "text": "❌ Не удалось получить данные о погоде"
+                "text": "❌ Failed to get weather data"
               }
             }
           }
@@ -848,25 +848,25 @@ const bot = BotFactory.createFromScenario({
         "text": {
           "function": "JoinToString",
           "values": [
-            "👋 Привет, ",
+            "👋 Hello, ",
             {
               "function": "ReadStorage",
               "key": "userName",
-              "fallbackValue": "Гость"
+              "fallbackValue": "Guest"
             },
             "!"
           ]
         },
         "inlineActions": [
           {
-            "title": "👤 Профиль",
+            "title": "👤 Profile",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Profile"
             }
           },
           {
-            "title": "⚙️ Настройки",
+            "title": "⚙️ Settings",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Settings"
@@ -881,37 +881,37 @@ const bot = BotFactory.createFromScenario({
         "text": {
           "function": "JoinToString",
           "values": [
-            "👤 Ваш профиль:\n",
-            "Имя: ",
+            "👤 Your profile:\n",
+            "Name: ",
             {
               "function": "ReadStorage",
               "key": "userName",
-              "fallbackValue": "Не указано"
+              "fallbackValue": "Not specified"
             },
             "\nEmail: ",
             {
               "function": "ReadStorage",
               "key": "userEmail",
-              "fallbackValue": "Не указано"
+              "fallbackValue": "Not specified"
             },
             "\nТелефон: ",
             {
               "function": "ReadStorage",
               "key": "userPhone",
-              "fallbackValue": "Не указано"
+              "fallbackValue": "Not specified"
             }
           ]
         },
         "inlineActions": [
           {
-            "title": "✏️ Редактировать",
+            "title": "✏️ Edit",
             "onClick": {
               "action": "Navigate",
               "menuItem": "EditProfile"
             }
           },
           {
-            "title": "⬅️ Назад",
+            "title": "⬅️ Back",
             "onClick": {
               "action": "Back"
             }
@@ -923,7 +923,7 @@ const bot = BotFactory.createFromScenario({
       "onNavigation": {
         "action": "RequestInput",
         "key": "newName",
-        "hint": "Введите новое имя:",
+        "hint": "Enter new name:",
         "onDone": {
           "action": "Store",
           "key": "userName",
@@ -953,24 +953,24 @@ const bot = BotFactory.createFromScenario({
     "Catalog": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "🛒 Каталог товаров",
+        "text": "🛒 Product Catalog",
         "inlineActions": [
           {
-            "title": "📱 Телефоны",
+            "title": "📱 Phones",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Phones"
             }
           },
           {
-            "title": "💻 Ноутбуки",
+            "title": "💻 Laptops",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Laptops"
             }
           },
           {
-            "title": "🛍️ Корзина",
+            "title": "🛍️ Cart",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Cart"
@@ -982,10 +982,10 @@ const bot = BotFactory.createFromScenario({
     "Phones": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "📱 Телефоны:\n1. iPhone 15 - 80,000 руб\n2. Samsung Galaxy S24 - 70,000 руб\n3. Xiaomi 14 - 50,000 руб",
+        "text": "📱 Phones:\n1. iPhone 15 - 80,000 руб\n2. Samsung Galaxy S24 - 70,000 руб\n3. Xiaomi 14 - 50,000 руб",
         "inlineActions": [
           {
-            "title": "Добавить iPhone",
+            "title": "Add iPhone",
             "onClick": {
               "action": "Store",
               "key": "cart",
@@ -1003,7 +1003,7 @@ const bot = BotFactory.createFromScenario({
             }
           },
           {
-            "title": "Добавить Samsung",
+            "title": "Add Samsung",
             "onClick": {
               "action": "Store",
               "key": "cart",
@@ -1021,7 +1021,7 @@ const bot = BotFactory.createFromScenario({
             }
           },
           {
-            "title": "⬅️ Назад",
+            "title": "⬅️ Back",
             "onClick": {
               "action": "Back"
             }
@@ -1032,10 +1032,10 @@ const bot = BotFactory.createFromScenario({
     "Laptops": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "💻 Ноутбуки:\n1. MacBook Pro M3 - 150,000 руб\n2. Dell XPS 13 - 120,000 руб\n3. Lenovo ThinkPad - 90,000 руб",
+        "text": "💻 Laptops:\n1. MacBook Pro M3 - 150,000 руб\n2. Dell XPS 13 - 120,000 руб\n3. Lenovo ThinkPad - 90,000 руб",
         "inlineActions": [
           {
-            "title": "Добавить MacBook",
+            "title": "Add MacBook",
             "onClick": {
               "action": "Store",
               "key": "cart",
@@ -1053,7 +1053,7 @@ const bot = BotFactory.createFromScenario({
             }
           },
           {
-            "title": "Добавить Dell",
+            "title": "Add Dell",
             "onClick": {
               "action": "Store",
               "key": "cart",
@@ -1071,7 +1071,7 @@ const bot = BotFactory.createFromScenario({
             }
           },
           {
-            "title": "⬅️ Назад",
+            "title": "⬅️ Back",
             "onClick": {
               "action": "Back"
             }
@@ -1085,18 +1085,18 @@ const bot = BotFactory.createFromScenario({
         "text": {
           "function": "JoinToString",
           "values": [
-            "🛍️ Ваша корзина:\n\n",
+            "🛍️ Your cart:\n\n",
             {
               "function": "ReadStorage",
               "key": "cart",
-              "fallbackValue": "Корзина пуста"
+              "fallbackValue": "Cart пуста"
             },
-            "\n\n💡 Используйте кнопки ниже для управления корзиной"
+            "\n\n💡 Use the buttons below to manage your cart"
           ]
         },
         "inlineActions": [
           {
-            "title": "🗑️ Очистить корзину",
+            "title": "🗑️ Clear Cart",
             "onClick": {
               "action": "Store",
               "key": "cart",
@@ -1104,14 +1104,14 @@ const bot = BotFactory.createFromScenario({
             }
           },
           {
-            "title": "🔄 Обновить",
+            "title": "🔄 Refresh",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Cart"
             }
           },
           {
-            "title": "⬅️ Назад",
+            "title": "⬅️ Back",
             "onClick": {
               "action": "Back"
             }

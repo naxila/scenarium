@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SendMessage - Telegram Bot Constructor</title>
+    <title>SendMessage - Scenarium - Telegram Bot Constructor</title>
     <link rel="stylesheet" href="../styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -11,29 +11,29 @@
 </head>
 <body>
     <div class="container">
-        <!-- Боковое меню -->
+        <!-- Sidebar Menu -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h1>🤖 Telegram Bot Constructor</h1>
-                <p class="version">v1.0.0</p>
+                <h1>🤖 Scenarium - Telegram Bot Constructor</h1>
+                <p class="version">v0.1.0-beta</p>
             </div>
             
             <div class="sidebar-content">
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                        <a href="../index.html" class="nav-link">📋 Overview</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                        <a href="../index.html#scenarios" class="nav-link">📝 Scenarios</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Interpolation</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                        <a href="../index.html#examples" class="nav-link">💡 Examples</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <a href="../index.html#actions" class="nav-link">⚡ Actions</a>
                         <ul class="submenu">
                             <li><a href="send-message.html" class="nav-link active">SendMessage</a></li>
                             <li><a href="navigate.html" class="nav-link">Navigate</a></li>
@@ -52,7 +52,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <a href="../index.html#functions" class="nav-link">🔧 Functions</a>
                         <ul class="submenu">
                             <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
                             <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
@@ -72,7 +72,7 @@
                     
                     <div class="action-info">
                         <div class="info-card">
-                            <h3>📋 Описание</h3>
+                            <h3>📋 Description</h3>
                             <p>SendMessage - это основное действие для отправки текстовых сообщений пользователю. Поддерживает inline-кнопки, интерполяцию переменных и функции в тексте сообщения.</p>
                         </div>
                         
@@ -87,7 +87,7 @@
                         </div>
                     </div>
 
-                    <h2>⚙️ Параметры</h2>
+                    <h2>⚙️ Parameters</h2>
                     <div class="params-table">
                         <table>
                             <thead>
@@ -95,7 +95,7 @@
                                     <th>Параметр</th>
                                     <th>Тип</th>
                                     <th>Обязательный</th>
-                                    <th>Описание</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,7 +130,7 @@
                                     <th>Параметр</th>
                                     <th>Тип</th>
                                     <th>Обязательный</th>
-                                    <th>Описание</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -138,19 +138,19 @@
                                     <td><code>title</code></td>
                                     <td>string</td>
                                     <td>✅</td>
-                                    <td>Текст кнопки</td>
+                                    <td>Button text</td>
                                 </tr>
                                 <tr>
                                     <td><code>onClick</code></td>
                                     <td>action</td>
                                     <td>✅</td>
-                                    <td>Действие при нажатии на кнопку</td>
+                                    <td>Action when button is clicked</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <h2>💡 Примеры использования</h2>
+                    <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
                         <h3>Простое сообщение</h3>
@@ -164,7 +164,7 @@
                         <h3>Сообщение с переменными</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Привет, {{userContext.data.name}}! Ты находишься в меню {{userContext.currentMenu}}"
+  "text": "Hello, {{userContext.data.name}}! Ты находишься в меню {{userContext.currentMenu}}"
 }</code></pre>
                     </div>
 
@@ -182,7 +182,7 @@
       }
     },
     {
-      "title": "⚙️ Настройки",
+      "title": "⚙️ Settings",
       "onClick": {
         "action": "Navigate",
         "menuItem": "Settings"
@@ -198,7 +198,7 @@
   "action": "SendMessage",
   "text": {
     "function": "JoinToString",
-    "values": ["Привет, ", "{{userContext.data.name}}", "! Сегодня ", "{{localContext.currentDate}}"]
+    "values": ["Hello, ", "{{userContext.data.name}}", "! Сегодня ", "{{localContext.currentDate}}"]
   }
 }</code></pre>
                     </div>
@@ -257,8 +257,8 @@
                             <li><strong>Пустой текст:</strong> Если текст пустой или содержит только пробелы, сообщение не будет отправлено</li>
                             <li><strong>Inline-кнопки:</strong> Максимум 8 кнопок в ряду, общее количество не ограничено</li>
                             <li><strong>Размер сообщения:</strong> Максимум 4096 символов для одного сообщения</li>
-                            <li><strong>Интерполяция:</strong> Все переменные интерполируются перед отправкой</li>
-                            <li><strong>Функции в тексте:</strong> Поддерживаются вложенные функции для сложной логики</li>
+                            <li><strong>Interpolation:</strong> Все переменные интерполируются перед отправкой</li>
+                            <li><strong>Functions в тексте:</strong> Поддерживаются вложенные функции для сложной логики</li>
                         </ul>
                     </div>
 

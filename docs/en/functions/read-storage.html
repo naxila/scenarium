@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReadStorage - Telegram Bot Constructor</title>
+    <title>ReadStorage - Scenarium - Telegram Bot Constructor</title>
     <link rel="stylesheet" href="../styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -11,29 +11,29 @@
 </head>
 <body>
     <div class="container">
-        <!-- Боковое меню -->
+        <!-- Sidebar Menu -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h1>🤖 Telegram Bot Constructor</h1>
-                <p class="version">v1.0.0</p>
+                <h1>🤖 Scenarium - Telegram Bot Constructor</h1>
+                <p class="version">v0.1.0-beta</p>
             </div>
             
             <div class="sidebar-content">
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                        <a href="../index.html" class="nav-link">📋 Overview</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                        <a href="../index.html#scenarios" class="nav-link">📝 Scenarios</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Interpolation</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                        <a href="../index.html#examples" class="nav-link">💡 Examples</a>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <a href="../index.html#actions" class="nav-link">⚡ Actions</a>
                         <ul class="submenu">
                             <li><a href="../actions/send-message.html" class="nav-link">SendMessage</a></li>
                             <li><a href="../actions/navigate.html" class="nav-link">Navigate</a></li>
@@ -52,7 +52,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <a href="../index.html#functions" class="nav-link">🔧 Functions</a>
                         <ul class="submenu">
                             <li><a href="join-to-string.html" class="nav-link">JoinToString</a></li>
                             <li><a href="equals.html" class="nav-link">Equals</a></li>
@@ -72,7 +72,7 @@
                     
                     <div class="action-info">
                         <div class="info-card">
-                            <h3>📋 Описание</h3>
+                            <h3>📋 Description</h3>
                             <p>ReadStorage - это функция для чтения данных из локального хранилища пользователя. Поддерживает значения по умолчанию и автоматическую очистку после чтения.</p>
                         </div>
                         
@@ -87,7 +87,7 @@
                         </div>
                     </div>
 
-                    <h2>⚙️ Параметры</h2>
+                    <h2>⚙️ Parameters</h2>
                     <div class="params-table">
                         <table>
                             <thead>
@@ -95,7 +95,7 @@
                                     <th>Параметр</th>
                                     <th>Тип</th>
                                     <th>Обязательный</th>
-                                    <th>Описание</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -115,7 +115,7 @@
                         </table>
                     </div>
 
-                    <h2>💡 Примеры использования</h2>
+                    <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
                         <h3>Простое чтение</h3>
@@ -131,9 +131,9 @@
                         <pre><code class="language-json">{
   "function": "ReadStorage",
   "key": "userName",
-  "fallbackValue": "Гость"
+  "fallbackValue": "Guest"
 }</code></pre>
-                        <p><strong>Результат:</strong> Сохраненное имя или "Гость"</p>
+                        <p><strong>Результат:</strong> Сохраненное имя или "Guest"</p>
                     </div>
 
                     <div class="example-card">
@@ -156,7 +156,7 @@
   "key": "tempToken",
   "fallbackValue": null
 }</code></pre>
-                        <p><strong>Примечание:</strong> Если <code>clearAfterRead: true</code>, значение удалится после чтения</p>
+                        <p><strong>Note:</strong> Если <code>clearAfterRead: true</code>, значение удалится после чтения</p>
                     </div>
 
                     <div class="example-card">
@@ -164,11 +164,11 @@
                         <pre><code class="language-json">{
   "function": "JoinToString",
   "values": [
-    "Привет, ",
+    "Hello, ",
     {
       "function": "ReadStorage",
       "key": "userName",
-      "fallbackValue": "Гость"
+      "fallbackValue": "Guest"
     },
     "!"
   ]
@@ -305,7 +305,7 @@
                     <div class="related-actions">
                         <a href="../actions/store.html" class="related-action">
                             <h4>Store</h4>
-                            <p>Сохранение данных в хранилище</p>
+                            <p>Store data в хранилище</p>
                         </a>
                         <a href="equals.html" class="related-action">
                             <h4>Equals</h4>
