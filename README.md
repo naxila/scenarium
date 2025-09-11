@@ -2,6 +2,10 @@
 
 TypeScript library for creating Telegram bots from JSON scenarios.
 
+## 📖 Documentation
+
+📚 **[Full Documentation](https://naxila.github.io/scenarium)** - Complete guide with examples, API reference, and tutorials
+
 ## Installation
 
 ```bash
