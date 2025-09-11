@@ -1,5 +1,5 @@
 import { FunctionDefinition, ProcessingContext } from '../types';
-import { InterpolationEngine } from '../utils/InterpolationEngine';
+import { InterpolationContextBuilder, InterpolationSystem } from '../interpolation';
 import { FunctionRegistry } from '../registry/FunctionRegistry';
 import { ActionProcessor } from './ActionProcessor';
 
@@ -69,7 +69,7 @@ export class FunctionProcessor {
     context: ProcessingContext
   ): Promise<any> {
     // Создаем контекст с параметрами функции
-    const interpolationContext = InterpolationEngine.createContext(context, params);
+    const interpolationContext = InterpolationContextBuilder.createContext(context, params);
     
     if (typeof result === 'object' && result !== null) {
       if (result.function) {
@@ -80,7 +80,7 @@ export class FunctionProcessor {
           const func = FunctionRegistry.get(functionName)!;
           const combinedParams = { ...result, ...params };
           // Интерполируем параметры перед передачей в встроенную функцию
-          const interpolatedParams = InterpolationEngine.interpolateObject(combinedParams, interpolationContext);
+          const interpolatedParams = InterpolationSystem.interpolate(combinedParams, interpolationContext);
           return await func(interpolatedParams, context);
         }
 
@@ -89,12 +89,12 @@ export class FunctionProcessor {
         const scenario = actionProcessor?.getScenario();
         if (scenario?.functions && scenario.functions[functionName]) {
           // Интерполируем параметры перед передачей в функцию
-          const interpolatedParams = InterpolationEngine.interpolateObject(result, interpolationContext);
+          const interpolatedParams = InterpolationSystem.interpolate(result, interpolationContext);
           return await this.executeUserFunction(functionName, interpolatedParams, context);
         }
       }
       
-      const interpolated = InterpolationEngine.interpolateObject(result, interpolationContext);
+      const interpolated = InterpolationSystem.interpolate(result, interpolationContext);
       
       if (interpolated.action) {
         const actionProcessor = context.actionProcessor;
@@ -107,7 +107,7 @@ export class FunctionProcessor {
       return interpolated;
     }
     
-    return InterpolationEngine.interpolate(result, interpolationContext);
+    return InterpolationSystem.interpolate(result, interpolationContext);
   }
 
 }

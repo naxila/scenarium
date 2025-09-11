@@ -93,6 +93,7 @@ class SmartDocs {
                 { href: '#custom-actions', text: '⚡ Custom Actions', icon: 'custom-actions' },
                 { href: '#custom-functions', text: '🔧 Custom Functions', icon: 'custom-functions' },
                 { href: '#interpolation', text: '🔗 Interpolation', icon: 'interpolation' },
+                { href: '#interpolation-system', text: '🎯 Interpolation System', icon: 'interpolation-system' },
                 { href: '#examples', text: '💡 Examples', icon: 'examples' },
                 { href: '#actions', text: '⚡ Built-in Actions', icon: 'actions', submenu: [
                     { href: '#actions/send-message', text: 'SendMessage' },
@@ -120,6 +121,7 @@ class SmartDocs {
                 { href: '#custom-actions', text: '⚡ Кастомные действия', icon: 'custom-actions' },
                 { href: '#custom-functions', text: '🔧 Кастомные функции', icon: 'custom-functions' },
                 { href: '#interpolation', text: '🔗 Интерполяция', icon: 'interpolation' },
+                { href: '#interpolation-system', text: '🎯 Система интерполяции', icon: 'interpolation-system' },
                 { href: '#examples', text: '💡 Примеры', icon: 'examples' },
                 { href: '#actions', text: '⚡ Встроенные действия', icon: 'actions', submenu: [
                     { href: '#actions/send-message', text: 'SendMessage' },

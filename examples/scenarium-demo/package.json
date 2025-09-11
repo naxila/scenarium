@@ -16,13 +16,13 @@
   "author": "Scenarium Demo",
   "license": "MIT",
   "dependencies": {
-    "scenarium": "file:../scenarium/scenarium-0.1.0-beta.tgz",
-    "dotenv": "^17.2.2"
+    "dotenv": "^17.2.2",
+    "scenarium": "file:../../scenarium-0.1.0-beta.tgz"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
+    "nodemon": "^3.1.0",
     "ts-node": "^10.9.0",
-    "nodemon": "^3.1.0"
+    "typescript": "^5.0.0"
   }
 }

@@ -22,3 +22,6 @@ export * from './types/ActionState';
 
 // Re-export utilities
 export * from './utils';
+
+// Re-export interpolation system
+export * from './interpolation';

@@ -19,7 +19,7 @@ async function startBot() {
     }
 
     // Создаем бота из сценария
-    const bot = await BotFactory.createBotFromFile('./scenarios/hello-world.json', token);
+    const bot = await BotFactory.createBotFromFile('./scenarios/interpolation-demo.json', token);
     
     // Запускаем бота
     await bot.start();

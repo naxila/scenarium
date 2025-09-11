@@ -1,5 +1,5 @@
 import { ProcessingContext, BaseAction } from '../types';
-import { InterpolationEngine } from '../utils/InterpolationEngine';
+import { InterpolationContextBuilder, InterpolationSystem } from '../interpolation';
 
 export abstract class BaseActionProcessor {
   // Static property to define action type
@@ -13,9 +13,20 @@ export abstract class BaseActionProcessor {
     context.userContext.lastActivity = new Date();
   }
   
-  protected getFullContext(context: ProcessingContext): Record<string, any> {
-    return InterpolationEngine.createContext(context);
+  /**
+   * Create interpolation context for this action
+   */
+  protected createInterpolationContext(context: ProcessingContext, localScope: Record<string, any> = {}, params: Record<string, any> = {}): any {
+    return InterpolationContextBuilder.createContext(context, params, localScope);
   }
+  
+  /**
+   * Interpolate value using new system
+   */
+  protected interpolate(value: any, interpolationContext: any): any {
+    return InterpolationSystem.interpolate(value, interpolationContext);
+  }
+  
   
   protected async processNestedActions(
     actions: any, 

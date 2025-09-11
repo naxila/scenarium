@@ -6,7 +6,17 @@ export class BackAction extends BaseActionProcessor {
   static readonly actionType = 'Back';
   
   async process(action: any, context: ProcessingContext): Promise<void> {
-    const { removePreviousMessage = false } = action; // Add flag support
+    // Create interpolation context for this action
+    const interpolationContext = this.createInterpolationContext(context);
+    
+    // Create local scope for action-specific variables
+    interpolationContext.local.createScope();
+    
+    try {
+      // Interpolate the action using new system
+      const interpolatedAction = this.interpolate(action, interpolationContext);
+      
+      const { removePreviousMessage = false } = interpolatedAction; // Add flag support
     
     console.log(`↩️ Back action, removePrevious: ${removePreviousMessage}`);
     
@@ -35,6 +45,11 @@ export class BackAction extends BaseActionProcessor {
       }
     } else {
       await this.fallbackToStart(context);
+    }
+    
+    } finally {
+      // Clean up local scope when action completes
+      interpolationContext.local.clearScope();
     }
   }
   

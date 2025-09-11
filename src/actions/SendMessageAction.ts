@@ -1,6 +1,5 @@
 import { BaseActionProcessor } from './BaseAction';
 import { ProcessingContext } from '../types';
-import { InterpolationEngine } from '../utils/InterpolationEngine';
 import { FunctionProcessor } from '../core/FunctionProcessor';
 import { ActionMappingService } from '../telegram/ActionMappingService';
 import { ActionProcessor } from '../core/ActionProcessor';
@@ -9,10 +8,20 @@ export class SendMessageAction extends BaseActionProcessor {
   static readonly actionType = 'SendMessage';
   
   async process(action: any, context: ProcessingContext): Promise<void> {
-    const fullContext = this.getFullContext(context);
-    const interpolatedAction = InterpolationEngine.interpolateObject(action, fullContext);
-
+    // Create interpolation context for this action
+    const interpolationContext = this.createInterpolationContext(context);
     
+    // Create local scope for action-specific variables
+    interpolationContext.local.createScope();
+    
+    // Set action-specific variables
+    interpolationContext.local.setVariable('messageId', null);
+    interpolationContext.local.setVariable('sent', false);
+    interpolationContext.local.setVariable('error', null);
+    
+    // Interpolate the action using new system
+    const interpolatedAction = this.interpolate(action, interpolationContext);
+
     const userId = context.userContext.userId;
     let text = interpolatedAction.text;
 
@@ -74,6 +83,12 @@ export class SendMessageAction extends BaseActionProcessor {
         message = await adapter.sendMessage(chatId, text, options);
       }
       
+      // Update local variables
+      if (message && message.message_id) {
+        interpolationContext.local.setVariable('messageId', message.message_id);
+        interpolationContext.local.setVariable('sent', true);
+      }
+      
       // Сохраняем ID сообщения и actionIds для будущей очистки
       if (!updateTarget && message && message.message_id) {
         context.userContext.data.lastMessageId = message.message_id;
@@ -94,6 +109,11 @@ export class SendMessageAction extends BaseActionProcessor {
       
     } catch (error) {
       console.error(`❌ Failed to send message:`, error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      interpolationContext.local.setVariable('error', errorMessage);
+    } finally {
+      // Clean up local scope when action completes
+      interpolationContext.local.clearScope();
     }
     
     this.updateUserActivity(context);

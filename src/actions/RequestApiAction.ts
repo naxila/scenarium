@@ -1,6 +1,5 @@
 import { BaseActionProcessor } from './BaseAction';
 import { ProcessingContext } from '../types';
-import { InterpolationEngine } from '../utils/InterpolationEngine';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 
@@ -8,10 +7,22 @@ export class RequestApiAction extends BaseActionProcessor {
   static readonly actionType = 'RequestApi';
 
   async process(action: any, context: ProcessingContext): Promise<void> {
-    const fullContext = this.getFullContext(context);
+    // Create interpolation context for this action
+    const interpolationContext = this.createInterpolationContext(context);
     
-    // First interpolate the entire action
-    const interpolatedAction = InterpolationEngine.interpolateObject(action, fullContext);
+    // Create local scope for action-specific variables
+    interpolationContext.local.createScope();
+    
+    try {
+      // Set action-specific variables
+      interpolationContext.local.setVariable('method', action.method || 'GET');
+      interpolationContext.local.setVariable('path', action.path);
+      interpolationContext.local.setVariable('baseUrl', action.baseUrl);
+      interpolationContext.local.setVariable('success', false);
+      interpolationContext.local.setVariable('error', null);
+      
+      // Interpolate the action using new system
+      const interpolatedAction = this.interpolate(action, interpolationContext);
     
     const {
       method = 'GET',
@@ -28,13 +39,7 @@ export class RequestApiAction extends BaseActionProcessor {
 
     // onStart
     if (onStart) {
-      await this.processNestedActions(onStart, {
-        ...context,
-        localContext: {
-          ...context.localContext,
-          ...fullContext
-        }
-      });
+      await this.processNestedActions(onStart, context);
     }
 
     // Build URL (now path and baseUrl are already interpolated)
@@ -124,6 +129,11 @@ export class RequestApiAction extends BaseActionProcessor {
       await this.processNestedActions(onSuccess, nextContext);
     } else if (!ok && onFailure) {
       await this.processNestedActions(onFailure, nextContext);
+    }
+    
+    } finally {
+      // Clean up local scope when action completes
+      interpolationContext.local.clearScope();
     }
   }
 }

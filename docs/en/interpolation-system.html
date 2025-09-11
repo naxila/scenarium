@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interpolation System - Scenarium</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-content">
+                <div class="logo">
+                    <h1>Scenarium</h1>
+                    <span class="version">v1.0.0</span>
+                </div>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-link" data-path="index.html">Home</a>
+                    <a href="#" class="nav-link" data-path="interpolation-system.html" class="active">Interpolation System</a>
+                    <a href="#" class="nav-link" data-path="actions/index.html">Actions</a>
+                    <a href="#" class="nav-link" data-path="functions/index.html">Functions</a>
+                    <a href="#" class="nav-link" data-path="examples.html">Examples</a>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="content">
+                <h1>Interpolation System</h1>
+                
+                <p>The new interpolation system provides a unified and intuitive way to access variables in scenarios, actions, and functions. It works similarly to variable scoping in programming languages.</p>
+
+                <h2>Data Sources (Priority Order)</h2>
+                
+                <div class="priority-list">
+                    <div class="priority-item">
+                        <h3>1. Local Context (Highest Priority)</h3>
+                        <p>Variables created by actions and functions in their local scope.</p>
+                        <div class="code-example">
+                            <code>{{tempValue}}</code> - Direct access<br>
+                            <code>{{local.tempValue}}</code> - Explicit prefix
+                        </div>
+                    </div>
+                    
+                    <div class="priority-item">
+                        <h3>2. Function/Action Parameters</h3>
+                        <p>Parameters passed to functions and actions.</p>
+                        <div class="code-example">
+                            <code>{{param1}}</code> - Direct access<br>
+                            <code>{{params.param1}}</code> - Explicit prefix
+                        </div>
+                    </div>
+                    
+                    <div class="priority-item">
+                        <h3>3. Scenario Data</h3>
+                        <p>Variables defined in the scenario's <code>data</code> block.</p>
+                        <div class="code-example">
+                            <code>{{apiUrl}}</code> - Direct access<br>
+                            <code>{{data.apiUrl}}</code> - Explicit prefix
+                        </div>
+                    </div>
+                    
+                    <div class="priority-item">
+                        <h3>4. Environment (Lowest Priority)</h3>
+                        <p>System variables like timestamp, version, etc.</p>
+                        <div class="code-example">
+                            <code>{{timestamp}}</code> - Direct access<br>
+                            <code>{{env.timestamp}}</code> - Explicit prefix
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Scope Management</h2>
+                
+                <p>The local context works like function scopes in programming languages:</p>
+                
+                <ul>
+                    <li><strong>Nested Scopes:</strong> Child functions can access parent variables</li>
+                    <li><strong>Variable Shadowing:</strong> Local variables can override parent variables</li>
+                    <li><strong>Automatic Cleanup:</strong> Scopes are cleared when functions/actions complete</li>
+                    <li><strong>Isolation:</strong> Each function/action manages only its own scope</li>
+                </ul>
+
+                <h2>Usage Examples</h2>
+
+                <h3>Basic Variable Access</h3>
+                <div class="code-block">
+                    <pre><code>// Scenario data
+{
+  "data": {
+    "userName": "John",
+    "apiUrl": "https://api.example.com"
+  }
+}
+
+// In action
+"text": "Hello {{userName}}! API: {{apiUrl}}"
+// Result: "Hello John! API: https://api.example.com"</code></pre>
+                </div>
+
+                <h3>Local Context in Actions</h3>
+                <div class="code-block">
+                    <pre><code>// Action creates local scope
+context.local.createScope();
+context.local.setVariable('messageId', 123);
+context.local.setVariable('sent', true);
+
+// Interpolation
+"text": "Message {{messageId}} sent: {{sent}}"
+// Result: "Message 123 sent: true"</code></pre>
+                </div>
+
+                <h3>Nested Function Scopes</h3>
+                <div class="code-block">
+                    <pre><code>// Function A
+context.local.createScope();
+context.local.setVariable('x', 10);
+
+// Function B (nested)
+context.local.createScope();
+context.local.setVariable('y', 20);
+// Can access both x and y
+
+// Function C (nested in B)
+context.local.createScope();
+context.local.setVariable('z', 30);
+// Can access x, y, and z
+
+// When C completes, only z is cleared
+// When B completes, only y is cleared
+// When A completes, only x is cleared</code></pre>
+                </div>
+
+                <h3>Explicit Prefixes</h3>
+                <div class="code-block">
+                    <pre><code>// Force specific data source
+"text": "Local: {{local.temp}}, Data: {{data.userName}}, Env: {{env.timestamp}}"
+
+// Nested object access
+"apiUrl": "{{data.api.baseUrl}}/{{data.api.version}}/users"</code></pre>
+                </div>
+
+                <h2>Migration from Old System</h2>
+
+                <div class="migration-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Old Syntax</th>
+                                <th>New Syntax</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>{{userContext.data.name}}</code></td>
+                                <td><code>{{name}}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>{{localContext.response}}</code></td>
+                                <td><code>{{response}}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>{{scenarioContext.data.apiUrl}}</code></td>
+                                <td><code>{{apiUrl}}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>{{Date:now}}</code></td>
+                                <td><code>{{timestamp}}</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Best Practices</h2>
+
+                <ul>
+                    <li><strong>Use Direct Access:</strong> Prefer <code>{{variableName}}</code> over <code>{{local.variableName}}</code> when possible</li>
+                    <li><strong>Explicit Prefixes:</strong> Use prefixes when you need to be specific about data source</li>
+                    <li><strong>Scope Management:</strong> Always call <code>clearScope()</code> when action/function completes</li>
+                    <li><strong>Variable Naming:</strong> Use descriptive names to avoid conflicts</li>
+                    <li><strong>Nested Objects:</strong> Use dot notation for nested object access</li>
+                </ul>
+
+                <h2>API Reference</h2>
+
+                <h3>InterpolationContext</h3>
+                <div class="code-block">
+                    <pre><code>interface InterpolationContext {
+  env: Record<string, any>;      // Environment variables
+  data: Record<string, any>;     // Scenario data
+  local: ScopeManager;           // Local scope manager
+  params: Record<string, any>;   // Function/action parameters
+}</code></pre>
+                </div>
+
+                <h3>ScopeManager</h3>
+                <div class="code-block">
+                    <pre><code>class ScopeManager {
+  createScope(initialData?: Record<string, any>): void;
+  setVariable(name: string, value: any): void;
+  getVariable(name: string): any;
+  findVariable(name: string): any;
+  clearScope(): void;
+  getCurrentScope(): Record<string, any>;
+}</code></pre>
+                </div>
+
+                <h3>InterpolationSystem</h3>
+                <div class="code-block">
+                    <pre><code>class InterpolationSystem {
+  static interpolate(value: any, context: InterpolationContext): any;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

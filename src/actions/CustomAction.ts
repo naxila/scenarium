@@ -1,15 +1,20 @@
 import { BaseActionProcessor } from './BaseAction';
 import { ProcessingContext } from '../types';
-import { InterpolationEngine } from '../utils/InterpolationEngine';
+import { InterpolationContextBuilder, InterpolationSystem } from '../interpolation';
 
 export class CustomAction extends BaseActionProcessor {
   static readonly actionType = '*';
   
   async process(action: any, context: ProcessingContext): Promise<void> {
-    const fullContext = this.getFullContext(context);
-    const interpolatedAction = InterpolationEngine.interpolateObject(action, fullContext);
+    const interpolationContext = this.createInterpolationContext(context);
+    interpolationContext.local.createScope();
     
-    console.log(`[User ${context.userContext.userId}] Custom action:`, interpolatedAction);
-    this.updateUserActivity(context);
+    try {
+      const interpolatedAction = this.interpolate(action, interpolationContext);
+      console.log(`[User ${context.userContext.userId}] Custom action:`, interpolatedAction);
+      this.updateUserActivity(context);
+    } finally {
+      interpolationContext.local.clearScope();
+    }
   }
 }

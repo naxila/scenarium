@@ -7,12 +7,22 @@ export class NavigateAction extends BaseActionProcessor {
   static readonly actionType = 'Navigate';
   
   async process(action: any, context: ProcessingContext): Promise<void> {
-    const { 
-      menuItem, 
-      addToBackStack = true,
-      removePreviousMessage = false,
-      uniqueInStack = true 
-    } = action;
+    // Create interpolation context for this action
+    const interpolationContext = this.createInterpolationContext(context);
+    
+    // Create local scope for action-specific variables
+    interpolationContext.local.createScope();
+    
+    try {
+      // Interpolate the action using new system
+      const interpolatedAction = this.interpolate(action, interpolationContext);
+      
+      const { 
+        menuItem, 
+        addToBackStack = true,
+        removePreviousMessage = false,
+        uniqueInStack = true 
+      } = interpolatedAction;
     
 
     // Clear previous message actions
@@ -42,6 +52,11 @@ export class NavigateAction extends BaseActionProcessor {
     
     // Recursive call to process menu actions
     await this.processNestedActions(menu.onNavigation, context);
+    
+    } finally {
+      // Clean up local scope when action completes
+      interpolationContext.local.clearScope();
+    }
   }
   
   private async deletePreviousMessages(context: ProcessingContext): Promise<void> {

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система интерполяции - Scenarium</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-content">
+                <div class="logo">
+                    <h1>Scenarium</h1>
+                    <span class="version">v1.0.0</span>
+                </div>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-link" data-path="index.html">Главная</a>
+                    <a href="#" class="nav-link" data-path="interpolation-system.html" class="active">Система интерполяции</a>
+                    <a href="#" class="nav-link" data-path="actions/index.html">Действия</a>
+                    <a href="#" class="nav-link" data-path="functions/index.html">Функции</a>
+                    <a href="#" class="nav-link" data-path="examples.html">Примеры</a>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="content">
+                <h1>Система интерполяции</h1>
+                
+                <p>Новая система интерполяции предоставляет унифицированный и интуитивный способ доступа к переменным в сценариях, действиях и функциях. Она работает аналогично области видимости переменных в языках программирования.</p>
+
+                <h2>Источники данных (порядок приоритета)</h2>
+                
+                <div class="priority-list">
+                    <div class="priority-item">
+                        <h3>1. Локальный контекст (высший приоритет)</h3>
+                        <p>Переменные, созданные действиями и функциями в их локальной области видимости.</p>
+                        <div class="code-example">
+                            <code>{{tempValue}}</code> - Прямой доступ<br>
+                            <code>{{local.tempValue}}</code> - Явный префикс
+                        </div>
+                    </div>
+                    
+                    <div class="priority-item">
+                        <h3>2. Параметры функций/действий</h3>
+                        <p>Параметры, передаваемые в функции и действия.</p>
+                        <div class="code-example">
+                            <code>{{param1}}</code> - Прямой доступ<br>
+                            <code>{{params.param1}}</code> - Явный префикс
+                        </div>
+                    </div>
+                    
+                    <div class="priority-item">
+                        <h3>3. Данные сценария</h3>
+                        <p>Переменные, определенные в блоке <code>data</code> сценария.</p>
+                        <div class="code-example">
+                            <code>{{apiUrl}}</code> - Прямой доступ<br>
+                            <code>{{data.apiUrl}}</code> - Явный префикс
+                        </div>
+                    </div>
+                    
+                    <div class="priority-item">
+                        <h3>4. Окружение (низший приоритет)</h3>
+                        <p>Системные переменные, такие как timestamp, version и т.д.</p>
+                        <div class="code-example">
+                            <code>{{timestamp}}</code> - Прямой доступ<br>
+                            <code>{{env.timestamp}}</code> - Явный префикс
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Управление областями видимости</h2>
+                
+                <p>Локальный контекст работает как области видимости функций в языках программирования:</p>
+                
+                <ul>
+                    <li><strong>Вложенные области:</strong> Дочерние функции могут обращаться к переменным родителя</li>
+                    <li><strong>Затенение переменных:</strong> Локальные переменные могут переопределять родительские</li>
+                    <li><strong>Автоматическая очистка:</strong> Области очищаются при завершении функций/действий</li>
+                    <li><strong>Изоляция:</strong> Каждая функция/действие управляет только своей областью</li>
+                </ul>
+
+                <h2>Примеры использования</h2>
+
+                <h3>Базовый доступ к переменным</h3>
+                <div class="code-block">
+                    <pre><code>// Данные сценария
+{
+  "data": {
+    "userName": "Иван",
+    "apiUrl": "https://api.example.com"
+  }
+}
+
+// В действии
+"text": "Привет {{userName}}! API: {{apiUrl}}"
+// Результат: "Привет Иван! API: https://api.example.com"</code></pre>
+                </div>
+
+                <h3>Локальный контекст в действиях</h3>
+                <div class="code-block">
+                    <pre><code>// Действие создает локальную область
+context.local.createScope();
+context.local.setVariable('messageId', 123);
+context.local.setVariable('sent', true);
+
+// Интерполяция
+"text": "Сообщение {{messageId}} отправлено: {{sent}}"
+// Результат: "Сообщение 123 отправлено: true"</code></pre>
+                </div>
+
+                <h3>Вложенные области функций</h3>
+                <div class="code-block">
+                    <pre><code>// Функция A
+context.local.createScope();
+context.local.setVariable('x', 10);
+
+// Функция B (вложенная)
+context.local.createScope();
+context.local.setVariable('y', 20);
+// Может обращаться к x и y
+
+// Функция C (вложенная в B)
+context.local.createScope();
+context.local.setVariable('z', 30);
+// Может обращаться к x, y и z
+
+// Когда C завершается, очищается только z
+// Когда B завершается, очищается только y
+// Когда A завершается, очищается только x</code></pre>
+                </div>
+
+                <h3>Явные префиксы</h3>
+                <div class="code-block">
+                    <pre><code>// Принудительное указание источника данных
+"text": "Локальное: {{local.temp}}, Данные: {{data.userName}}, Окружение: {{env.timestamp}}"
+
+// Доступ к вложенным объектам
+"apiUrl": "{{data.api.baseUrl}}/{{data.api.version}}/users"</code></pre>
+                </div>
+
+                <h2>Миграция со старой системы</h2>
+
+                <div class="migration-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Старый синтаксис</th>
+                                <th>Новый синтаксис</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>{{userContext.data.name}}</code></td>
+                                <td><code>{{name}}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>{{localContext.response}}</code></td>
+                                <td><code>{{response}}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>{{scenarioContext.data.apiUrl}}</code></td>
+                                <td><code>{{apiUrl}}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>{{Date:now}}</code></td>
+                                <td><code>{{timestamp}}</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Лучшие практики</h2>
+
+                <ul>
+                    <li><strong>Используйте прямой доступ:</strong> Предпочитайте <code>{{variableName}}</code> вместо <code>{{local.variableName}}</code> когда возможно</li>
+                    <li><strong>Явные префиксы:</strong> Используйте префиксы когда нужно явно указать источник данных</li>
+                    <li><strong>Управление областями:</strong> Всегда вызывайте <code>clearScope()</code> при завершении действия/функции</li>
+                    <li><strong>Именование переменных:</strong> Используйте описательные имена чтобы избежать конфликтов</li>
+                    <li><strong>Вложенные объекты:</strong> Используйте точечную нотацию для доступа к вложенным объектам</li>
+                </ul>
+
+                <h2>Справочник API</h2>
+
+                <h3>InterpolationContext</h3>
+                <div class="code-block">
+                    <pre><code>interface InterpolationContext {
+  env: Record<string, any>;      // Переменные окружения
+  data: Record<string, any>;     // Данные сценария
+  local: ScopeManager;           // Менеджер локальных областей
+  params: Record<string, any>;   // Параметры функций/действий
+}</code></pre>
+                </div>
+
+                <h3>ScopeManager</h3>
+                <div class="code-block">
+                    <pre><code>class ScopeManager {
+  createScope(initialData?: Record<string, any>): void;
+  setVariable(name: string, value: any): void;
+  getVariable(name: string): any;
+  findVariable(name: string): any;
+  clearScope(): void;
+  getCurrentScope(): Record<string, any>;
+}</code></pre>
+                </div>
+
+                <h3>InterpolationSystem</h3>
+                <div class="code-block">
+                    <pre><code>class InterpolationSystem {
+  static interpolate(value: any, context: InterpolationContext): any;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

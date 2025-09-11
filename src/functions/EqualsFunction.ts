@@ -1,24 +1,43 @@
 import { ProcessingContext } from '../types';
-import { interpolate } from '../utils/interpolation';
+import { InterpolationContextBuilder, InterpolationSystem } from '../interpolation';
 import { FunctionProcessor } from '../core/FunctionProcessor';
 
 export class EqualsFunction {
   static async execute(params: any, context: ProcessingContext): Promise<any> {
-    const fullContext = {
-      ...context.scenarioContext,
-      ...context.userContext.data,
-      ...context.localContext
-    };
+    // Create interpolation context for this function
+    const interpolationContext = InterpolationContextBuilder.createContext(context, params);
     
-    const values = params.values.map((v: any) => interpolate(v, fullContext));
-    const areEqual = values.every((v: any) => v === values[0]);
+    // Create local scope for function-specific variables
+    interpolationContext.local.createScope();
     
-    if (areEqual && params.trueResult) {
-      return await FunctionProcessor.evaluateResult(params.trueResult, {}, context);
-    } else if (!areEqual && params.falseResult) {
-      return await FunctionProcessor.evaluateResult(params.falseResult, {}, context);
+    try {
+      // Set function-specific variables
+      interpolationContext.local.setVariable('values', params.values);
+      interpolationContext.local.setVariable('areEqual', false);
+      interpolationContext.local.setVariable('result', null);
+      
+      const values = params.values.map((v: any) => InterpolationSystem.interpolate(v, interpolationContext));
+      const areEqual = values.every((v: any) => v === values[0]);
+      
+      // Update local variables
+      interpolationContext.local.setVariable('areEqual', areEqual);
+      interpolationContext.local.setVariable('values', values);
+      
+      if (areEqual && params.trueResult) {
+        const result = await FunctionProcessor.evaluateResult(params.trueResult, {}, context);
+        interpolationContext.local.setVariable('result', result);
+        return result;
+      } else if (!areEqual && params.falseResult) {
+        const result = await FunctionProcessor.evaluateResult(params.falseResult, {}, context);
+        interpolationContext.local.setVariable('result', result);
+        return result;
+      }
+      
+      return areEqual;
+      
+    } finally {
+      // Clean up local scope when function completes
+      interpolationContext.local.clearScope();
     }
-    
-    return areEqual;
   }
 }

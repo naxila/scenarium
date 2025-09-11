@@ -1,6 +1,6 @@
-# Scenarium Demo - Quick Start
+# Scenarium Demo - Interpolation System
 
-Demonstration project for quickly launching a Telegram bot using the [Scenarium](https://www.npmjs.com/package/scenarium) library.
+Demonstration project showcasing the new interpolation system in [Scenarium](https://www.npmjs.com/package/scenarium) library.
 
 ## 🚀 Launch in 3 commands
 
@@ -24,11 +24,35 @@ npm start
 
 ```
 scenarium-demo/
-├── index.js               # Main file (bot startup)
+├── index.js                    # Main file (bot startup)
 ├── scenarios/
-│   └── hello-world.json   # Simple scenario
-├── env.template           # .env template
-└── package.json          # Dependencies
+│   ├── hello-world.json        # Simple scenario
+│   └── interpolation-demo.json # Interpolation system demo
+├── env.template                # .env template
+└── package.json               # Dependencies
+```
+
+## 🎯 Interpolation Demo Features
+
+The demo showcases the new interpolation system with:
+
+- **Basic Variables**: Access to scenario data, user data, and environment variables
+- **Local Scopes**: Action and function-specific variables with proper scoping
+- **Functions**: JoinToString and Equals functions with interpolation
+- **Complex Objects**: Nested data structures and API requests
+- **Priority System**: Local → Params → Data → Environment
+
+### Example Usage
+
+```json
+{
+  "data": {
+    "botName": "Demo Bot",
+    "user": { "name": "John" }
+  },
+  "action": "SendMessage",
+  "text": "Hello {{user.name}}! Welcome to {{botName}} at {{timestamp}}"
+}
 ```
 
 ## 🎯 Code
