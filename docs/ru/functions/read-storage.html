@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReadХранилище - Telegram Bot Constructor</title>
+    <title>ReadStorage - Telegram Bot Constructor</title>
 </head>
 <body>
     <div class="main-content">
         <div class="content">
 
                 <section class="section">
-                    <h1>💾 ReadХранилище</h1>
+                    <h1>💾 ReadStorage</h1>
                     <p class="lead">Чтение данных из локального хранилища пользователя с поддержкой значений по умолчанию и автоматической очистки.</p>
                     
                     <div class="action-info">
                         <div class="info-card">
                             <h3>📋 Описание</h3>
-                            <p>ReadХранилище - это функция для чтения данных из локального хранилища пользователя. Поддерживает значения по умолчанию и автоматическую очистку после чтения.</p>
+                            <p>ReadStorage - это функция для чтения данных из локального хранилища пользователя. Поддерживает значения по умолчанию и автоматическую очистку после чтения.</p>
                         </div>
                         
                         <div class="info-card">
@@ -63,7 +63,7 @@
                     <div class="example-card">
                         <h3>Простое чтение</h3>
                         <pre><code class="language-json">{
-  "function": "ReadХранилище",
+  "function": "ReadStorage",
   "key": "userName"
 }</code></pre>
                         <p><strong>Результат:</strong> Сохраненное имя пользователя или <code>undefined</code></p>
@@ -72,7 +72,7 @@
                     <div class="example-card">
                         <h3>С значением по умолчанию</h3>
                         <pre><code class="language-json">{
-  "function": "ReadХранилище",
+  "function": "ReadStorage",
   "key": "userName",
   "fallbackValue": "Гость"
 }</code></pre>
@@ -82,7 +82,7 @@
                     <div class="example-card">
                         <h3>Чтение настроек</h3>
                         <pre><code class="language-json">{
-  "function": "ReadХранилище",
+  "function": "ReadStorage",
   "key": "userPreferences",
   "fallbackValue": {
     "theme": "light",
@@ -95,7 +95,7 @@
                     <div class="example-card">
                         <h3>Чтение временных данных</h3>
                         <pre><code class="language-json">{
-  "function": "ReadХранилище",
+  "function": "ReadStorage",
   "key": "tempToken",
   "fallbackValue": null
 }</code></pre>
@@ -109,7 +109,7 @@
   "values": [
     "Привет, ",
     {
-      "function": "ReadХранилище",
+      "function": "ReadStorage",
       "key": "userName",
       "fallbackValue": "Гость"
     },
@@ -124,7 +124,7 @@
   "function": "Equals",
   "values": [
     {
-      "function": "ReadХранилище",
+      "function": "ReadStorage",
       "key": "userRole",
       "fallbackValue": "user"
     },
@@ -167,13 +167,13 @@
       "Ваши настройки:\n",
       "Тема: ",
       {
-        "function": "ReadХранилище",
+        "function": "ReadStorage",
         "key": "theme",
         "fallbackValue": "светлая"
       },
       "\nЯзык: ",
       {
-        "function": "ReadХранилище",
+        "function": "ReadStorage",
         "key": "language",
         "fallbackValue": "русский"
       }
@@ -193,7 +193,7 @@
       "{{localContext.currentDate}}",
       " (предыдущий: ",
       {
-        "function": "ReadХранилище",
+        "function": "ReadStorage",
         "key": "lastLogin",
         "fallbackValue": "никогда"
       },
@@ -208,7 +208,7 @@
                         <pre><code class="language-json">{
   "action": "Navigate",
   "menuItem": {
-    "function": "ReadХранилище",
+    "function": "ReadStorage",
     "key": "lastMenu",
     "fallbackValue": "Main"
   }
@@ -246,7 +246,7 @@
 
                     <h2>🔗 Связанные действия и функции</h2>
                     <div class="related-actions">
-                        <a href="../actions/store.html" class="related-action">
+                        <a href="#" class="nav-link" data-path="actions/store.html">
                             <h4>Store</h4>
                             <p>Сохранение данных в хранилище</p>
                         </a>

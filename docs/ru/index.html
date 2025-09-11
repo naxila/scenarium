@@ -630,7 +630,7 @@ const bot = BotFactory.createFromScenario({
                         <div class="function-category">
                             <h3>💾 Функции хранилища</h3>
                             <ul>
-                                <li><a href="functions/read-storage.html">ReadХранилище</a> - Чтение данных из хранилища</li>
+                                <li><a href="functions/read-storage.html">ReadStorage</a> - Чтение данных из хранилища</li>
                             </ul>
                         </div>
                     </div>
@@ -836,7 +836,7 @@ const bot = BotFactory.createFromScenario({
           "values": [
             "👋 Привет, ",
             {
-              "function": "ReadХранилище",
+              "function": "ReadStorage",
               "key": "userName",
               "fallbackValue": "Гость"
             },
@@ -870,19 +870,19 @@ const bot = BotFactory.createFromScenario({
             "👤 Ваш профиль:\n",
             "Имя: ",
             {
-              "function": "ReadХранилище",
+              "function": "ReadStorage",
               "key": "userName",
               "fallbackValue": "Не указано"
             },
             "\nEmail: ",
             {
-              "function": "ReadХранилище",
+              "function": "ReadStorage",
               "key": "userEmail",
               "fallbackValue": "Не указано"
             },
             "\nТелефон: ",
             {
-              "function": "ReadХранилище",
+              "function": "ReadStorage",
               "key": "userPhone",
               "fallbackValue": "Не указано"
             }
@@ -1073,7 +1073,7 @@ const bot = BotFactory.createFromScenario({
           "values": [
             "🛍️ Ваша корзина:\n\n",
             {
-              "function": "ReadХранилище",
+              "function": "ReadStorage",
               "key": "cart",
               "fallbackValue": "Корзина пуста"
             },
