@@ -880,7 +880,7 @@ const bot = BotFactory.createFromScenario({
               "key": "userEmail",
               "fallbackValue": "Not specified"
             },
-            "\nТелефон: ",
+            "\nPhone: ",
             {
               "function": "ReadStorage",
               "key": "userPhone",
@@ -968,7 +968,7 @@ const bot = BotFactory.createFromScenario({
     "Phones": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "📱 Phones:\n1. iPhone 15 - 80,000 руб\n2. Samsung Galaxy S24 - 70,000 руб\n3. Xiaomi 14 - 50,000 руб",
+        "text": "📱 Phones:\n1. iPhone 15 - $800\n2. Samsung Galaxy S24 - $700\n3. Xiaomi 14 - $500",
         "inlineActions": [
           {
             "title": "Add iPhone",
@@ -983,7 +983,7 @@ const bot = BotFactory.createFromScenario({
                     "key": "cart",
                     "fallbackValue": ""
                   },
-                  "iPhone 15 - 80,000 руб\n"
+                  "iPhone 15 - $800\n"
                 ]
               }
             }
@@ -1001,7 +1001,7 @@ const bot = BotFactory.createFromScenario({
                     "key": "cart",
                     "fallbackValue": ""
                   },
-                  "Samsung Galaxy S24 - 70,000 руб\n"
+                  "Samsung Galaxy S24 - $700\n"
                 ]
               }
             }
@@ -1018,7 +1018,7 @@ const bot = BotFactory.createFromScenario({
     "Laptops": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "💻 Laptops:\n1. MacBook Pro M3 - 150,000 руб\n2. Dell XPS 13 - 120,000 руб\n3. Lenovo ThinkPad - 90,000 руб",
+        "text": "💻 Laptops:\n1. MacBook Pro M3 - $1500\n2. Dell XPS 13 - $1200\n3. Lenovo ThinkPad - $900",
         "inlineActions": [
           {
             "title": "Add MacBook",
@@ -1033,7 +1033,7 @@ const bot = BotFactory.createFromScenario({
                     "key": "cart",
                     "fallbackValue": ""
                   },
-                  "MacBook Pro M3 - 150,000 руб\n"
+                  "MacBook Pro M3 - $1500\n"
                 ]
               }
             }
@@ -1051,7 +1051,7 @@ const bot = BotFactory.createFromScenario({
                     "key": "cart",
                     "fallbackValue": ""
                   },
-                  "Dell XPS 13 - 120,000 руб\n"
+                  "Dell XPS 13 - $1200\n"
                 ]
               }
             }
@@ -1075,7 +1075,7 @@ const bot = BotFactory.createFromScenario({
             {
               "function": "ReadStorage",
               "key": "cart",
-              "fallbackValue": "Cart пуста"
+              "fallbackValue": "Cart is empty"
             },
             "\n\n💡 Use the buttons below to manage your cart"
           ]

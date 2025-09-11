@@ -104,8 +104,8 @@
                         <p>When there are no elements in the stack:</p>
                         <ul>
                             <li>Current menu and stack are cleared</li>
-                            <li>Выполняются действия из <code>onStartActions</code></li>
-                            <li>Если <code>onStartActions</code> отсутствуют - отправляется сообщение о возврате</li>
+                            <li>Actions from <code>onStartActions</code> are executed</li>
+                            <li>If <code>onStartActions</code> are missing - return message is sent</li>
                         </ul>
                     </div>
 
@@ -113,7 +113,7 @@
                     <div class="warning-card">
                         <ul>
                             <li><strong>Navigation stack:</strong> Must contain at least 2 elements for return</li>
-                            <li><strong>Delete сообщений:</strong> Cannot delete messages older than 48 hours</li>
+                            <li><strong>Delete messages:</strong> Cannot delete messages older than 48 hours</li>
                             <li><strong>Fallback:</strong> When stack is empty, return to beginning is executed</li>
                             <li><strong>Performance:</strong> Frequent message deletion may slow down performance</li>
                         </ul>

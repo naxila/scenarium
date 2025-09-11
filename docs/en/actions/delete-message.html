@@ -46,7 +46,7 @@
                                     <td><code>messageId</code></td>
                                     <td>string | function</td>
                                     <td>❌</td>
-                                    <td>Message ID для удаления (по умолчанию: последнее сообщение)</td>
+                                    <td>Message ID to delete (default: last message)</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -55,14 +55,14 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Delete последнего сообщения</h3>
+                        <h3>Delete last message</h3>
                         <pre><code class="language-json">{
   "action": "DeleteMessage"
 }</code></pre>
                     </div>
 
                     <div class="example-card">
-                        <h3>Delete конкретного сообщения</h3>
+                        <h3>Delete specific message</h3>
                         <pre><code class="language-json">{
   "action": "DeleteMessage",
   "messageId": "{{localContext.messageId}}"
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Delete с функцией</h3>
+                        <h3>Delete with function</h3>
                         <pre><code class="language-json">{
   "action": "DeleteMessage",
   "messageId": {
@@ -82,35 +82,35 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Delete с уведомлением</h3>
+                        <h3>Delete with notification</h3>
                         <pre><code class="language-json">{
   "action": "DeleteMessage"
 },
 {
   "action": "SendMessage",
-  "text": "Сообщение удалено"
+  "text": "Message deleted"
 }</code></pre>
                     </div>
 
                     <h2>🔧 How it works</h2>
                     <div class="info-card">
-                        <h3>Определение Message ID</h3>
-                        <p>Система определяет Message ID в следующем порядке:</p>
+                        <h3>Message ID determination</h3>
+                        <p>The system determines Message ID in the following order:</p>
                         <ul>
-                            <li>Если указан <code>messageId</code> - использует его</li>
-                            <li>Если <code>messageId</code> - функция - выполняет её</li>
-                            <li>Иначе использует <code>localContext.messageId</code></li>
-                            <li>В крайнем случае - <code>userContext.data.lastMessageId</code></li>
+                            <li>If <code>messageId</code> is specified - uses it</li>
+                            <li>If <code>messageId</code> is a function - executes it</li>
+                            <li>Otherwise uses <code>localContext.messageId</code></li>
+                            <li>As a last resort - <code>userContext.data.lastMessageId</code></li>
                         </ul>
                     </div>
 
                     <div class="info-card">
                         <h3>Error handling</h3>
-                        <p>При ошибке удаления:</p>
+                        <p>On deletion error:</p>
                         <ul>
-                            <li>Если сообщение слишком старое - отправляется уведомление</li>
-                            <li>Другие ошибки логируются в консоль</li>
-                            <li>Action не прерывает выполнение сценария</li>
+                            <li>If message is too old - notification is sent</li>
+                            <li>Other errors are logged to console</li>
+                            <li>Action does not interrupt scenario execution</li>
                         </ul>
                     </div>
 
@@ -118,9 +118,9 @@
                     <div class="warning-card">
                         <ul>
                             <li><strong>Limitations Telegram:</strong> Cannot delete messages older than 48 hours</li>
-                            <li><strong>Message ID:</strong> Должен быть валидным числовым ID</li>
-                            <li><strong>Ошибки:</strong> При ошибке удаления действие продолжает выполнение</li>
-                            <li><strong>Performance:</strong> Delete происходит асинхронно</li>
+                            <li><strong>Message ID:</strong> Must be a valid numeric ID</li>
+                            <li><strong>Errors:</strong> On deletion error, action continues execution</li>
+                            <li><strong>Performance:</strong> Delete happens asynchronously</li>
                         </ul>
                     </div>
 
@@ -128,11 +128,11 @@
                     <div class="related-actions">
                         <a href="#" class="nav-link" data-path="actions/send-message.html">
                             <h4>SendMessage</h4>
-                            <p>Отправка новых сообщений</p>
+                            <p>Sending new messages</p>
                         </a>
                         <a href="#" class="nav-link" data-path="actions/update-message.html">
                             <h4>UpdateMessage</h4>
-                            <p>Update сообщений</p>
+                            <p>Update messages</p>
                         </a>
                     </div>
 

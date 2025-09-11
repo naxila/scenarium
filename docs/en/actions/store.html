@@ -48,7 +48,7 @@
                                     <td>string</td>
                                     <td>✅</td>
                                     <td>-</td>
-                                    <td>Ключ для сохранения данных</td>
+                                    <td>Key for saving data</td>
                                 </tr>
                                 <tr>
                                     <td><code>value</code></td>
@@ -62,7 +62,7 @@
                                     <td>boolean</td>
                                     <td>❌</td>
                                     <td>false</td>
-                                    <td>Удалить значение после чтения</td>
+                                    <td>Delete value after reading</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -71,7 +71,7 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Простое сохранение</h3>
+                        <h3>Simple saving</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "userName",
@@ -80,7 +80,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Save объекта</h3>
+                        <h3>Save object</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "userProfile",
@@ -94,7 +94,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Save с автоматической очисткой</h3>
+                        <h3>Save with automatic cleanup</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "tempToken",
@@ -104,7 +104,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Save результата функции</h3>
+                        <h3>Save function result</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "formattedDate",
@@ -121,7 +121,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Save настроек пользователя</h3>
+                        <h3>Save user settings</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "userPreferences",
@@ -135,7 +135,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>Save массива данных</h3>
+                        <h3>Save data array</h3>
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "shoppingCart",
@@ -150,37 +150,37 @@
 }</code></pre>
                     </div>
 
-                    <h2>🔧 Обработка данных</h2>
+                    <h2>🔧 Data processing</h2>
                     <div class="info-card">
-                        <h3>Typeы данных</h3>
-                        <p>Store поддерживает различные типы данных:</p>
+                        <h3>Data types</h3>
+                        <p>Store supports various data types:</p>
                         <ul>
-                            <li><strong>Строки:</strong> Сохраняются как есть</li>
-                            <li><strong>Числа:</strong> Преобразуются в строку</li>
-                            <li><strong>Объекты:</strong> Сериализуются в JSON</li>
-                            <li><strong>Массивы:</strong> Сериализуются в JSON</li>
-                            <li><strong>null/undefined:</strong> Сохраняются как "null"/"undefined"</li>
+                            <li><strong>Strings:</strong> Saved as is</li>
+                            <li><strong>Numbers:</strong> Converted to string</li>
+                            <li><strong>Objects:</strong> Serialized to JSON</li>
+                            <li><strong>Arrays:</strong> Serialized to JSON</li>
+                            <li><strong>null/undefined:</strong> Saved as "null"/"undefined"</li>
                         </ul>
                     </div>
 
                     <div class="info-card">
                         <h3>Interpolation</h3>
-                        <p>Все значения интерполируются перед сохранением:</p>
+                        <p>All values are interpolated before saving:</p>
                         <ul>
-                            <li>Переменные заменяются на их значения</li>
-                            <li>Functions выполняются и результат сохраняется</li>
-                            <li>Вложенные объекты интерполируются рекурсивно</li>
+                            <li>Variables are replaced with their values</li>
+                            <li>Functions are executed and the result is saved</li>
+                            <li>Nested objects are interpolated recursively</li>
                         </ul>
                     </div>
 
-                    <h2>🗂️ Структура хранилища</h2>
+                    <h2>🗂️ Storage structure</h2>
                     <div class="info-card">
-                        <h3>Локальное хранилище</h3>
-                        <p>Данные сохраняются в <code>userContext.data.__storage</code>:</p>
+                        <h3>Local storage</h3>
+                        <p>Data is saved in <code>userContext.data.__storage</code>:</p>
                         <pre><code class="language-json">{
   "__storage": {
     "userName": {
-      "value": "Иван",
+      "value": "John",
       "clearAfterRead": false
     },
     "tempToken": {
@@ -191,9 +191,9 @@
 }</code></pre>
                     </div>
 
-                    <h2>🔗 Чтение данных</h2>
+                    <h2>🔗 Reading data</h2>
                     <div class="example-card">
-                        <h3>С помощью ReadStorage</h3>
+                        <h3>Using ReadStorage</h3>
                         <pre><code class="language-json">{
   "function": "ReadStorage",
   "key": "userName",
@@ -202,7 +202,7 @@
                     </div>
 
                     <div class="example-card">
-                        <h3>В интерполяции</h3>
+                        <h3>In interpolation</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
   "text": "Hello, {{userContext.data.__storage.userName.value}}!"
@@ -212,15 +212,15 @@
                     <h2>⚠️ Important notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Ключ обязателен:</strong> Parameter <code>key</code> должен быть строкой</li>
-                            <li><strong>Локальное хранилище:</strong> Данные доступны только в рамках сессии пользователя</li>
-                            <li><strong>Сериализация:</strong> Объекты и массивы автоматически сериализуются в JSON</li>
-                            <li><strong>Clear:</strong> При <code>clearAfterRead: true</code> значение удаляется после первого чтения</li>
-                            <li><strong>Performance:</strong> Большие объекты могут замедлить работу бота</li>
+                            <li><strong>Key is required:</strong> Parameter <code>key</code> must be a string</li>
+                            <li><strong>Local storage:</strong> Data is available only within the user session</li>
+                            <li><strong>Serialization:</strong> Objects and arrays are automatically serialized to JSON</li>
+                            <li><strong>Clear:</strong> When <code>clearAfterRead: true</code> the value is deleted after first read</li>
+                            <li><strong>Performance:</strong> Large objects may slow down the bot</li>
                         </ul>
                     </div>
 
-                    <h2>🔗 Related actions и функции</h2>
+                    <h2>🔗 Related actions and functions</h2>
                     <div class="related-actions">
                         <a href="../functions/read-storage.html" class="related-action">
                             <h4>ReadStorage</h4>
@@ -228,11 +228,11 @@
                         </a>
                         <a href="#" class="nav-link" data-path="actions/request-input.html">
                             <h4>RequestInput</h4>
-                            <p>Запрос данных для сохранения</p>
+                            <p>Request data for saving</p>
                         </a>
                         <a href="#" class="nav-link" data-path="actions/send-message.html">
                             <h4>SendMessage</h4>
-                            <p>Отображение сохраненных данных</p>
+                            <p>Display saved data</p>
                         </a>
                     </div>
 

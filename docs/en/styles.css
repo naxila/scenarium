@@ -1,4 +1,4 @@
-/* Основные стили */
+/* Main styles */
 * {
     margin: 0;
     padding: 0;
@@ -17,7 +17,7 @@ body {
     min-height: 100vh;
 }
 
-/* Боковое меню */
+/* Sidebar menu */
 .sidebar {
     width: 300px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -100,7 +100,7 @@ body {
     opacity: 1;
 }
 
-/* Основной контент */
+/* Main content */
 .main-content {
     margin-left: 300px;
     flex: 1;
@@ -113,7 +113,7 @@ body {
     padding: 2rem;
 }
 
-/* Секции */
+/* Sections */
 .section {
     margin-bottom: 3rem;
     padding-bottom: 2rem;
@@ -168,7 +168,7 @@ body {
     font-weight: 300;
 }
 
-/* Сетка функций */
+/* Features grid */
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -205,7 +205,7 @@ body {
     line-height: 1.6;
 }
 
-/* Список функций */
+/* Features list */
 .feature-list {
     list-style: none;
     margin: 1rem 0;
@@ -226,7 +226,7 @@ body {
     font-weight: bold;
 }
 
-/* Архитектурная диаграмма */
+/* Architecture diagram */
 .architecture-diagram {
     display: flex;
     flex-direction: column;
@@ -252,7 +252,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Сетка компонентов */
+/* Components grid */
 .component-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -277,7 +277,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Структура файлов */
+/* File structure */
 .file-structure {
     background: #2d3748;
     color: #e2e8f0;
@@ -288,7 +288,7 @@ body {
     overflow-x: auto;
 }
 
-/* Карточки действий */
+/* Action cards */
 .action-card, .function-card {
     background: white;
     border: 1px solid #e9ecef;
@@ -365,7 +365,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Контекстная сетка */
+/* Context grid */
 .context-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -410,7 +410,7 @@ body {
     color: #e83e8c;
 }
 
-/* Обзор действий и функций */
+/* Actions and functions overview */
 .actions-overview, .functions-overview {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -468,7 +468,7 @@ body {
     text-decoration: underline;
 }
 
-/* Страницы действий и функций */
+/* Action and function pages */
 .action-info {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -516,7 +516,7 @@ body {
     border-bottom: none;
 }
 
-/* Таблицы параметров */
+/* Parameters tables */
 .params-table {
     margin: 1.5rem 0;
     overflow-x: auto;
@@ -557,7 +557,7 @@ body {
     color: #e83e8c;
 }
 
-/* Карточки примеров */
+/* Example cards */
 .example-card {
     background: white;
     border: 1px solid #e9ecef;
@@ -574,7 +574,7 @@ body {
     font-weight: 600;
 }
 
-/* Сетка переменных */
+/* Variables grid */
 .variables-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -615,7 +615,7 @@ body {
     color: #e83e8c;
 }
 
-/* Карточка предупреждений */
+/* Warning card */
 .warning-card {
     background: #fff3cd;
     border: 1px solid #ffeaa7;
@@ -647,7 +647,7 @@ body {
     border-bottom: none;
 }
 
-/* Навигационные ссылки */
+/* Navigation links */
 .navigation-links {
     display: flex;
     justify-content: space-between;
@@ -681,7 +681,7 @@ body {
     margin-right: auto;
 }
 
-/* Связанные действия */
+/* Related actions */
 .related-actions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -721,7 +721,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Категории примеров */
+/* Example categories */
 .example-category {
     background: white;
     border: 1px solid #e9ecef;
@@ -747,7 +747,7 @@ body {
     line-height: 1.6;
 }
 
-/* Код блоки */
+/* Code blocks */
 pre {
     background: #2d3748;
     color: #e2e8f0;
@@ -775,7 +775,7 @@ pre code {
     color: inherit;
 }
 
-/* Списки */
+/* Lists */
 ul, ol {
     margin: 1rem 0;
     padding-left: 2rem;
@@ -786,14 +786,14 @@ li {
     line-height: 1.6;
 }
 
-/* Параграфы */
+/* Paragraphs */
 p {
     margin: 1rem 0;
     line-height: 1.6;
     color: #495057;
 }
 
-/* Ссылки */
+/* Links */
 a {
     color: #667eea;
     text-decoration: none;
@@ -805,7 +805,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Адаптивность */
+/* Responsiveness */
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
@@ -837,7 +837,7 @@ a:hover {
     }
 }
 
-/* Скроллбар */
+/* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -855,7 +855,7 @@ a:hover {
     background: #a8a8a8;
 }
 
-/* Анимации */
+/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -871,7 +871,7 @@ a:hover {
     animation: fadeIn 0.6s ease-out;
 }
 
-/* Улучшения для мобильных устройств */
+/* Mobile device improvements */
 @media (max-width: 480px) {
     .sidebar-header h1 {
         font-size: 1.25rem;
