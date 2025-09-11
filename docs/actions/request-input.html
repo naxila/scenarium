@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RequestInput - Telegram Bot Constructor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 Telegram Bot Constructor</h1>
+                <p class="version">v1.0.0</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <ul class="submenu">
+                            <li><a href="send-message.html" class="nav-link">SendMessage</a></li>
+                            <li><a href="navigate.html" class="nav-link">Navigate</a></li>
+                            <li><a href="back.html" class="nav-link">Back</a></li>
+                            <li><a href="request-input.html" class="nav-link active">RequestInput</a></li>
+                            <li><a href="cancel-awaiting-input.html" class="nav-link">CancelAwaitingInput</a></li>
+                            <li><a href="update-message.html" class="nav-link">UpdateMessage</a></li>
+                            <li><a href="delete-message.html" class="nav-link">DeleteMessage</a></li>
+                            <li><a href="store.html" class="nav-link">Store</a></li>
+                            <li><a href="request-api.html" class="nav-link">RequestApi</a></li>
+                            <li><a href="update-scenario.html" class="nav-link">UpdateScenario</a></li>
+                            <li><a href="set-personal-scenario.html" class="nav-link">SetPersonalScenario</a></li>
+                            <li><a href="remove-personal-scenario.html" class="nav-link">RemovePersonalScenario</a></li>
+                            <li><a href="upload-personal-scenario.html" class="nav-link">UploadPersonalScenario</a></li>
+                            <li><a href="custom.html" class="nav-link">CustomAction</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <ul class="submenu">
+                            <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
+                            <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
+                            <li><a href="../functions/read-storage.html" class="nav-link">ReadStorage</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="content">
+                <section class="section">
+                    <h1>⌨️ RequestInput</h1>
+                    <p class="lead">Запрос ввода от пользователя с поддержкой валидации, отмены и обработки результатов.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>RequestInput - это действие для запроса текстового ввода от пользователя. Поддерживает подсказки, обработку результатов, отмену ввода и настройку поведения.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Запрос текстового ввода от пользователя</li>
+                                <li>Сохранение введенных данных</li>
+                                <li>Обработка отмены ввода</li>
+                                <li>Настройка поведения после ввода</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>По умолчанию</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>key</code></td>
+                                    <td>string</td>
+                                    <td>✅</td>
+                                    <td>-</td>
+                                    <td>Ключ для сохранения введенного значения</td>
+                                </tr>
+                                <tr>
+                                    <td><code>hint</code></td>
+                                    <td>string</td>
+                                    <td>❌</td>
+                                    <td>'Введите значение:'</td>
+                                    <td>Подсказка для пользователя</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onDone</code></td>
+                                    <td>action</td>
+                                    <td>❌</td>
+                                    <td>-</td>
+                                    <td>Действие при получении ввода</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onCancel</code></td>
+                                    <td>action</td>
+                                    <td>❌</td>
+                                    <td>-</td>
+                                    <td>Действие при отмене ввода</td>
+                                </tr>
+                                <tr>
+                                    <td><code>cancelText</code></td>
+                                    <td>string</td>
+                                    <td>❌</td>
+                                    <td>'Отмена'</td>
+                                    <td>Текст кнопки отмены</td>
+                                </tr>
+                                <tr>
+                                    <td><code>removeHintOnCancel</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>false</td>
+                                    <td>Удалить подсказку при отмене</td>
+                                </tr>
+                                <tr>
+                                    <td><code>clearInputOnDone</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>false</td>
+                                    <td>Очистить ввод после обработки</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Простой запрос имени</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "userName",
+  "hint": "Как вас зовут?",
+  "onDone": {
+    "action": "SendMessage",
+    "text": "Приятно познакомиться, {{input.userName}}!"
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Запрос с отменой</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "email",
+  "hint": "Введите ваш email:",
+  "onDone": {
+    "action": "SendMessage",
+    "text": "Email сохранен: {{input.email}}"
+  },
+  "onCancel": {
+    "action": "SendMessage",
+    "text": "Ввод email отменен"
+  },
+  "cancelText": "❌ Отмена"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Запрос с сохранением в хранилище</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "phone",
+  "hint": "Введите номер телефона:",
+  "onDone": {
+    "action": "Store",
+    "key": "userPhone",
+    "value": "{{input.phone}}"
+  },
+  "onCancel": {
+    "action": "Navigate",
+    "menuItem": "Main"
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Запрос с очисткой после ввода</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "tempData",
+  "hint": "Введите временные данные:",
+  "clearInputOnDone": true,
+  "onDone": {
+    "action": "SendMessage",
+    "text": "Данные обработаны: {{input.tempData}}"
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Многоэтапный ввод</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "age",
+  "hint": "Сколько вам лет?",
+  "onDone": {
+    "action": "RequestInput",
+    "key": "city",
+    "hint": "В каком городе вы живете?",
+    "onDone": {
+      "action": "SendMessage",
+      "text": "Спасибо! Вам {{input.age}} лет, вы живете в {{input.city}}"
+    }
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔄 Логика работы</h2>
+                    <div class="info-card">
+                        <h3>Состояние ожидания ввода</h3>
+                        <p>При выполнении RequestInput система:</p>
+                        <ul>
+                            <li>Сохраняет состояние ожидания ввода в сессии пользователя</li>
+                            <li>Отправляет подсказку с кнопкой отмены (если настроено)</li>
+                            <li>Переводит бота в режим ожидания текстового ввода</li>
+                            <li>Блокирует обработку других действий до получения ввода</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Обработка ввода</h3>
+                        <p>При получении текста от пользователя:</p>
+                        <ul>
+                            <li>Сохраняется в <code>{{input.key}}</code> где key - указанный ключ</li>
+                            <li>Выполняется действие <code>onDone</code> если настроено</li>
+                            <li>Очищается состояние ожидания ввода</li>
+                            <li>При <code>clearInputOnDone: true</code> ввод удаляется из сессии</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Доступные переменные</h2>
+                    <div class="variables-grid">
+                        <div class="variable-card">
+                            <h4>input</h4>
+                            <ul>
+                                <li><code>{{input.userName}}</code> - Введенное имя</li>
+                                <li><code>{{input.email}}</code> - Введенный email</li>
+                                <li><code>{{input.phone}}</code> - Введенный телефон</li>
+                                <li><code>{{input.[key]}}</code> - Любой введенный ключ</li>
+                            </ul>
+                        </div>
+                        <div class="variable-card">
+                            <h4>userContext</h4>
+                            <ul>
+                                <li><code>{{userContext.userId}}</code> - ID пользователя</li>
+                                <li><code>{{userContext.currentMenu}}</code> - Текущее меню</li>
+                                <li><code>{{userContext.data}}</code> - Данные пользователя</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Ключ обязателен:</strong> Параметр <code>key</code> должен быть строкой</li>
+                            <li><strong>Одно ожидание:</strong> Одновременно может быть активно только одно ожидание ввода</li>
+                            <li><strong>Отмена ввода:</strong> Новый RequestInput отменяет предыдущий</li>
+                            <li><strong>Таймаут:</strong> Нет автоматического таймаута, пользователь должен ввести текст или отменить</li>
+                            <li><strong>Валидация:</strong> Нет встроенной валидации, проверка должна быть в onDone</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Связанные действия</h2>
+                    <div class="related-actions">
+                        <a href="cancel-awaiting-input.html" class="related-action">
+                            <h4>CancelAwaitingInput</h4>
+                            <p>Отмена ожидания ввода</p>
+                        </a>
+                        <a href="store.html" class="related-action">
+                            <h4>Store</h4>
+                            <p>Сохранение введенных данных</p>
+                        </a>
+                        <a href="send-message.html" class="related-action">
+                            <h4>SendMessage</h4>
+                            <p>Отправка сообщений с результатами</p>
+                        </a>
+                    </div>
+
+                    <div class="navigation-links">
+                        <a href="back.html" class="nav-button prev">← Back</a>
+                        <a href="cancel-awaiting-input.html" class="nav-button next">Следующее: CancelAwaitingInput →</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

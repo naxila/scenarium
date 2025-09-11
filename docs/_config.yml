@@ -1,0 +1,100 @@
+# Конфигурация для GitHub Pages
+title: "Telegram Bot Constructor"
+description: "Конструктор Telegram ботов на основе JSON-сценариев с поддержкой расширяемых действий и функций"
+author: "Your Name"
+email: "your.email@example.com"
+url: "https://your-username.github.io/telegram-bot-constructor"
+baseurl: "/telegram-bot-constructor"
+
+# Настройки Jekyll
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Плагины
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Настройки SEO
+seo:
+  type: "WebSite"
+  locale: "ru_RU"
+  site_name: "Telegram Bot Constructor"
+  description: "Конструктор Telegram ботов на основе JSON-сценариев"
+  keywords: "telegram, bot, constructor, json, typescript, javascript"
+
+# Настройки навигации
+navigation:
+  - title: "Обзор"
+    url: "#overview"
+  - title: "Быстрый старт"
+    url: "#quick-start"
+  - title: "Архитектура"
+    url: "#architecture"
+  - title: "Сценарии"
+    url: "#scenarios"
+  - title: "Действия"
+    url: "#actions"
+  - title: "Функции"
+    url: "#functions"
+  - title: "Интерполяция"
+    url: "#interpolation"
+  - title: "Примеры"
+    url: "#examples"
+  - title: "API Reference"
+    url: "#api-reference"
+
+# Настройки сборки
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - package.json
+  - package-lock.json
+  - .gitignore
+  - .gitattributes
+
+# Настройки для GitHub Pages
+github:
+  repository_url: "https://github.com/your-username/telegram-bot-constructor"
+  repository_name: "telegram-bot-constructor"
+  repository_owner: "your-username"
+
+# Настройки социальных сетей
+social:
+  github: "your-username"
+  twitter: "your-twitter"
+  linkedin: "your-linkedin"
+
+# Настройки аналитики
+analytics:
+  google: "GA_TRACKING_ID"
+  yandex: "YANDEX_METRICA_ID"
+
+# Настройки комментариев
+comments:
+  provider: "disqus"
+  disqus:
+    shortname: "your-disqus-shortname"
+
+# Настройки поиска
+search:
+  provider: "lunr"
+  lunr:
+    max_index_size: 1000000
+
+# Настройки кеширования
+cache:
+  enabled: true
+  duration: 3600
+
+# Настройки безопасности
+security:
+  headers:
+    X-Frame-Options: "SAMEORIGIN"
+    X-Content-Type-Options: "nosniff"
+    X-XSS-Protection: "1; mode=block"
+    Referrer-Policy: "strict-origin-when-cross-origin"

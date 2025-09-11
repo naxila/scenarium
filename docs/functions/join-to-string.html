@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JoinToString - Telegram Bot Constructor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 Telegram Bot Constructor</h1>
+                <p class="version">v1.0.0</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <ul class="submenu">
+                            <li><a href="../actions/send-message.html" class="nav-link">SendMessage</a></li>
+                            <li><a href="../actions/navigate.html" class="nav-link">Navigate</a></li>
+                            <li><a href="../actions/back.html" class="nav-link">Back</a></li>
+                            <li><a href="../actions/request-input.html" class="nav-link">RequestInput</a></li>
+                            <li><a href="../actions/cancel-awaiting-input.html" class="nav-link">CancelAwaitingInput</a></li>
+                            <li><a href="../actions/update-message.html" class="nav-link">UpdateMessage</a></li>
+                            <li><a href="../actions/delete-message.html" class="nav-link">DeleteMessage</a></li>
+                            <li><a href="../actions/store.html" class="nav-link">Store</a></li>
+                            <li><a href="../actions/request-api.html" class="nav-link">RequestApi</a></li>
+                            <li><a href="../actions/update-scenario.html" class="nav-link">UpdateScenario</a></li>
+                            <li><a href="../actions/set-personal-scenario.html" class="nav-link">SetPersonalScenario</a></li>
+                            <li><a href="../actions/remove-personal-scenario.html" class="nav-link">RemovePersonalScenario</a></li>
+                            <li><a href="../actions/upload-personal-scenario.html" class="nav-link">UploadPersonalScenario</a></li>
+                            <li><a href="../actions/custom.html" class="nav-link">CustomAction</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <ul class="submenu">
+                            <li><a href="join-to-string.html" class="nav-link active">JoinToString</a></li>
+                            <li><a href="equals.html" class="nav-link">Equals</a></li>
+                            <li><a href="read-storage.html" class="nav-link">ReadStorage</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="content">
+                <section class="section">
+                    <h1>📝 JoinToString</h1>
+                    <p class="lead">Объединение массива значений в строку с поддержкой разделителей, префиксов и суффиксов.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>JoinToString - это функция для объединения массива значений в одну строку. Поддерживает интерполяцию переменных, фильтрацию пустых значений и настройку форматирования.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Объединение массивов в строки</li>
+                                <li>Создание форматированного текста</li>
+                                <li>Обработка переменных в массиве</li>
+                                <li>Фильтрация пустых значений</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>По умолчанию</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>values</code></td>
+                                    <td>array</td>
+                                    <td>✅</td>
+                                    <td>-</td>
+                                    <td>Массив значений для объединения</td>
+                                </tr>
+                                <tr>
+                                    <td><code>separator</code></td>
+                                    <td>string</td>
+                                    <td>❌</td>
+                                    <td>''</td>
+                                    <td>Разделитель между элементами</td>
+                                </tr>
+                                <tr>
+                                    <td><code>prefix</code></td>
+                                    <td>string</td>
+                                    <td>❌</td>
+                                    <td>''</td>
+                                    <td>Префикс для результирующей строки</td>
+                                </tr>
+                                <tr>
+                                    <td><code>suffix</code></td>
+                                    <td>string</td>
+                                    <td>❌</td>
+                                    <td>''</td>
+                                    <td>Суффикс для результирующей строки</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Простое объединение</h3>
+                        <pre><code class="language-json">{
+  "function": "JoinToString",
+  "values": ["Привет", "мир", "!"]
+}</code></pre>
+                        <p><strong>Результат:</strong> "Приветмир!"</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>С разделителем</h3>
+                        <pre><code class="language-json">{
+  "function": "JoinToString",
+  "values": ["Яблоко", "Банан", "Апельсин"],
+  "separator": ", "
+}</code></pre>
+                        <p><strong>Результат:</strong> "Яблоко, Банан, Апельсин"</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>С префиксом и суффиксом</h3>
+                        <pre><code class="language-json">{
+  "function": "JoinToString",
+  "values": ["Привет", "{{userContext.data.name}}", "!"],
+  "separator": " ",
+  "prefix": "👋 ",
+  "suffix": " 👋"
+}</code></pre>
+                        <p><strong>Результат:</strong> "👋 Привет Иван! 👋"</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>С переменными и функциями</h3>
+                        <pre><code class="language-json">{
+  "function": "JoinToString",
+  "values": [
+    "Пользователь:",
+    "{{userContext.data.name}}",
+    "Email:",
+    "{{userContext.data.email}}",
+    "Статус:",
+    {
+      "function": "Equals",
+      "values": ["{{userContext.data.status}}", "active"],
+      "trueResult": "Активен",
+      "falseResult": "Неактивен"
+    }
+  ],
+  "separator": "\n"
+}</code></pre>
+                        <p><strong>Результат:</strong> Многострочный текст с информацией о пользователе</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Создание списка</h3>
+                        <pre><code class="language-json">{
+  "function": "JoinToString",
+  "values": [
+    "• Задача 1",
+    "• Задача 2", 
+    "• Задача 3"
+  ],
+  "separator": "\n",
+  "prefix": "📋 Список задач:\n",
+  "suffix": "\n\nВсего: 3 задачи"
+}</code></pre>
+                        <p><strong>Результат:</strong> Форматированный список задач</p>
+                    </div>
+
+                    <h2>🔧 Обработка значений</h2>
+                    <div class="info-card">
+                        <h3>Типы значений</h3>
+                        <p>Функция обрабатывает различные типы значений в массиве:</p>
+                        <ul>
+                            <li><strong>Строки:</strong> Интерполируются с переменными</li>
+                            <li><strong>Функции:</strong> Выполняются и результат преобразуется в строку</li>
+                            <li><strong>Числа:</strong> Преобразуются в строку</li>
+                            <li><strong>null/undefined:</strong> Игнорируются</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Фильтрация пустых значений</h3>
+                        <p>Автоматически фильтруются:</p>
+                        <ul>
+                            <li>Пустые строки (<code>""</code>)</li>
+                            <li>Значения <code>null</code></li>
+                            <li>Значения <code>undefined</code></li>
+                            <li>Результаты функций, возвращающие пустые строки</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Использование в действиях</h2>
+                    <div class="example-card">
+                        <h3>В SendMessage</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Добро пожаловать, ",
+      "{{userContext.data.name}}",
+      "!",
+      "\n\nВаш баланс: ",
+      "{{userContext.data.balance}}",
+      " руб."
+    ]
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>В Store</h3>
+                        <pre><code class="language-json">{
+  "action": "Store",
+  "key": "userSummary",
+  "value": {
+    "function": "JoinToString",
+    "values": [
+      "Имя: {{userContext.data.name}}",
+      "Email: {{userContext.data.email}}",
+      "Телефон: {{userContext.data.phone}}"
+    ],
+    "separator": " | "
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Массив значений:</strong> Параметр <code>values</code> должен быть массивом</li>
+                            <li><strong>Интерполяция:</strong> Все строки в массиве интерполируются перед объединением</li>
+                            <li><strong>Функции:</strong> Вложенные функции выполняются асинхронно</li>
+                            <li><strong>Ошибки:</strong> При ошибке в функции элемент игнорируется</li>
+                            <li><strong>Производительность:</strong> Большие массивы могут замедлить выполнение</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Связанные функции</h2>
+                    <div class="related-actions">
+                        <a href="equals.html" class="related-action">
+                            <h4>Equals</h4>
+                            <p>Сравнение значений с условным результатом</p>
+                        </a>
+                        <a href="read-storage.html" class="related-action">
+                            <h4>ReadStorage</h4>
+                            <p>Чтение данных из хранилища</p>
+                        </a>
+                    </div>
+
+                    <div class="navigation-links">
+                        <a href="equals.html" class="nav-button next">Следующее: Equals →</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

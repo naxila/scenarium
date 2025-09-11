@@ -1,0 +1,44 @@
+{
+  "name": "scenarium",
+  "version": "0.1.0-beta",
+  "description": "TypeScript library for creating Telegram bots from JSON scenarios",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "scenarios",
+    "typescript",
+    "json",
+    "scenarium"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/scenarium.git"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.64.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-telegram-bot-api": "^0.64.10",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "dotenv": "^17.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

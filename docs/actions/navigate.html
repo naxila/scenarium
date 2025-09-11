@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigate - Telegram Bot Constructor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 Telegram Bot Constructor</h1>
+                <p class="version">v1.0.0</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <ul class="submenu">
+                            <li><a href="send-message.html" class="nav-link">SendMessage</a></li>
+                            <li><a href="navigate.html" class="nav-link active">Navigate</a></li>
+                            <li><a href="back.html" class="nav-link">Back</a></li>
+                            <li><a href="request-input.html" class="nav-link">RequestInput</a></li>
+                            <li><a href="cancel-awaiting-input.html" class="nav-link">CancelAwaitingInput</a></li>
+                            <li><a href="update-message.html" class="nav-link">UpdateMessage</a></li>
+                            <li><a href="delete-message.html" class="nav-link">DeleteMessage</a></li>
+                            <li><a href="store.html" class="nav-link">Store</a></li>
+                            <li><a href="request-api.html" class="nav-link">RequestApi</a></li>
+                            <li><a href="update-scenario.html" class="nav-link">UpdateScenario</a></li>
+                            <li><a href="set-personal-scenario.html" class="nav-link">SetPersonalScenario</a></li>
+                            <li><a href="remove-personal-scenario.html" class="nav-link">RemovePersonalScenario</a></li>
+                            <li><a href="upload-personal-scenario.html" class="nav-link">UploadPersonalScenario</a></li>
+                            <li><a href="custom.html" class="nav-link">CustomAction</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <ul class="submenu">
+                            <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
+                            <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
+                            <li><a href="../functions/read-storage.html" class="nav-link">ReadStorage</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="content">
+                <section class="section">
+                    <h1>🧭 Navigate</h1>
+                    <p class="lead">Переход к определенному элементу меню с поддержкой стека возврата и управления сообщениями.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>Navigate - это основное действие для навигации между элементами меню в боте. Поддерживает стек возврата, управление сообщениями и уникальность в стеке.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Переход между элементами меню</li>
+                                <li>Управление стеком возврата</li>
+                                <li>Удаление предыдущих сообщений</li>
+                                <li>Контроль уникальности в стеке</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>По умолчанию</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>menuItem</code></td>
+                                    <td>string</td>
+                                    <td>✅</td>
+                                    <td>-</td>
+                                    <td>Имя элемента меню для перехода</td>
+                                </tr>
+                                <tr>
+                                    <td><code>addToBackStack</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>true</td>
+                                    <td>Добавить текущее меню в стек возврата</td>
+                                </tr>
+                                <tr>
+                                    <td><code>removePreviousMessage</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>false</td>
+                                    <td>Удалить предыдущее сообщение</td>
+                                </tr>
+                                <tr>
+                                    <td><code>uniqueInStack</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>true</td>
+                                    <td>Удалить предыдущие вхождения из стека</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Простой переход</h3>
+                        <pre><code class="language-json">{
+  "action": "Navigate",
+  "menuItem": "Profile"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Переход без добавления в стек</h3>
+                        <pre><code class="language-json">{
+  "action": "Navigate",
+  "menuItem": "Settings",
+  "addToBackStack": false
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Переход с удалением предыдущего сообщения</h3>
+                        <pre><code class="language-json">{
+  "action": "Navigate",
+  "menuItem": "Statistics",
+  "removePreviousMessage": true
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Переход с разрешением дублирования в стеке</h3>
+                        <pre><code class="language-json">{
+  "action": "Navigate",
+  "menuItem": "Main",
+  "uniqueInStack": false
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Полная конфигурация</h3>
+                        <pre><code class="language-json">{
+  "action": "Navigate",
+  "menuItem": "UserProfile",
+  "addToBackStack": true,
+  "removePreviousMessage": true,
+  "uniqueInStack": true
+}</code></pre>
+                    </div>
+
+                    <h2>🔄 Логика работы стека</h2>
+                    <div class="info-card">
+                        <h3>Стек возврата</h3>
+                        <p>Стек возврата позволяет пользователю вернуться к предыдущим меню. При каждом переходе с <code>addToBackStack: true</code> текущее меню добавляется в стек.</p>
+                        
+                        <h4>Правила добавления в стек:</h4>
+                        <ul>
+                            <li>Если <code>uniqueInStack: true</code> - удаляются все предыдущие вхождения этого меню</li>
+                            <li>Если <code>uniqueInStack: false</code> - меню добавляется даже если уже есть в стеке</li>
+                            <li>Максимальный размер стека: 20 элементов</li>
+                            <li>При превышении лимита удаляется самый старый элемент</li>
+                        </ul>
+                    </div>
+
+                    <h2>🗑️ Управление сообщениями</h2>
+                    <div class="info-card">
+                        <h3>Удаление предыдущих сообщений</h3>
+                        <p>При <code>removePreviousMessage: true</code> система:</p>
+                        <ul>
+                            <li>Удаляет предыдущее сообщение из Telegram</li>
+                            <li>Очищает связанные с ним inline-кнопки</li>
+                            <li>Сбрасывает ID последнего сообщения</li>
+                        </ul>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Существование меню:</strong> Если указанный элемент меню не существует, выполняется fallback к onStartActions</li>
+                            <li><strong>Стек возврата:</strong> При fallback стек очищается полностью</li>
+                            <li><strong>Удаление сообщений:</strong> Нельзя удалить сообщения старше 48 часов</li>
+                            <li><strong>Производительность:</strong> Частое удаление сообщений может замедлить работу бота</li>
+                            <li><strong>Очистка действий:</strong> При удалении сообщения очищаются все связанные inline-действия</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Связанные действия</h2>
+                    <div class="related-actions">
+                        <a href="back.html" class="related-action">
+                            <h4>Back</h4>
+                            <p>Возврат к предыдущему элементу меню</p>
+                        </a>
+                        <a href="send-message.html" class="related-action">
+                            <h4>SendMessage</h4>
+                            <p>Отправка сообщений в новом меню</p>
+                        </a>
+                    </div>
+
+                    <div class="navigation-links">
+                        <a href="send-message.html" class="nav-button prev">← SendMessage</a>
+                        <a href="back.html" class="nav-button next">Следующее: Back →</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

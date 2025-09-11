@@ -1,0 +1,28 @@
+{
+  "name": "scenarium-demo",
+  "version": "1.0.0",
+  "description": "Demo project showing how to use Scenarium library",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "scenarium",
+    "telegram",
+    "bot",
+    "demo",
+    "example"
+  ],
+  "author": "Scenarium Demo",
+  "license": "MIT",
+  "dependencies": {
+    "scenarium": "file:../scenarium/scenarium-0.1.0-beta.tgz",
+    "dotenv": "^17.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "nodemon": "^3.1.0"
+  }
+}
