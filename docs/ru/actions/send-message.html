@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SendMessage - Telegram Bot Constructor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 Telegram Bot Constructor</h1>
+                <p class="version">v1.0.0</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <ul class="submenu">
+                            <li><a href="send-message.html" class="nav-link active">SendMessage</a></li>
+                            <li><a href="navigate.html" class="nav-link">Navigate</a></li>
+                            <li><a href="back.html" class="nav-link">Back</a></li>
+                            <li><a href="request-input.html" class="nav-link">RequestInput</a></li>
+                            <li><a href="cancel-awaiting-input.html" class="nav-link">CancelAwaitingInput</a></li>
+                            <li><a href="update-message.html" class="nav-link">UpdateMessage</a></li>
+                            <li><a href="delete-message.html" class="nav-link">DeleteMessage</a></li>
+                            <li><a href="store.html" class="nav-link">Store</a></li>
+                            <li><a href="request-api.html" class="nav-link">RequestApi</a></li>
+                            <li><a href="update-scenario.html" class="nav-link">UpdateScenario</a></li>
+                            <li><a href="set-personal-scenario.html" class="nav-link">SetPersonalScenario</a></li>
+                            <li><a href="remove-personal-scenario.html" class="nav-link">RemovePersonalScenario</a></li>
+                            <li><a href="upload-personal-scenario.html" class="nav-link">UploadPersonalScenario</a></li>
+                            <li><a href="custom.html" class="nav-link">CustomAction</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <ul class="submenu">
+                            <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
+                            <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
+                            <li><a href="../functions/read-storage.html" class="nav-link">ReadХранилище</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="content">
+                <section class="section">
+                    <h1>📱 SendMessage</h1>
+                    <p class="lead">Отправка сообщений пользователю с поддержкой inline-кнопок и интерполяции переменных.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>SendMessage - это основное действие для отправки текстовых сообщений пользователю. Поддерживает inline-кнопки, интерполяцию переменных и функции в тексте сообщения.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Отправка текстовых сообщений</li>
+                                <li>Создание inline-кнопок для навигации</li>
+                                <li>Динамическое формирование текста с переменными</li>
+                                <li>Выполнение функций в тексте сообщения</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>text</code></td>
+                                    <td>string | object</td>
+                                    <td>✅</td>
+                                    <td>Текст сообщения или объект с функцией</td>
+                                </tr>
+                                <tr>
+                                    <td><code>inlineActions</code></td>
+                                    <td>array</td>
+                                    <td>❌</td>
+                                    <td>Массив inline-кнопок</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onSuccess</code></td>
+                                    <td>action</td>
+                                    <td>❌</td>
+                                    <td>Действие при успешной отправке</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>🔧 Структура inlineActions</h2>
+                    <p>Каждый элемент массива <code>inlineActions</code> должен содержать:</p>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>title</code></td>
+                                    <td>string</td>
+                                    <td>✅</td>
+                                    <td>Текст кнопки</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onClick</code></td>
+                                    <td>action</td>
+                                    <td>✅</td>
+                                    <td>Действие при нажатии на кнопку</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Простое сообщение</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Привет! Добро пожаловать в бота!"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Сообщение с переменными</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Привет, {{userContext.data.name}}! Ты находишься в меню {{userContext.currentMenu}}"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Сообщение с inline-кнопками</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Выберите действие:",
+  "inlineActions": [
+    {
+      "title": "📊 Статистика",
+      "onClick": {
+        "action": "Navigate",
+        "menuItem": "Statistics"
+      }
+    },
+    {
+      "title": "⚙️ Настройки",
+      "onClick": {
+        "action": "Navigate",
+        "menuItem": "Settings"
+      }
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Сообщение с функцией в тексте</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": ["Привет, ", "{{userContext.data.name}}", "! Сегодня ", "{{localContext.currentDate}}"]
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Сообщение с обработкой успеха</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Сообщение отправлено!",
+  "onSuccess": {
+    "action": "Store",
+    "key": "lastMessageSent",
+    "value": "{{localContext.messageId}}"
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔗 Доступные переменные</h2>
+                    <div class="variables-grid">
+                        <div class="variable-card">
+                            <h4>userContext</h4>
+                            <ul>
+                                <li><code>{{userContext.userId}}</code> - ID пользователя</li>
+                                <li><code>{{userContext.data.name}}</code> - Имя пользователя</li>
+                                <li><code>{{userContext.currentMenu}}</code> - Текущее меню</li>
+                                <li><code>{{userContext.data.lastMessageId}}</code> - ID последнего сообщения</li>
+                            </ul>
+                        </div>
+                        <div class="variable-card">
+                            <h4>scenarioContext</h4>
+                            <ul>
+                                <li><code>{{scenarioContext.data.apiUrl}}</code> - URL API</li>
+                                <li><code>{{scenarioContext.data.version}}</code> - Версия сценария</li>
+                            </ul>
+                        </div>
+                        <div class="variable-card">
+                            <h4>localContext</h4>
+                            <ul>
+                                <li><code>{{localContext.messageId}}</code> - ID текущего сообщения</li>
+                                <li><code>{{localContext.response}}</code> - Ответ API</li>
+                                <li><code>{{localContext.error}}</code> - Ошибка</li>
+                            </ul>
+                        </div>
+                        <div class="variable-card">
+                            <h4>input</h4>
+                            <ul>
+                                <li><code>{{input.userName}}</code> - Введенное имя</li>
+                                <li><code>{{input.email}}</code> - Введенный email</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Пустой текст:</strong> Если текст пустой или содержит только пробелы, сообщение не будет отправлено</li>
+                            <li><strong>Inline-кнопки:</strong> Максимум 8 кнопок в ряду, общее количество не ограничено</li>
+                            <li><strong>Размер сообщения:</strong> Максимум 4096 символов для одного сообщения</li>
+                            <li><strong>Интерполяция:</strong> Все переменные интерполируются перед отправкой</li>
+                            <li><strong>Функции в тексте:</strong> Поддерживаются вложенные функции для сложной логики</li>
+                        </ul>
+                    </div>
+
+                    <div class="navigation-links">
+                        <a href="navigate.html" class="nav-button next">Следующее: Navigate →</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

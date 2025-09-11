@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SetPersonalScenario - Telegram Bot Constructor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 Telegram Bot Constructor</h1>
+                <p class="version">v1.0.0</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#quick-start" class="nav-link">🚀 Быстрый старт</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <ul class="submenu">
+                            <li><a href="send-message.html" class="nav-link">SendMessage</a></li>
+                            <li><a href="navigate.html" class="nav-link">Navigate</a></li>
+                            <li><a href="back.html" class="nav-link">Back</a></li>
+                            <li><a href="request-input.html" class="nav-link">RequestInput</a></li>
+                            <li><a href="cancel-awaiting-input.html" class="nav-link">CancelAwaitingInput</a></li>
+                            <li><a href="update-message.html" class="nav-link">UpdateMessage</a></li>
+                            <li><a href="delete-message.html" class="nav-link">DeleteMessage</a></li>
+                            <li><a href="store.html" class="nav-link">Store</a></li>
+                            <li><a href="request-api.html" class="nav-link">RequestApi</a></li>
+                            <li><a href="update-scenario.html" class="nav-link">UpdateScenario</a></li>
+                            <li><a href="set-personal-scenario.html" class="nav-link active">SetPersonalScenario</a></li>
+                            <li><a href="remove-personal-scenario.html" class="nav-link">RemovePersonalScenario</a></li>
+                            <li><a href="upload-personal-scenario.html" class="nav-link">UploadPersonalScenario</a></li>
+                            <li><a href="custom.html" class="nav-link">CustomAction</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <ul class="submenu">
+                            <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
+                            <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
+                            <li><a href="../functions/read-storage.html" class="nav-link">ReadХранилище</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="content">
+                <section class="section">
+                    <h1>👤 SetPersonalScenario</h1>
+                    <p class="lead">Установка персонального сценария для конкретного пользователя.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>SetPersonalScenario - это действие для установки персонального сценария для конкретного пользователя. Позволяет создавать индивидуальные боты для каждого пользователя.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Создание персональных ботов</li>
+                                <li>Индивидуальная настройка интерфейса</li>
+                                <li>Адаптация под потребности пользователя</li>
+                                <li>Создание уникального опыта</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>scenario</code></td>
+                                    <td>object</td>
+                                    <td>✅</td>
+                                    <td>Персональный сценарий для пользователя</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Установка персонального сценария</h3>
+                        <pre><code class="language-json">{
+  "action": "SetPersonalScenario",
+  "scenario": {
+    "onStartActions": [
+      {
+        "action": "Navigate",
+        "menuItem": "PersonalMain"
+      }
+    ],
+    "menuItems": {
+      "PersonalMain": {
+        "onНавигация": {
+          "action": "SendMessage",
+          "text": "Добро пожаловать в ваш персональный бот, {{userContext.data.name}}!"
+        }
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Сценарий с персональными данными</h3>
+                        <pre><code class="language-json">{
+  "action": "SetPersonalScenario",
+  "scenario": {
+    "menuItems": {
+      "Profile": {
+        "onНавигация": {
+          "action": "SendMessage",
+          "text": {
+            "function": "JoinToString",
+            "values": [
+              "👤 Ваш профиль:\n",
+              "Имя: {{userContext.data.name}}\n",
+              "Email: {{userContext.data.email}}\n",
+              "Роль: {{userContext.data.role}}"
+            ]
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔧 Логика работы</h2>
+                    <div class="info-card">
+                        <h3>Сохранение сценария</h3>
+                        <p>При установке персонального сценария:</p>
+                        <ul>
+                            <li>Сценарий сохраняется в данных пользователя</li>
+                            <li>Заменяет текущий сценарий для этого пользователя</li>
+                            <li>Другие пользователи не затрагиваются</li>
+                            <li>Сценарий становится активным немедленно</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Приоритет сценариев</h3>
+                        <p>Система использует сценарии в следующем порядке:</p>
+                        <ul>
+                            <li>Персональный сценарий пользователя (если есть)</li>
+                            <li>Основной сценарий бота</li>
+                            <li>Сценарий по умолчанию</li>
+                        </ul>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Персональность:</strong> Сценарий действует только для текущего пользователя</li>
+                            <li><strong>Валидация:</strong> Сценарий должен быть валидным JSON</li>
+                            <li><strong>Производительность:</strong> Установка происходит мгновенно</li>
+                            <li><strong>Откат:</strong> Нет автоматического отката к основному сценарию</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Связанные действия</h2>
+                    <div class="related-actions">
+                        <a href="remove-personal-scenario.html" class="related-action">
+                            <h4>RemovePersonalScenario</h4>
+                            <p>Удаление персонального сценария</p>
+                        </a>
+                        <a href="update-scenario.html" class="related-action">
+                            <h4>UpdateScenario</h4>
+                            <p>Обновление основного сценария</p>
+                        </a>
+                    </div>
+
+                    <div class="navigation-links">
+                        <a href="update-scenario.html" class="nav-button prev">← UpdateScenario</a>
+                        <a href="remove-personal-scenario.html" class="nav-button next">Следующее: RemovePersonalScenario →</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

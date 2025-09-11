@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UpdateScenario - Telegram Bot Constructor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 Telegram Bot Constructor</h1>
+                <p class="version">v1.0.0</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#quick-start" class="nav-link">🚀 Быстрый старт</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <ul class="submenu">
+                            <li><a href="send-message.html" class="nav-link">SendMessage</a></li>
+                            <li><a href="navigate.html" class="nav-link">Navigate</a></li>
+                            <li><a href="back.html" class="nav-link">Back</a></li>
+                            <li><a href="request-input.html" class="nav-link">RequestInput</a></li>
+                            <li><a href="cancel-awaiting-input.html" class="nav-link">CancelAwaitingInput</a></li>
+                            <li><a href="update-message.html" class="nav-link">UpdateMessage</a></li>
+                            <li><a href="delete-message.html" class="nav-link">DeleteMessage</a></li>
+                            <li><a href="store.html" class="nav-link">Store</a></li>
+                            <li><a href="request-api.html" class="nav-link">RequestApi</a></li>
+                            <li><a href="update-scenario.html" class="nav-link active">UpdateScenario</a></li>
+                            <li><a href="set-personal-scenario.html" class="nav-link">SetPersonalScenario</a></li>
+                            <li><a href="remove-personal-scenario.html" class="nav-link">RemovePersonalScenario</a></li>
+                            <li><a href="upload-personal-scenario.html" class="nav-link">UploadPersonalScenario</a></li>
+                            <li><a href="custom.html" class="nav-link">CustomAction</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <ul class="submenu">
+                            <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
+                            <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
+                            <li><a href="../functions/read-storage.html" class="nav-link">ReadStorage</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="content">
+                <section class="section">
+                    <h1>📝 UpdateScenario</h1>
+                    <p class="lead">Обновление текущего сценария с поддержкой слияния и полной замены.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>UpdateScenario - это действие для обновления текущего сценария бота. Поддерживает слияние с существующим сценарием или полную замену.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Динамическое обновление сценария</li>
+                                <li>Добавление новых элементов меню</li>
+                                <li>Изменение существующей логики</li>
+                                <li>Создание адаптивных ботов</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>По умолчанию</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>scenario</code></td>
+                                    <td>object</td>
+                                    <td>✅</td>
+                                    <td>-</td>
+                                    <td>Новый сценарий или его часть</td>
+                                </tr>
+                                <tr>
+                                    <td><code>merge</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>false</td>
+                                    <td>Объединить с текущим сценарием</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Полная замена сценария</h3>
+                        <pre><code class="language-json">{
+  "action": "UpdateScenario",
+  "scenario": {
+    "onStartActions": [
+      {
+        "action": "Navigate",
+        "menuItem": "NewMain"
+      }
+    ],
+    "menuItems": {
+      "NewMain": {
+        "onNavigation": {
+          "action": "SendMessage",
+          "text": "Сценарий обновлен!"
+        }
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Слияние с текущим сценарием</h3>
+                        <pre><code class="language-json">{
+  "action": "UpdateScenario",
+  "merge": true,
+  "scenario": {
+    "menuItems": {
+      "NewFeature": {
+        "onNavigation": {
+          "action": "SendMessage",
+          "text": "Новая функция добавлена!"
+        }
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Обновление с интерполяцией</h3>
+                        <pre><code class="language-json">{
+  "action": "UpdateScenario",
+  "scenario": {
+    "menuItems": {
+      "DynamicMenu": {
+        "onNavigation": {
+          "action": "SendMessage",
+          "text": "Привет, {{userContext.data.name}}!"
+        }
+      }
+    }
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔧 Логика работы</h2>
+                    <div class="info-card">
+                        <h3>Полная замена (merge: false)</h3>
+                        <p>При полной замене:</p>
+                        <ul>
+                            <li>Текущий сценарий полностью заменяется</li>
+                            <li>Все существующие элементы меню удаляются</li>
+                            <li>Новый сценарий становится активным</li>
+                            <li>Пользователь перенаправляется в новое меню</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Слияние (merge: true)</h3>
+                        <p>При слиянии:</p>
+                        <ul>
+                            <li>Новые элементы добавляются к существующим</li>
+                            <li>Существующие элементы обновляются</li>
+                            <li>Структура сценария сохраняется</li>
+                            <li>Пользователь остается в текущем меню</li>
+                        </ul>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Валидация:</strong> Новый сценарий должен быть валидным JSON</li>
+                            <li><strong>Производительность:</strong> Обновление происходит мгновенно</li>
+                            <li><strong>Совместимость:</strong> Новый сценарий должен быть совместим с системой</li>
+                            <li><strong>Откат:</strong> Нет автоматического отката к предыдущему сценарию</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Связанные действия</h2>
+                    <div class="related-actions">
+                        <a href="set-personal-scenario.html" class="related-action">
+                            <h4>SetPersonalScenario</h4>
+                            <p>Установка персонального сценария</p>
+                        </a>
+                        <a href="navigate.html" class="related-action">
+                            <h4>Navigate</h4>
+                            <p>Переход в новое меню</p>
+                        </a>
+                    </div>
+
+                    <div class="navigation-links">
+                        <a href="request-api.html" class="nav-button prev">← RequestApi</a>
+                        <a href="set-personal-scenario.html" class="nav-button next">Следующее: SetPersonalScenario →</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

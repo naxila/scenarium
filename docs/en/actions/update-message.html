@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UpdateMessage - Telegram Bot Constructor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 Telegram Bot Constructor</h1>
+                <p class="version">v1.0.0</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#quick-start" class="nav-link">🚀 Быстрый старт</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <ul class="submenu">
+                            <li><a href="send-message.html" class="nav-link">SendMessage</a></li>
+                            <li><a href="navigate.html" class="nav-link">Navigate</a></li>
+                            <li><a href="back.html" class="nav-link">Back</a></li>
+                            <li><a href="request-input.html" class="nav-link">RequestInput</a></li>
+                            <li><a href="cancel-awaiting-input.html" class="nav-link">CancelAwaitingInput</a></li>
+                            <li><a href="update-message.html" class="nav-link active">UpdateMessage</a></li>
+                            <li><a href="delete-message.html" class="nav-link">DeleteMessage</a></li>
+                            <li><a href="store.html" class="nav-link">Store</a></li>
+                            <li><a href="request-api.html" class="nav-link">RequestApi</a></li>
+                            <li><a href="update-scenario.html" class="nav-link">UpdateScenario</a></li>
+                            <li><a href="set-personal-scenario.html" class="nav-link">SetPersonalScenario</a></li>
+                            <li><a href="remove-personal-scenario.html" class="nav-link">RemovePersonalScenario</a></li>
+                            <li><a href="upload-personal-scenario.html" class="nav-link">UploadPersonalScenario</a></li>
+                            <li><a href="custom.html" class="nav-link">CustomAction</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <ul class="submenu">
+                            <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
+                            <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
+                            <li><a href="../functions/read-storage.html" class="nav-link">ReadStorage</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="content">
+                <section class="section">
+                    <h1>✏️ UpdateMessage</h1>
+                    <p class="lead">Обновление существующего сообщения с поддержкой интерполяции и inline-кнопок.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>UpdateMessage - это действие для обновления существующего сообщения. Поддерживает все параметры SendMessage и автоматически определяет ID сообщения для обновления.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Обновление текста сообщения</li>
+                                <li>Изменение inline-кнопок</li>
+                                <li>Обновление форматирования</li>
+                                <li>Динамическое изменение контента</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>messageId</code></td>
+                                    <td>string | function</td>
+                                    <td>❌</td>
+                                    <td>ID сообщения для обновления (по умолчанию: последнее сообщение)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>text</code></td>
+                                    <td>string | object</td>
+                                    <td>✅</td>
+                                    <td>Новый текст сообщения</td>
+                                </tr>
+                                <tr>
+                                    <td><code>inlineActions</code></td>
+                                    <td>array</td>
+                                    <td>❌</td>
+                                    <td>Новые inline-кнопки</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onSuccess</code></td>
+                                    <td>action</td>
+                                    <td>❌</td>
+                                    <td>Действие при успешном обновлении</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Простое обновление</h3>
+                        <pre><code class="language-json">{
+  "action": "UpdateMessage",
+  "text": "Сообщение обновлено!"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Обновление с новыми кнопками</h3>
+                        <pre><code class="language-json">{
+  "action": "UpdateMessage",
+  "text": "Выберите новое действие:",
+  "inlineActions": [
+    {
+      "title": "✅ Готово",
+      "onClick": {
+        "action": "SendMessage",
+        "text": "Операция завершена!"
+      }
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Обновление конкретного сообщения</h3>
+                        <pre><code class="language-json">{
+  "action": "UpdateMessage",
+  "messageId": "{{localContext.messageId}}",
+  "text": "Статус: {{localContext.status}}"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Обновление с функцией в тексте</h3>
+                        <pre><code class="language-json">{
+  "action": "UpdateMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Время: ",
+      "{{localContext.currentTime}}",
+      "\nСтатус: ",
+      "{{localContext.status}}"
+    ]
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔧 Логика работы</h2>
+                    <div class="info-card">
+                        <h3>Определение ID сообщения</h3>
+                        <p>Система определяет ID сообщения в следующем порядке:</p>
+                        <ul>
+                            <li>Если указан <code>messageId</code> - использует его</li>
+                            <li>Если <code>messageId</code> - функция - выполняет её</li>
+                            <li>Иначе использует <code>localContext.messageId</code></li>
+                            <li>В крайнем случае - <code>userContext.data.lastMessageId</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Процесс обновления</h3>
+                        <p>При обновлении сообщения:</p>
+                        <ul>
+                            <li>Все параметры интерполируются</li>
+                            <li>Выполняются функции в тексте</li>
+                            <li>Обновляется текст и inline-кнопки</li>
+                            <li>Сохраняется новый ID сообщения</li>
+                        </ul>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>ID сообщения:</strong> Должен быть валидным ID существующего сообщения</li>
+                            <li><strong>Ограничения Telegram:</strong> Нельзя обновить сообщения старше 48 часов</li>
+                            <li><strong>Форматирование:</strong> Поддерживается Markdown и HTML</li>
+                            <li><strong>Inline-кнопки:</strong> Полностью заменяют предыдущие кнопки</li>
+                            <li><strong>Ошибки:</strong> При ошибке обновления действие игнорируется</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Связанные действия</h2>
+                    <div class="related-actions">
+                        <a href="send-message.html" class="related-action">
+                            <h4>SendMessage</h4>
+                            <p>Отправка новых сообщений</p>
+                        </a>
+                        <a href="delete-message.html" class="related-action">
+                            <h4>DeleteMessage</h4>
+                            <p>Удаление сообщений</p>
+                        </a>
+                    </div>
+
+                    <div class="navigation-links">
+                        <a href="cancel-awaiting-input.html" class="nav-button prev">← CancelAwaitingInput</a>
+                        <a href="delete-message.html" class="nav-button next">Следующее: DeleteMessage →</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

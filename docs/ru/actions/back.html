@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Back - Telegram Bot Constructor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 Telegram Bot Constructor</h1>
+                <p class="version">v1.0.0</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">📋 Обзор</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#scenarios" class="nav-link">📝 Сценарии</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#interpolation" class="nav-link">🔗 Интерполяция</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#examples" class="nav-link">💡 Примеры</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#actions" class="nav-link">⚡ Действия</a>
+                        <ul class="submenu">
+                            <li><a href="send-message.html" class="nav-link">SendMessage</a></li>
+                            <li><a href="navigate.html" class="nav-link">Navigate</a></li>
+                            <li><a href="back.html" class="nav-link active">Back</a></li>
+                            <li><a href="request-input.html" class="nav-link">RequestInput</a></li>
+                            <li><a href="cancel-awaiting-input.html" class="nav-link">CancelAwaitingInput</a></li>
+                            <li><a href="update-message.html" class="nav-link">UpdateMessage</a></li>
+                            <li><a href="delete-message.html" class="nav-link">DeleteMessage</a></li>
+                            <li><a href="store.html" class="nav-link">Store</a></li>
+                            <li><a href="request-api.html" class="nav-link">RequestApi</a></li>
+                            <li><a href="update-scenario.html" class="nav-link">UpdateScenario</a></li>
+                            <li><a href="set-personal-scenario.html" class="nav-link">SetPersonalScenario</a></li>
+                            <li><a href="remove-personal-scenario.html" class="nav-link">RemovePersonalScenario</a></li>
+                            <li><a href="upload-personal-scenario.html" class="nav-link">UploadPersonalScenario</a></li>
+                            <li><a href="custom.html" class="nav-link">CustomAction</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../index.html#functions" class="nav-link">🔧 Функции</a>
+                        <ul class="submenu">
+                            <li><a href="../functions/join-to-string.html" class="nav-link">JoinToString</a></li>
+                            <li><a href="../functions/equals.html" class="nav-link">Equals</a></li>
+                            <li><a href="../functions/read-storage.html" class="nav-link">ReadХранилище</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="content">
+                <section class="section">
+                    <h1>⬅️ Back</h1>
+                    <p class="lead">Возврат к предыдущему элементу меню из стека навигации.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>Back - это действие для возврата к предыдущему элементу меню из стека навигации. Поддерживает удаление предыдущих сообщений и fallback к начальным действиям.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Возврат к предыдущему меню</li>
+                                <li>Удаление предыдущих сообщений</li>
+                                <li>Очистка стека навигации</li>
+                                <li>Fallback к начальным действиям</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>По умолчанию</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>removePreviousMessage</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>false</td>
+                                    <td>Удалить предыдущее сообщение</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Простой возврат</h3>
+                        <pre><code class="language-json">{
+  "action": "Back"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Возврат с удалением сообщения</h3>
+                        <pre><code class="language-json">{
+  "action": "Back",
+  "removePreviousMessage": true
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>В inline-кнопке</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Выберите действие:",
+  "inlineActions": [
+    {
+      "title": "⬅️ Назад",
+      "onClick": {
+        "action": "Back"
+      }
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <h2>🔄 Логика работы</h2>
+                    <div class="info-card">
+                        <h3>Стек навигации</h3>
+                        <p>При выполнении Back система:</p>
+                        <ul>
+                            <li>Проверяет наличие элементов в стеке навигации</li>
+                            <li>Если стек содержит более 1 элемента - удаляет последний</li>
+                            <li>Переходит к предыдущему элементу меню</li>
+                            <li>Если стек пуст или содержит только 1 элемент - выполняет fallback</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Fallback к начальным действиям</h3>
+                        <p>При отсутствии элементов в стеке:</p>
+                        <ul>
+                            <li>Очищается текущее меню и стек</li>
+                            <li>Выполняются действия из <code>onStartActions</code></li>
+                            <li>Если <code>onStartActions</code> отсутствуют - отправляется сообщение о возврате</li>
+                        </ul>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Стек навигации:</strong> Должен содержать минимум 2 элемента для возврата</li>
+                            <li><strong>Удаление сообщений:</strong> Нельзя удалить сообщения старше 48 часов</li>
+                            <li><strong>Fallback:</strong> При пустом стеке выполняется возврат к началу</li>
+                            <li><strong>Производительность:</strong> Частое удаление сообщений может замедлить работу</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Связанные действия</h2>
+                    <div class="related-actions">
+                        <a href="navigate.html" class="related-action">
+                            <h4>Navigate</h4>
+                            <p>Переход к элементу меню</p>
+                        </a>
+                        <a href="send-message.html" class="related-action">
+                            <h4>SendMessage</h4>
+                            <p>Отправка сообщений после возврата</p>
+                        </a>
+                    </div>
+
+                    <div class="navigation-links">
+                        <a href="navigate.html" class="nav-button prev">← Navigate</a>
+                        <a href="request-input.html" class="nav-button next">Следующее: RequestInput →</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>
