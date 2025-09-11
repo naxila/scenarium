@@ -2,6 +2,7 @@ import { BotFactory, TelegramBotConstructor } from './assembly';
 import { ActionRegistry, FunctionRegistry } from './registry';
 import { RegistryManager } from './registry/RegistryManager';
 import { MultiBotManager } from './core/MultiBotManager';
+import { ScenarioLoader } from './core/ScenarioLoader';
 
 // Инициализация регистров
 FunctionRegistry.initialize();
@@ -12,6 +13,7 @@ RegistryManager.initialize();
 export { BotFactory, TelegramBotConstructor };
 export { ActionRegistry, FunctionRegistry, RegistryManager };
 export { MultiBotManager };
+export { ScenarioLoader };
 
 // Re-export типов
 export * from './types';
