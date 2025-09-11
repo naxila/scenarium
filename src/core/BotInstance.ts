@@ -1,14 +1,12 @@
 import { Scenario, UserContext, ProcessingContext } from '../types';
 import { UserSessionManager } from './UserSessionManager';
 import { ActionProcessor } from './ActionProcessor';
-import { PersonalScenarioService } from './PersonalScenarioService';
 
 export class BotInstance {
   private scenario: Scenario;
   private sessionManager: UserSessionManager;
   private scenarioContext: Record<string, any> = {};
   private actionProcessor: ActionProcessor;
-  private personalScenarioService: PersonalScenarioService;
   private botName: string;
   private botConstructor: any;
 
@@ -17,7 +15,6 @@ export class BotInstance {
     this.sessionManager = new UserSessionManager(sessionTimeout);
     this.botName = botName || 'unknown';
     this.botConstructor = botConstructor;
-    this.personalScenarioService = new PersonalScenarioService(this.botName);
     
     // Инициализируем scenarioContext данными из сценария
     this.initializeScenarioContext();
@@ -57,22 +54,6 @@ export class BotInstance {
     console.log('✅ Scenario updated in BotInstance');
   }
 
-  setPersonalScenario(userId: string, scenario: Scenario): void {
-    this.personalScenarioService.setPersonalScenario(userId, scenario);
-  }
-
-  removePersonalScenario(userId: string): void {
-    this.personalScenarioService.removePersonalScenario(userId);
-  }
-
-  getPersonalScenario(userId: string): Scenario | null {
-    return this.personalScenarioService.getPersonalScenario(userId);
-  }
-
-  hasPersonalScenario(userId: string): boolean {
-    return this.personalScenarioService.hasPersonalScenario(userId);
-  }
-
   updateScenarioContext(updates: Record<string, any>): void {
     Object.assign(this.scenarioContext, updates);
   }
@@ -89,27 +70,11 @@ export class BotInstance {
     console.log(`👤 Processing for user ${userId}, current menu: ${userContext.currentMenu || 'none'}`);
     console.log(`📚 Back stack: ${JSON.stringify(userContext.backStack)}`);
     
-    // Получаем сценарий для пользователя (персональный или дефолтный)
-    const personalScenario = this.personalScenarioService.getPersonalScenario(userId);
-    const scenario = personalScenario || this.scenario;
-    
-    console.log(`🔍 Проверка сценария для пользователя ${userId} в боте ${this.botName}:`);
-    console.log(`  - Есть ли персональный сценарий: ${this.personalScenarioService.hasPersonalScenario(userId)}`);
-    console.log(`  - Персональный сценарий: ${personalScenario ? 'найден' : 'не найден'}`);
-    console.log(`  - Дефолтный сценарий: ${this.scenario ? 'найден' : 'не найден'}`);
-    console.log(`  - Итоговый сценарий: ${scenario === this.scenario ? 'дефолтный' : 'персональный'}`);
-    
-    if (personalScenario) {
-      console.log(`👤 Пользователь ${userId} использует персональный сценарий`);
-    } else {
-      console.log(`👤 Пользователь ${userId} использует дефолтный сценарий`);
-    }
-    
     const processingContext: ProcessingContext = {
       userContext,
       scenarioContext: this.scenarioContext,
       localContext,
-      scenario: scenario,
+      scenario: this.scenario,
       actionProcessor: this.actionProcessor,
       bot: this.botConstructor?.getBot?.() || null,
       chatId: userId,
@@ -127,15 +92,11 @@ export class BotInstance {
   ): Promise<any> {
     const userContext = this.sessionManager.getOrCreateUserContext(userId);
     
-    // Получаем сценарий для пользователя (персональный или дефолтный)
-    const personalScenario = this.personalScenarioService.getPersonalScenario(userId);
-    const scenario = personalScenario || this.scenario;
-    
     const processingContext: ProcessingContext = {
       userContext,
       scenarioContext: this.scenarioContext,
       localContext,
-      scenario: scenario,
+      scenario: this.scenario,
       actionProcessor: this.actionProcessor,
       bot: this.botConstructor?.getBot?.() || null,
       chatId: userId,
