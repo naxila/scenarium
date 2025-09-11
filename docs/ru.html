@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scenarium - Documentation</title>
+    <title>Scenarium - Документация</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -14,11 +14,11 @@
         <!-- Sidebar Menu -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h1><a href="index.html" style="text-decoration: none; color: inherit;">🤖 Scenarium</a></h1>
+                <h1><a href="ru.html" style="text-decoration: none; color: inherit;">🤖 Scenarium</a></h1>
                 <p class="version"><a href="https://github.com/naxila/scenarium" target="_blank" style="text-decoration: none; color: inherit;">v0.1.0-beta</a></p>
                 <div class="language-switcher">
-                    <button id="lang-en" class="lang-btn active" onclick="switchLanguage('en')">🇺🇸 EN</button>
-                    <button id="lang-ru" class="lang-btn" onclick="switchLanguage('ru')">🇷🇺 RU</button>
+                    <button id="lang-en" class="lang-btn" onclick="switchLanguage('en')">🇺🇸 EN</button>
+                    <button id="lang-ru" class="lang-btn active" onclick="switchLanguage('ru')">🇷🇺 RU</button>
                 </div>
             </div>
             
@@ -39,5 +39,15 @@
 
     <script src="script.js"></script>
     <script src="smart-docs.js"></script>
+    <script>
+        // Override initialization for Russian version
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.smartDocs) {
+                window.smartDocs.currentLanguage = 'ru';
+                window.smartDocs.currentPage = 'overview';
+                window.smartDocs.loadContent('ru', 'overview');
+            }
+        });
+    </script>
 </body>
 </html>
