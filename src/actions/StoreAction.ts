@@ -16,7 +16,7 @@ export class StoreAction extends BaseActionProcessor {
       return;
     }
 
-    // Убеждаемся, что value - это строка
+    // Ensure value is a string
     if (typeof value === 'object' && value !== null) {
       value = JSON.stringify(value);
     } else {

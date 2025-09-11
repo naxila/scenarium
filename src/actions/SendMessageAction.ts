@@ -16,18 +16,18 @@ export class SendMessageAction extends BaseActionProcessor {
     const userId = context.userContext.userId;
     let text = interpolatedAction.text;
 
-    // Поддержка inline-функций в поле text
+    // Support for inline functions in text field
     if (text && typeof text === 'object' && (text as any).function) {
       try {
         const evaluated = await FunctionProcessor.evaluateResult(text, {}, context);
         text = String(evaluated ?? '');
       } catch (e) {
         console.error('Failed to evaluate text function:', e);
-        text = '❌ Ошибка при обработке сообщения';
+        text = '❌ Error processing message';
       }
     }
     
-    // Проверяем, что текст не пустой
+    // Check that text is not empty
     if (!text || text.trim() === '') {
       console.warn('⚠️ Empty text detected, skipping message send');
       return;

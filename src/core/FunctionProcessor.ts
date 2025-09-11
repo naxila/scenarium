@@ -17,7 +17,7 @@ export class FunctionProcessor {
       throw new Error(`Function ${funcName} not found`);
     }
 
-    // Если у функции нет params, используем пустой объект
+    // If function has no params, use empty object
     const paramDefs = funcDef.params || {};
     const resolvedParams = this.resolveParams(paramDefs, params, context);
     
@@ -32,7 +32,7 @@ export class FunctionProcessor {
   ): Record<string, any> {
     const resolved: Record<string, any> = {};
     
-    // Проверяем, что paramDefs не null/undefined
+    // Check that paramDefs is not null/undefined
     if (!paramDefs || typeof paramDefs !== 'object') {
       console.warn('⚠️ paramDefs is null/undefined or not an object:', paramDefs);
       return resolved;

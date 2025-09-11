@@ -37,7 +37,7 @@ export class UserSessionManager {
     let userContext = this.userSessions.get(userId);
     
     if (!userContext) {
-      // Создаем новый контекст
+      // Create new context
       userContext = {
         userId: userId,
         data: updates.data || {},
@@ -47,7 +47,7 @@ export class UserSessionManager {
         lastActivity: new Date()
       };
     } else {
-      // Мержим существующий контекст
+      // Merge existing context
       if (updates.data) {
         userContext.data = { ...userContext.data, ...updates.data };
       }

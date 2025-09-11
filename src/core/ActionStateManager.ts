@@ -8,7 +8,7 @@ export class ActionStateManager implements IActionStateManager {
     
     console.log('🔧 ActionStateManager.setWaiting called:', { actionId, userId, botName, inputType, key });
     
-    // Очищаем предыдущее состояние для этого пользователя в этом боте
+    // Clear previous state for this user in this bot
     this.clear(userId, botName);
     
     const state: ActionState = {
@@ -28,7 +28,7 @@ export class ActionStateManager implements IActionStateManager {
     this.states.set(key, state);
     console.log('✅ ActionStateManager.setWaiting completed, state saved:', { key, stateCount: this.states.size });
     
-    // Устанавливаем таймаут если нужно
+    // Set timeout if needed
     if (options.timeout) {
       setTimeout(() => {
         const currentState = this.states.get(key);
@@ -50,27 +50,27 @@ export class ActionStateManager implements IActionStateManager {
     
     if (!state || !state.isWaitingForInput) {
       console.log('❌ No waiting state found for user');
-      return false; // Не ждем ввода от этого пользователя
+      return false; // Not waiting for input from this user
     }
     
-    // Проверяем тип ввода
+    // Check input type
     if (state.inputType !== 'any' && state.inputType !== input.type) {
-      return false; // Не тот тип ввода
+      return false; // Wrong input type
     }
     
     try {
       state.inputCount++;
       
-      // Вызываем обработчик ввода
+      // Call input handler
       const shouldContinue = await state.onInput(input, state);
       
       if (!shouldContinue) {
-        // Действие завершено
+        // Action completed
         this.clear(userId, botName);
         state.onComplete({ inputCount: state.inputCount, lastInput: input });
       }
       
-      return true; // Ввод обработан
+      return true; // Input processed
     } catch (error) {
       console.error('Error processing input:', error);
       this.clear(userId, botName);

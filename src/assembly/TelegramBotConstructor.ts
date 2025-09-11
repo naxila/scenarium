@@ -16,7 +16,7 @@ export class TelegramBotConstructor {
     this.token = config.telegramBotToken || '';
     this.botName = botName || 'unknown';
     
-    // Создаем BotInstance с передачей себя как botConstructor и имени бота
+    // Create BotInstance with self as botConstructor and bot name
     this.botInstance = new BotInstance(config.scenario, config.sessionTimeout, this, this.botName);
   }
 
@@ -61,7 +61,7 @@ export class TelegramBotConstructor {
   updateUserContext(userId: string, updates: Record<string, any>): void {
     const sessionManager = this.botInstance.getSessionManager();
     
-    // Получаем текущий контекст
+    // Get current context
     const userContext = sessionManager.getUserContext(userId);
     
     if (userContext) {
@@ -70,21 +70,21 @@ export class TelegramBotConstructor {
         newUpdates: updates
       });
       
-      // Мержим данные правильно - все updates идут в data
+      // Merge data correctly - all updates go to data
       userContext.data = { ...userContext.data, ...updates };
       userContext.lastActivity = new Date();
       
-      // Сохраняем обратно
+      // Save back
       sessionManager.updateUserContext(userId, userContext);
       
       console.log(`✅ Context updated successfully:`, userContext.data);
     } else {
       console.log(`❌ User ${userId} context not found`);
       
-      // Создаем новый контекст если не существует
+      // Create new context if it doesn't exist
       const newContext = {
         userId: userId,
-        data: updates, // Все updates становятся data
+        data: updates, // All updates become data
         backStack: [],
         createdAt: new Date(),
         lastActivity: new Date()
@@ -96,7 +96,7 @@ export class TelegramBotConstructor {
 
 
   /**
-   * Запускает бота
+   * Starts the bot
    */
   async start(): Promise<void> {
     if (this.isRunning) {
@@ -115,7 +115,7 @@ export class TelegramBotConstructor {
   }
 
   /**
-   * Останавливает бота
+   * Stops the bot
    */
   async stop(): Promise<void> {
     if (!this.isRunning) {
@@ -124,7 +124,7 @@ export class TelegramBotConstructor {
     }
 
     if (this.adapter) {
-      // Останавливаем адаптер если есть метод stop
+      // Stop adapter if stop method exists
       if (typeof (this.adapter as any).stop === 'function') {
         await (this.adapter as any).stop();
       }
@@ -136,7 +136,7 @@ export class TelegramBotConstructor {
   }
 
   /**
-   * Проверяет, запущен ли бот
+   * Checks if the bot is running
    */
   isBotRunning(): boolean {
     return this.isRunning;

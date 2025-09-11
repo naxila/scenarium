@@ -1,4 +1,4 @@
-// Реэкспорт всех процессоров действий
+// Re-export all action processors
 export { BaseActionProcessor } from './BaseAction';
 export { NavigateAction } from './NavigateAction';
 export { SendMessageAction } from './SendMessageAction';

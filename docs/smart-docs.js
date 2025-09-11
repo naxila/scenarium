@@ -104,10 +104,6 @@ class SmartDocs {
                     { href: '#actions/delete-message', text: 'DeleteMessage' },
                     { href: '#actions/store', text: 'Store' },
                     { href: '#actions/request-api', text: 'RequestApi' },
-                    { href: '#actions/update-scenario', text: 'UpdateScenario' },
-                    { href: '#actions/set-personal-scenario', text: 'SetPersonalScenario' },
-                    { href: '#actions/remove-personal-scenario', text: 'RemovePersonalScenario' },
-                    { href: '#actions/upload-personal-scenario', text: 'UploadPersonalScenario' },
                     { href: '#actions/custom', text: 'CustomAction' }
                 ]},
                 { href: '#functions', text: '🔧 Built-in Functions', icon: 'functions', submenu: [
@@ -135,10 +131,6 @@ class SmartDocs {
                     { href: '#actions/delete-message', text: 'DeleteMessage' },
                     { href: '#actions/store', text: 'Store' },
                     { href: '#actions/request-api', text: 'RequestApi' },
-                    { href: '#actions/update-scenario', text: 'UpdateScenario' },
-                    { href: '#actions/set-personal-scenario', text: 'SetPersonalScenario' },
-                    { href: '#actions/remove-personal-scenario', text: 'RemovePersonalScenario' },
-                    { href: '#actions/upload-personal-scenario', text: 'UploadPersonalScenario' },
                     { href: '#actions/custom', text: 'CustomAction' }
                 ]},
                 { href: '#functions', text: '🔧 Встроенные функции', icon: 'functions', submenu: [

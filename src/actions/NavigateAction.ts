@@ -15,7 +15,7 @@ export class NavigateAction extends BaseActionProcessor {
     } = action;
     
 
-    // Очищаем действия предыдущего сообщения
+    // Clear previous message actions
     if (removePreviousMessage) {
       await this.cleanupPreviousActions(context);
       await this.deletePreviousMessages(context);
@@ -23,16 +23,16 @@ export class NavigateAction extends BaseActionProcessor {
     
     const isBackAction = context.localContext.isBackAction === true;
 
-    // Обновляем текущее меню
+    // Update current menu
     context.userContext.currentMenu = menuItem;
     this.updateUserActivity(context);
 
-    // Поддерживаем стек так, чтобы последний элемент всегда соответствовал текущему меню
+    // Maintain stack so that last element always corresponds to current menu
     if (addToBackStack && !isBackAction) {
       this.addToBackStack(context, menuItem, uniqueInStack);
     }
 
-    // Получаем меню из сценария
+    // Get menu from scenario
     const menu = context.scenario.menuItems[menuItem];
     if (!menu) {
       console.warn(`❌ Menu item ${menuItem} not found, falling back to start actions`);
@@ -40,7 +40,7 @@ export class NavigateAction extends BaseActionProcessor {
       return;
     }
     
-    // Рекурсивный вызов обработки действий меню
+    // Recursive call to process menu actions
     await this.processNestedActions(menu.onNavigation, context);
   }
   

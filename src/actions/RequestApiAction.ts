@@ -10,7 +10,7 @@ export class RequestApiAction extends BaseActionProcessor {
   async process(action: any, context: ProcessingContext): Promise<void> {
     const fullContext = this.getFullContext(context);
     
-    // Сначала интерполируем весь action
+    // First interpolate the entire action
     const interpolatedAction = InterpolationEngine.interpolateObject(action, fullContext);
     
     const {
@@ -37,13 +37,13 @@ export class RequestApiAction extends BaseActionProcessor {
       });
     }
 
-    // Сборка URL (теперь path и baseUrl уже интерполированы)
+    // Build URL (now path and baseUrl are already interpolated)
     const resolvedPath = path || '';
     const resolvedBase = baseUrl || '';
     let url = (resolvedBase || '').replace(/\/$/, '') + (resolvedPath || '');
     
 
-    // Query params (уже интерполированы)
+    // Query params (already interpolated)
     const resolvedParams = params;
     if (resolvedParams && Object.keys(resolvedParams).length > 0) {
       const usp = new URLSearchParams();

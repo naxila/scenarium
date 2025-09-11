@@ -1,26 +1,26 @@
 import { ProcessingContext } from '../types';
 
 /**
- * Новая система интерполяции с единой логикой
+ * New interpolation system with unified logic
  */
 export class InterpolationEngine {
   /**
-   * Создает полный контекст для интерполяции
+   * Creates full context for interpolation
    */
   static createContext(
     baseContext: ProcessingContext, 
     functionParams: Record<string, any> = {}
   ): Record<string, any> {
     return {
-      // 1. Параметры функции (высший приоритет)
+      // 1. Function parameters (highest priority)
       ...functionParams,
       
-      // 2. Плоская структура из базового контекста
+      // 2. Flat structure from base context
       ...baseContext.scenarioContext,
       ...baseContext.userContext.data,
       ...baseContext.localContext,
       
-      // 3. Структурированные алиасы
+      // 3. Structured aliases
       user: {
         id: baseContext.userContext.userId,
         menu: baseContext.userContext.currentMenu,

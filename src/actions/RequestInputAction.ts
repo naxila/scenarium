@@ -7,7 +7,7 @@ export class RequestInputAction extends BaseActionProcessor {
   static readonly actionType = 'RequestInput';
 
   async process(action: any, context: ProcessingContext): Promise<void> {
-    const { hint = 'Введите значение:', key, onDone, onCancel, cancelText = 'Отмена', removeHintOnCancel = false, clearInputOnDone = false } = action;
+    const { hint = 'Enter value:', key, onDone, onCancel, cancelText = 'Cancel', removeHintOnCancel = false, clearInputOnDone = false } = action;
 
     if (!key || typeof key !== 'string') {
       console.warn('RequestInput: key is required and must be a string');
@@ -17,7 +17,7 @@ export class RequestInputAction extends BaseActionProcessor {
     const userId = context.userContext.userId;
     const chatId = context.userContext.data.telegramData?.chatId || userId;
 
-    // Сохраняем состояние ожидания ввода в сессию пользователя
+    // Save input waiting state to user session
     context.userContext.data.awaitingInput = {
       key,
       onDone,
@@ -38,10 +38,10 @@ export class RequestInputAction extends BaseActionProcessor {
       
       const options: any = { parse_mode: 'Markdown' };
 
-      // Добавляем inline кнопку "Отмена", если задан onCancel
+      // Add inline "Cancel" button if onCancel is specified
       if (onCancel) {
         const mapping = ActionMappingService.getInstance();
-        // Помечаем как действие отмены ввода, чтобы обработчик callback мог удалить хинт
+        // Mark as input cancellation action so callback handler can remove hint
         const cancelAction = { ...onCancel, _requestInputCancel: true };
         const actionId = mapping.registerAction(cancelAction);
         options.reply_markup = {

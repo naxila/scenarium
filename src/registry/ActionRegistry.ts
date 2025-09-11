@@ -36,14 +36,14 @@ export class ActionRegistry {
       }
     }
 
-    // Гарантируем, что есть дефолтный процессор
+    // Ensure there is a default processor
     if (!this.registry.has('*')) {
       console.warn('No default action processor registered');
     }
   }
 
   /**
-   * Регистрирует стандартное действие (наследник BaseActionProcessor)
+   * Registers a standard action (inherits from BaseActionProcessor)
    */
   static register(actionType: string, ActionClass: new () => BaseActionProcessor) {
     this.registry.set(actionType, ActionClass);

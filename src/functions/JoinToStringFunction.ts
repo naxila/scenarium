@@ -11,12 +11,12 @@ export class JoinToStringFunction {
       return '';
     }
 
-    // Интерполируем/вычисляем каждое значение
+    // Interpolate/evaluate each value
     const fullContext = {
       ...context.scenarioContext,
       ...context.userContext.data,
       ...context.localContext,
-      ...params // чтобы ссылки на параметры пользовательских функций (например, {{text}}) резолвились
+      ...params // so that user function parameter references (e.g., {{text}}) are resolved
     };
 
     const interpolatedValues = await Promise.all(values.map(async (value) => {
@@ -35,15 +35,15 @@ export class JoinToStringFunction {
       }
     }));
 
-    // Фильтруем пустые значения
+    // Filter empty values
     const filteredValues = interpolatedValues.filter(value => 
       value !== null && value !== undefined && value !== ''
     );
 
-    // Склеиваем с разделителем
+    // Join with separator
     const result = filteredValues.join(separator);
     
-    // Добавляем префикс и суффикс
+    // Add prefix and suffix
     return prefix + result + suffix;
   }
 }

@@ -4,14 +4,14 @@ import { ScenarioLoader } from '../core/ScenarioLoader';
 
 export class BotFactory {
   /**
-   * Создает бота из файла сценария
+   * Creates a bot from a scenario file
    */
   static async createBotFromFile(scenarioPath: string, token?: string, botName?: string): Promise<TelegramBotConstructor> {
-    console.log(`🚀 Создаем бота из сценария: ${scenarioPath}`);
+    console.log(`🚀 Creating bot from scenario: ${scenarioPath}`);
     
     try {
       const scenario = await ScenarioLoader.loadScenario(scenarioPath);
-      console.log(`✅ Сценарий загружен. Menu items:`, Object.keys(scenario.menuItems));
+      console.log(`✅ Scenario loaded. Menu items:`, Object.keys(scenario.menuItems));
       
       const scenarioConfig: ScenarioConfig = {
         scenario,
@@ -21,13 +21,13 @@ export class BotFactory {
       this.validateScenario(scenario);
       return new TelegramBotConstructor(scenarioConfig, botName);
     } catch (error) {
-      console.error(`❌ Ошибка создания бота из ${scenarioPath}:`, error);
+      console.error(`❌ Error creating bot from ${scenarioPath}:`, error);
       throw error;
     }
   }
 
   /**
-   * Создает бота из конфигурации (обратная совместимость)
+   * Creates a bot from configuration (backward compatibility)
    */
   static createBot(scenarioConfig: ScenarioConfig, botName?: string): TelegramBotConstructor {
     this.validateScenario(scenarioConfig.scenario);

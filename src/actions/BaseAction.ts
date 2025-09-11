@@ -2,13 +2,13 @@ import { ProcessingContext, BaseAction } from '../types';
 import { InterpolationEngine } from '../utils/InterpolationEngine';
 
 export abstract class BaseActionProcessor {
-  // Статическое свойство для определения action type
+  // Static property to define action type
   static readonly actionType: string;
   
-  // Абстрактный метод обработки
+  // Abstract processing method
   abstract process(action: BaseAction, context: ProcessingContext): Promise<void>;
   
-  // Общие вспомогательные методы
+  // Common helper methods
   protected updateUserActivity(context: ProcessingContext): void {
     context.userContext.lastActivity = new Date();
   }

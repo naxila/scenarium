@@ -10,7 +10,7 @@ export class InputManager {
 
     const lower = text.trim().toLowerCase();
     if (lower === 'отмена' || lower === 'cancel') {
-      // Получаем BotInstance из TelegramBotConstructor
+      // Get BotInstance from TelegramBotConstructor
       const botInstance = (bot as any).botInstance;
       await this.cancel(botInstance, userId);
       return true;
@@ -41,14 +41,14 @@ export class InputManager {
 
     try {
       if (awaiting.removeHintOnCancel && awaiting.hintMessageId) {
-        // Получаем ActionProcessor из BotInstance
+        // Get ActionProcessor from BotInstance
         const actionProcessor = (bot as any).getActionProcessor?.();
         const botConstructor = actionProcessor?.getBotConstructor();
         const adapter = botConstructor?.getAdapter();
         
         if (adapter) {
-          // Вместо удаления отправляем сообщение о том, что ввод отменен
-          await adapter.sendMessage(userId, '❌ Ввод отменен', {});
+          // Instead of deleting, send message that input is cancelled
+          await adapter.sendMessage(userId, '❌ Input cancelled', {});
         }
       }
     } catch {}

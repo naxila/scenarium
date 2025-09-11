@@ -19,20 +19,20 @@ export class TelegramAdapter {
   }
 
   private setupHandlers(): void {
-    // Обработчик команды /start
+    // /start command handler
     this.bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
       const userId = msg.chat.id.toString();
-      const startPayload = match?.[1]; // Параметры после /start
+      const startPayload = match?.[1]; // Parameters after /start
 
       try {
         await this.handleStartCommand(userId, startPayload, msg);
       } catch (error) {
         console.error('Error handling /start command:', error);
-        this.sendSafeMessage(msg.chat.id, '❌ Произошла ошибка при запуске бота');
+        this.sendSafeMessage(msg.chat.id, '❌ Error occurred while starting bot');
       }
     });
 
-    // Обработчик команды /menu
+    // /menu command handler
     this.bot.onText(/\/menu/, async (msg) => {
       const userId = msg.chat.id.toString();
 
@@ -40,11 +40,11 @@ export class TelegramAdapter {
         await this.handleMenuCommand(userId, msg);
       } catch (error) {
         console.error('Error handling /menu command:', error);
-        this.sendSafeMessage(msg.chat.id, '❌ Произошла ошибка при открытии меню');
+        this.sendSafeMessage(msg.chat.id, '❌ Error occurred while opening menu');
       }
     });
 
-    // Обработчик команды /help
+    // /help command handler
     this.bot.onText(/\/help/, async (msg) => {
       const userId = msg.chat.id.toString();
 

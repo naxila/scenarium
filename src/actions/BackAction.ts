@@ -6,11 +6,11 @@ export class BackAction extends BaseActionProcessor {
   static readonly actionType = 'Back';
   
   async process(action: any, context: ProcessingContext): Promise<void> {
-    const { removePreviousMessage = false } = action; // Добавляем поддержку флага
+    const { removePreviousMessage = false } = action; // Add flag support
     
     console.log(`↩️ Back action, removePrevious: ${removePreviousMessage}`);
     
-    // Удаляем предыдущее сообщение если нужно
+    // Delete previous message if needed
     if (removePreviousMessage) {
       await this.deletePreviousMessages(context);
     }

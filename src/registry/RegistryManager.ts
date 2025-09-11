@@ -3,14 +3,14 @@ import { ActionRegistry } from './ActionRegistry';
 import { FunctionRegistry } from './FunctionRegistry';
 
 /**
- * Простой менеджер для регистрации действий и функций
- * Позволяет регистрировать действия и функции в виде "MyAction": MyActionClass
+ * Simple manager for registering actions and functions
+ * Allows registering actions and functions as "MyAction": MyActionClass
  */
 export class RegistryManager {
   private static isInitialized = false;
 
   /**
-   * Инициализирует менеджер регистрации
+   * Initializes the registration manager
    */
   static initialize() {
     if (this.isInitialized) {
@@ -18,7 +18,7 @@ export class RegistryManager {
       return;
     }
 
-    // Инициализируем регистры если они еще не инициализированы
+    // Initialize registries if they are not yet initialized
     ActionRegistry.initialize();
     FunctionRegistry.initialize();
 
@@ -27,10 +27,10 @@ export class RegistryManager {
   }
 
   /**
-   * Регистрирует действие
-   * @param actionType - тип действия (например, "MyAction")
-   * @param actionClass - класс действия, реализующий ICustomAction
-   * @param config - конфигурация регистрации
+   * Registers an action
+   * @param actionType - action type (e.g., "MyAction")
+   * @param actionClass - action class implementing ICustomAction
+   * @param config - registration configuration
    */
   static registerAction(actionType: string, actionClass: ICustomAction, config: RegistrationConfig = {}): void {
     if (!this.isInitialized) {

@@ -4,21 +4,21 @@ import { RegistryManager } from './registry/RegistryManager';
 import { MultiBotManager } from './core/MultiBotManager';
 import { ScenarioLoader } from './core/ScenarioLoader';
 
-// Инициализация регистров
+// Initialize registries
 FunctionRegistry.initialize();
 ActionRegistry.initialize();
 RegistryManager.initialize();
 
-// Re-export основных классов
+// Re-export main classes
 export { BotFactory, TelegramBotConstructor };
 export { ActionRegistry, FunctionRegistry, RegistryManager };
 export { MultiBotManager };
 export { ScenarioLoader };
 
-// Re-export типов
+// Re-export types
 export * from './types';
 export * from './types/PluginInterfaces';
 export * from './types/ActionState';
 
-// Re-export утилит
+// Re-export utilities
 export * from './utils';

@@ -16,15 +16,15 @@ export class BotInstance {
     this.botName = botName || 'unknown';
     this.botConstructor = botConstructor;
     
-    // Инициализируем scenarioContext данными из сценария
+    // Initialize scenarioContext with data from scenario
     this.initializeScenarioContext();
     
-    // Создаем экземпляр ActionProcessor для этого бота
+    // Create ActionProcessor instance for this bot
     this.actionProcessor = ActionProcessor.initialize(this, botConstructor);
   }
 
   private initializeScenarioContext(): void {
-    // Добавляем все свойства сценария, кроме стандартных, в scenarioContext
+    // Add all scenario properties except standard ones to scenarioContext
     const standardProps = ['onStartActions', 'menuItems', 'functions'];
     for (const [key, value] of Object.entries(this.scenario)) {
       if (!standardProps.includes(key)) {
@@ -61,7 +61,7 @@ export class BotInstance {
   async processForUser(userId: string, actions: any, localContext: Record<string, any> = {}): Promise<void> {
     const userContext = this.sessionManager.getOrCreateUserContext(userId);
     
-    // Обновляем userContext данными из localContext если они переданы
+    // Update userContext with data from localContext if provided
     if (localContext && Object.keys(localContext).length > 0) {
       userContext.data = { ...userContext.data, ...localContext };
       userContext.lastActivity = new Date();
@@ -114,21 +114,21 @@ export class BotInstance {
   updateUserContext(userId: string, updates: Record<string, any>): void {
     const sessionManager = this.sessionManager;
     
-    // Получаем текущий контекст
+    // Get current context
     const userContext = sessionManager.getUserContext(userId);
     
     if (userContext) {
-      // Мержим данные правильно - все updates идут в data
+      // Merge data correctly - all updates go to data
       userContext.data = { ...userContext.data, ...updates };
       userContext.lastActivity = new Date();
       
-      // Сохраняем обратно
+      // Save back
       sessionManager.updateUserContext(userId, userContext);
     } else {
-      // Создаем новый контекст если не существует
+      // Create new context if it doesn't exist
       const newContext = {
         userId: userId,
-        data: updates, // Все updates становятся data
+        data: updates, // All updates become data
         backStack: [],
         createdAt: new Date(),
         lastActivity: new Date()

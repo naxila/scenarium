@@ -6,7 +6,7 @@ export class CancelAwaitingInputAction extends BaseActionProcessor {
   static readonly actionType = 'CancelAwaitingInput';
 
   async process(action: any, context: ProcessingContext): Promise<void> {
-    // Получаем BotInstance из контекста
+    // Get BotInstance from context
     const actionProcessor = context.actionProcessor;
     const botInstance = actionProcessor?.getBotInstance();
     

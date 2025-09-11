@@ -9,11 +9,11 @@ export class DeleteMessageAction extends BaseActionProcessor {
   async process(action: any, context: ProcessingContext): Promise<void> {
     const chatId = context.userContext.data.telegramData?.chatId || context.userContext.userId;
     
-    // Обрабатываем messageId - может быть функцией или простым значением
+    // Process messageId - can be function or simple value
     let messageId = action.messageId ?? context.localContext.messageId ?? context.userContext.data.lastMessageId;
     
     if (messageId && typeof messageId === 'object' && messageId.function) {
-      // Если messageId - это функция, вычисляем её
+      // If messageId is a function, evaluate it
       try {
         messageId = await FunctionProcessor.evaluateResult(messageId, {}, context);
       } catch (e) {
@@ -32,12 +32,12 @@ export class DeleteMessageAction extends BaseActionProcessor {
       
       if (adapter) {
         try {
-          // Пытаемся удалить сообщение
+          // Try to delete message
           await adapter.deleteMessage(chatId.toString(), Number(messageId));
         } catch (deleteError: any) {
-          // Если не удалось удалить (например, сообщение слишком старое), отправляем уведомление
+          // If failed to delete (e.g., message too old), send notification
           if (deleteError.response?.error_code === 400) {
-            await adapter.sendMessage(chatId.toString(), '⚠️ Не удалось удалить сообщение (возможно, оно слишком старое)', {});
+            await adapter.sendMessage(chatId.toString(), '⚠️ Failed to delete message (possibly too old)', {});
           } else {
             throw deleteError;
           }

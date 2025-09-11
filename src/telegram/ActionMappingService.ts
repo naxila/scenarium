@@ -23,11 +23,11 @@ export class ActionMappingService {
     }
   
     getAction(actionId: string): any | undefined {
-      // Не удаляем действие сразу - оставляем для возможных повторных нажатий
+      // Don't remove action immediately - leave for possible repeated clicks
       return this.actionMap.get(actionId);
     }
   
-    // Явное удаление когда нужно (при удалении сообщения)
+    // Explicit removal when needed (when deleting message)
     removeAction(actionId: string): void {
       this.actionMap.delete(actionId);
     }
@@ -36,10 +36,10 @@ export class ActionMappingService {
       messageActionIds.forEach(id => this.actionMap.delete(id));
     }
   
-    // Удаляем действие только после успешного выполнения
+    // Remove action only after successful execution
     markActionCompleted(actionId: string): void {
-      // Можно добавить логику пометки действий как выполненных
-      // но пока не удаляем сразу
+      // Can add logic to mark actions as completed
+      // but don't remove immediately
       console.log(`✅ Action ${actionId} completed`);
     }
   

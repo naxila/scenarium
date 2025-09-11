@@ -13,9 +13,9 @@ export interface ProcessingContext {
   userContext: UserContext;
   scenarioContext: Record<string, any>;
   localContext: Record<string, any>;
-  scenario: Scenario; // Добавляем scenario в контекст обработки
-  actionProcessor?: any; // Добавляем ActionProcessor в контекст
-  bot?: any; // Добавляем bot для отправки сообщений
-  chatId?: string; // Добавляем chatId для отправки сообщений
-  botInstance?: any; // Добавляем botInstance для доступа к методам бота
+  scenario: Scenario; // Add scenario to processing context
+  actionProcessor?: any; // Add ActionProcessor to context
+  bot?: any; // Add bot for sending messages
+  chatId?: string; // Add chatId for sending messages
+  botInstance?: any; // Add botInstance for accessing bot methods
 }

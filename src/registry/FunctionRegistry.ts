@@ -26,14 +26,14 @@ export class FunctionRegistry {
   }
 
   /**
-   * Регистрирует стандартную функцию
+   * Registers a standard function
    */
   static register(name: string, func: FunctionExecutor) {
     this.registry.set(name, func);
   }
 
   /**
-   * Регистрирует кастомную функцию (реализующую ICustomFunction)
+   * Registers a custom function (implementing ICustomFunction)
    */
   static registerCustomFunction(func: ICustomFunction, config: RegistrationConfig = {}) {
     if (!this.isInitialized) {

@@ -1,53 +1,53 @@
 import { ProcessingContext } from './Context';
 
 /**
- * Интерфейс для кастомных действий
- * Простой интерфейс для регистрации действий
+ * Interface for custom actions
+ * Simple interface for registering actions
  */
 export interface ICustomAction {
   /**
-   * Уникальный тип действия
+   * Unique action type
    */
   readonly actionType: string;
 
   /**
-   * Выполняет действие
-   * @param action - данные действия из сценария
-   * @param context - контекст выполнения
+   * Executes action
+   * @param action - action data from scenario
+   * @param context - execution context
    */
   process(action: any, context: ProcessingContext): Promise<void>;
 }
 
 /**
- * Интерфейс для кастомных функций
- * Простой интерфейс для регистрации функций
+ * Interface for custom functions
+ * Simple interface for registering functions
  */
 export interface ICustomFunction {
   /**
-   * Уникальное имя функции
+   * Unique function name
    */
   readonly functionName: string;
 
   /**
-   * Выполняет функцию
-   * @param params - параметры функции
-   * @param context - контекст выполнения
-   * @returns результат выполнения функции
+   * Executes function
+   * @param params - function parameters
+   * @param context - execution context
+   * @returns function execution result
    */
   execute(params: any, context: ProcessingContext): Promise<any>;
 }
 
 /**
- * Конфигурация для регистрации
+ * Registration configuration
  */
 export interface RegistrationConfig {
   /**
-   * Перезаписать существующие действия/функции
+   * Overwrite existing actions/functions
    */
   overwrite?: boolean;
 
   /**
-   * Логирование операций регистрации
+   * Logging registration operations
    */
   verbose?: boolean;
 }

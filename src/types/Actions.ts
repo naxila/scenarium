@@ -1,10 +1,10 @@
-// Базовый интерфейс для всех действий
+// Base interface for all actions
 export interface BaseAction {
   action: string;
   [key: string]: any;
 }
 
-// Вспомогательные типы
+// Helper types
 export interface InlineAction {
   title: string;
   onClick: BaseAction | BaseAction[];
@@ -20,5 +20,5 @@ export interface FunctionDefinition {
   result: any;
 }
 
-// Общий тип для всего
+// General type for everything
 export type Action = BaseAction;

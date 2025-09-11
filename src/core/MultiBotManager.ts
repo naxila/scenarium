@@ -28,7 +28,7 @@ export class MultiBotManager {
   }
 
   /**
-   * Инициализирует менеджер и все боты
+   * Initializes manager and all bots
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
@@ -38,11 +38,11 @@ export class MultiBotManager {
 
     console.log('🚀 Initializing MultiBotManager...');
     
-    // Инициализация регистров (один раз для всех ботов)
+    // Initialize registries (once for all bots)
     FunctionRegistry.initialize();
     ActionRegistry.initialize();
 
-    // Инициализация ботов
+    // Initialize bots
     for (const botConfig of this._config.bots) {
       if (botConfig.enabled !== false) {
         await this.initializeBot(botConfig);

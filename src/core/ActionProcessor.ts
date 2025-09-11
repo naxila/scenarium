@@ -13,7 +13,7 @@ export class ActionProcessor {
   }
 
   static initialize(botInstance: BotInstance, botConstructor?: any) {
-    // Создаем экземпляр для конкретного бота
+    // Create instance for specific bot
     return new ActionProcessor(botInstance, botConstructor);
   }
 

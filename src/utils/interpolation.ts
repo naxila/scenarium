@@ -2,7 +2,7 @@ export function interpolate(value: any, context: Record<string, any>): any {
   if (typeof value === 'string') {
     return value.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
       try {
-        // Поддерживаем простые пути и путь с точками
+        // Support simple paths and dotted paths
         return getValueByPath(context, path) || match;
       } catch (error) {
         console.error(`Interpolation error for path "${path}":`, error);
@@ -13,7 +13,7 @@ export function interpolate(value: any, context: Record<string, any>): any {
   return value;
 }
 
-// Функция для получения значения по пути
+// Function to get value by path
 function getValueByPath(obj: any, path: string): any {
   const parts = path.split('.');
   let current = obj;
