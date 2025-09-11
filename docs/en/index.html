@@ -228,17 +228,17 @@ startBot().catch(console.error);</code></pre>
                 <section id="scenarios" class="section">
                     <h2>📝 Scenarios</h2>
                     
-                    <h3>Структура сценария</h3>
-                    <p>Сценарий - это JSON-файл, описывающий поведение бота:</p>
+                    <h3>Scenario Structure</h3>
+                    <p>A scenario is a JSON file describing bot behavior:</p>
                     <pre><code class="language-json">{
-  "onStartActions": [...],     // Actions при запуске
-  "menuItems": {...},          // Элементы меню
-  "functions": {...},          // Пользовательские функции
-  "data": {...}               // Общие данные
+  "onStartActions": [...],     // Actions on startup
+  "menuItems": {...},          // Menu items
+  "functions": {...},          // Custom functions
+  "data": {...}               // Common data
 }</code></pre>
 
-                    <h3>Простой сценарий (один файл)</h3>
-                    <p>Для простых ботов достаточно одного JSON-файла:</p>
+                    <h3>Simple Scenario (single file)</h3>
+                    <p>For simple bots, one JSON file is enough:</p>
                     <pre><code class="language-json">{
   "onStartActions": [
     {
@@ -265,17 +265,17 @@ startBot().catch(console.error);</code></pre>
   }
 }</code></pre>
 
-                    <h3>Продвинутый сценарий (модульная структура)</h3>
-                    <p>Для сложных ботов используйте модульную структуру:</p>
+                    <h3>Advanced Scenario (modular structure)</h3>
+                    <p>For complex bots, use modular structure:</p>
                     <div class="file-structure">
                         <pre><code>scenarios/my-bot/
-├── scenario.config.json    # Конфигурация
-├── scenario.json          # Точка входа
-├── modules/               # Бизнес-модули
+├── scenario.config.json    # Configuration
+├── scenario.json          # Entry point
+├── modules/               # Business modules
 │   ├── user-management.json
 │   ├── settings.json
 │   └── api-integration.json
-└── shared/               # Общие данные
+└── shared/               # Common data
     ├── constants.json
     └── messages.json</code></pre>
                     </div>
@@ -289,13 +289,13 @@ startBot().catch(console.error);</code></pre>
   }
 }</code></pre>
 
-                    <h4>Пример модуля (modules/user-management.json)</h4>
+                    <h4>Module Example (modules/user-management.json)</h4>
                     <pre><code class="language-json">{
   "menuItems": {
     "Profile": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "👤 Ваш профиль",
+        "text": "👤 Your Profile",
         "inlineActions": [...]
       }
     }
