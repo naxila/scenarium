@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Быстрый старт - Документация Scenarium</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <!-- Быстрый старт -->
+            <section id="quick-start" class="section">
+                <h2>🚀 Быстрый старт</h2>
+                <p>Начните работу с Scenarium всего за несколько шагов:</p>
+
+                <h3>1. Создайте бота</h3>
+                <p>Сначала создайте бота используя <a href="https://t.me/BotFather" target="_blank">@BotFather</a> и получите токен вашего бота.</p>
+
+                <h3>2. Установите зависимости</h3>
+                <pre><code class="language-bash">npm install scenarium dotenv</code></pre>
+
+                <h3>3. Создайте простой сценарий</h3>
+                <p>Создайте файл с именем <code>scenario.json</code>:</p>
+                <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "Navigate",
+      "menuItem": "Main"
+    }
+  ],
+  "menuItems": {
+    "Main": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Привет! Добро пожаловать в моего бота!",
+        "inlineActions": [
+          {
+            "title": "Профиль",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "Profile"
+            }
+          }
+        ]
+      }
+    }
+  }
+}</code></pre>
+
+                <h3>4. Создайте экземпляр бота</h3>
+                <p>Создайте файл с именем <code>index.js</code>:</p>
+                <pre><code class="language-javascript">const { BotFactory } = require('scenarium');
+require('dotenv').config();
+
+async function startBot() {
+  const bot = BotFactory.createFromScenario({
+    token: process.env.BOT_TOKEN,
+    scenario: require('./scenario.json')
+  });
+
+  await bot.start();
+  console.log('Бот успешно запущен!');
+}
+
+startBot().catch(console.error);</code></pre>
+
+                <h3>5. Настройте переменные окружения</h3>
+                <p>Создайте файл <code>.env</code>:</p>
+                <pre><code class="language-bash">BOT_TOKEN=your_bot_token_here</code></pre>
+
+                <h3>6. Запустите бота</h3>
+                <pre><code class="language-bash">node index.js</code></pre>
+
+                <p>Готово! Ваш бот теперь работает. Отправьте <code>/start</code> вашему боту в Telegram для тестирования.</p>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
