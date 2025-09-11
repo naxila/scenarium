@@ -1,6 +1,6 @@
-// Основной JavaScript для документации
+// Main JavaScript for documentation
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация
+    // Initialization
     initNavigation();
     initSmoothScrolling();
     initCodeHighlighting();
@@ -8,30 +8,30 @@ document.addEventListener('DOMContentLoaded', function() {
     initSearch();
 });
 
-// Навигация
+// Navigation
 function initNavigation() {
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.section');
     
-    // Обработка кликов по навигации
+    // Handle navigation clicks
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
             
-            // Если это ссылка на отдельную страницу - не предотвращаем переход
+            // If it's a link to a separate page - don't prevent transition
             if (href && !href.startsWith('#')) {
-                return; // Позволяем браузеру обработать переход
+                return; // Allow browser to handle transition
             }
             
             e.preventDefault();
             
-            // Удаляем активный класс со всех ссылок
+            // Remove active class from all links
             navLinks.forEach(l => l.classList.remove('active'));
             
-            // Добавляем активный класс к текущей ссылке
+            // Add active class to current link
             this.classList.add('active');
             
-            // Прокручиваем к секции
+            // Scroll to section
             const targetId = href.substring(1);
             const targetSection = document.getElementById(targetId);
             
@@ -44,7 +44,7 @@ function initNavigation() {
         });
     });
     
-    // Отслеживание активной секции при прокрутке
+    // Track active section on scroll
     window.addEventListener('scroll', function() {
         let current = '';
         
@@ -58,7 +58,7 @@ function initNavigation() {
             }
         });
         
-        // Обновляем активную ссылку
+        // Update active link
         navLinks.forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href') === '#' + current) {
@@ -68,9 +68,9 @@ function initNavigation() {
     });
 }
 
-// Плавная прокрутка
+// Smooth scrolling
 function initSmoothScrolling() {
-    // Добавляем плавную прокрутку для всех внутренних ссылок
+    // Add smooth scrolling for all internal links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -85,18 +85,18 @@ function initSmoothScrolling() {
     });
 }
 
-// Подсветка синтаксиса кода
+// Code syntax highlighting
 function initCodeHighlighting() {
-    // Prism.js уже подключен, просто инициализируем
+    // Prism.js is already connected, just initialize
     if (typeof Prism !== 'undefined') {
         Prism.highlightAll();
     }
     
-    // Добавляем кнопки копирования для блоков кода
+    // Add copy buttons for code blocks
     addCopyButtons();
 }
 
-// Добавление кнопок копирования
+// Adding copy buttons
 function addCopyButtons() {
     const codeBlocks = document.querySelectorAll('pre code');
     
@@ -105,9 +105,9 @@ function addCopyButtons() {
         const button = document.createElement('button');
         button.className = 'copy-button';
         button.innerHTML = '📋';
-        button.title = 'Копировать код';
+        button.title = 'Copy code';
         
-        // Стили для кнопки
+        // Button styles
         button.style.cssText = `
             position: absolute;
             top: 10px;
@@ -123,7 +123,7 @@ function addCopyButtons() {
             transition: opacity 0.3s ease;
         `;
         
-        // Показываем кнопку при наведении
+        // Show button on hover
         pre.style.position = 'relative';
         pre.addEventListener('mouseenter', () => {
             button.style.opacity = '1';
@@ -133,7 +133,7 @@ function addCopyButtons() {
             button.style.opacity = '0';
         });
         
-        // Обработка копирования
+        // Handle copying
         button.addEventListener('click', async () => {
             try {
                 await navigator.clipboard.writeText(block.textContent);
@@ -142,7 +142,7 @@ function addCopyButtons() {
                     button.innerHTML = '📋';
                 }, 2000);
             } catch (err) {
-                console.error('Ошибка копирования:', err);
+                console.error('Copy error:', err);
                 button.innerHTML = '❌';
                 setTimeout(() => {
                     button.innerHTML = '📋';
@@ -154,9 +154,9 @@ function addCopyButtons() {
     });
 }
 
-// Мобильное меню
+// Mobile menu
 function initMobileMenu() {
-    // Создаем кнопку мобильного меню
+    // Create mobile menu button
     const menuButton = document.createElement('button');
     menuButton.className = 'mobile-menu-button';
     menuButton.innerHTML = '☰';
@@ -178,7 +178,7 @@ function initMobileMenu() {
     
     document.body.appendChild(menuButton);
     
-    // Показываем кнопку на мобильных устройствах
+    // Show button on mobile devices
     function checkMobile() {
         if (window.innerWidth <= 768) {
             menuButton.style.display = 'block';
@@ -191,13 +191,13 @@ function initMobileMenu() {
     window.addEventListener('resize', checkMobile);
     checkMobile();
     
-    // Обработка клика по кнопке
+    // Handle button click
     menuButton.addEventListener('click', function() {
         const sidebar = document.querySelector('.sidebar');
         sidebar.classList.toggle('open');
     });
     
-    // Закрытие меню при клике вне его
+    // Close menu when clicking outside
     document.addEventListener('click', function(e) {
         const sidebar = document.querySelector('.sidebar');
         const menuButton = document.querySelector('.mobile-menu-button');
@@ -210,9 +210,9 @@ function initMobileMenu() {
     });
 }
 
-// Поиск по документации
+// Documentation search
 function initSearch() {
-    // Создаем поле поиска
+    // Create search field
     const searchContainer = document.createElement('div');
     searchContainer.className = 'search-container';
     searchContainer.style.cssText = `
@@ -222,7 +222,7 @@ function initSearch() {
     
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
-    searchInput.placeholder = 'Поиск по документации...';
+    searchInput.placeholder = 'Search documentation...';
     searchInput.className = 'search-input';
     searchInput.style.cssText = `
         width: 100%;
@@ -236,11 +236,11 @@ function initSearch() {
     
     searchContainer.appendChild(searchInput);
     
-    // Вставляем поиск в сайдбар
+    // Insert search into sidebar
     const sidebarContent = document.querySelector('.sidebar-content');
     sidebarContent.insertBefore(searchContainer, sidebarContent.firstChild);
     
-    // Обработка поиска
+    // Handle search
     searchInput.addEventListener('input', function() {
         const query = this.value.toLowerCase();
         const sections = document.querySelectorAll('.section');
@@ -254,7 +254,7 @@ function initSearch() {
             }
         });
         
-        // Подсвечиваем найденные результаты
+        // Highlight search results
         if (query) {
             highlightSearchResults(query);
         } else {
@@ -262,7 +262,7 @@ function initSearch() {
         }
     });
     
-    // Стили для placeholder
+    // Styles for placeholder
     searchInput.style.setProperty('--placeholder-color', 'rgba(255,255,255,0.6)');
     searchInput.addEventListener('focus', function() {
         this.style.background = 'rgba(255,255,255,0.2)';
@@ -272,7 +272,7 @@ function initSearch() {
     });
 }
 
-// Подсветка результатов поиска
+// Highlight search results
 function highlightSearchResults(query) {
     clearHighlights();
     
@@ -306,7 +306,7 @@ function highlightSearchResults(query) {
     });
 }
 
-// Очистка подсветки
+// Clear highlights
 function clearHighlights() {
     const marks = document.querySelectorAll('mark');
     marks.forEach(mark => {
@@ -316,7 +316,7 @@ function clearHighlights() {
     });
 }
 
-// Дополнительные утилиты
+// Additional utilities
 function scrollToTop() {
     window.scrollTo({
         top: 0,
@@ -324,12 +324,12 @@ function scrollToTop() {
     });
 }
 
-// Добавляем кнопку "Наверх"
+// Add "To top" button
 function addScrollToTopButton() {
     const button = document.createElement('button');
     button.innerHTML = '↑';
     button.className = 'scroll-to-top';
-    button.title = 'Наверх';
+    button.title = 'To top';
     button.style.cssText = `
         position: fixed;
         bottom: 20px;
@@ -350,7 +350,7 @@ function addScrollToTopButton() {
     
     document.body.appendChild(button);
     
-    // Показываем кнопку при прокрутке
+    // Show button on scroll
     window.addEventListener('scroll', function() {
         if (window.pageYOffset > 300) {
             button.style.opacity = '1';
@@ -359,19 +359,19 @@ function addScrollToTopButton() {
         }
     });
     
-    // Обработка клика
+    // Handle click
     button.addEventListener('click', scrollToTop);
 }
 
-// Инициализируем кнопку "Наверх"
+// Initialize "To top" button
 addScrollToTopButton();
 
-// Обработка ошибок
+// Error handling
 window.addEventListener('error', function(e) {
-    console.error('Ошибка в документации:', e.error);
+    console.error('Documentation error:', e.error);
 });
 
-// Экспорт функций для глобального использования
+// Export functions for global use
 window.DocsUtils = {
     scrollToTop,
     highlightSearchResults,

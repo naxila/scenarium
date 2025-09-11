@@ -1,52 +1,52 @@
-# Конфигурация для GitHub Pages
+# Configuration for GitHub Pages
 title: "Telegram Bot Constructor"
-description: "Конструктор Telegram ботов на основе JSON-сценариев с поддержкой расширяемых действий и функций"
+description: "Telegram bot constructor based on JSON scenarios with support for extensible actions and functions"
 author: "Your Name"
 email: "your.email@example.com"
 url: "https://your-username.github.io/telegram-bot-constructor"
 baseurl: "/telegram-bot-constructor"
 
-# Настройки Jekyll
+# Jekyll settings
 markdown: kramdown
 highlighter: rouge
 theme: minima
 
-# Плагины
+# Plugins
 plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
 
-# Настройки SEO
+# SEO settings
 seo:
   type: "WebSite"
   locale: "ru_RU"
   site_name: "Telegram Bot Constructor"
-  description: "Конструктор Telegram ботов на основе JSON-сценариев"
+  description: "Telegram bot constructor based on JSON scenarios"
   keywords: "telegram, bot, constructor, json, typescript, javascript"
 
-# Настройки навигации
+# Navigation settings
 navigation:
-  - title: "Обзор"
+  - title: "Overview"
     url: "#overview"
-  - title: "Быстрый старт"
+  - title: "Quick Start"
     url: "#quick-start"
-  - title: "Архитектура"
+  - title: "Architecture"
     url: "#architecture"
-  - title: "Сценарии"
+  - title: "Scenarios"
     url: "#scenarios"
-  - title: "Действия"
+  - title: "Actions"
     url: "#actions"
-  - title: "Функции"
+  - title: "Functions"
     url: "#functions"
-  - title: "Интерполяция"
+  - title: "Interpolation"
     url: "#interpolation"
-  - title: "Примеры"
+  - title: "Examples"
     url: "#examples"
   - title: "API Reference"
     url: "#api-reference"
 
-# Настройки сборки
+# Build settings
 exclude:
   - README.md
   - Gemfile
@@ -57,41 +57,41 @@ exclude:
   - .gitignore
   - .gitattributes
 
-# Настройки для GitHub Pages
+# GitHub Pages settings
 github:
   repository_url: "https://github.com/your-username/telegram-bot-constructor"
   repository_name: "telegram-bot-constructor"
   repository_owner: "your-username"
 
-# Настройки социальных сетей
+# Social media settings
 social:
   github: "your-username"
   twitter: "your-twitter"
   linkedin: "your-linkedin"
 
-# Настройки аналитики
+# Analytics settings
 analytics:
   google: "GA_TRACKING_ID"
   yandex: "YANDEX_METRICA_ID"
 
-# Настройки комментариев
+# Comments settings
 comments:
   provider: "disqus"
   disqus:
     shortname: "your-disqus-shortname"
 
-# Настройки поиска
+# Search settings
 search:
   provider: "lunr"
   lunr:
     max_index_size: 1000000
 
-# Настройки кеширования
+# Caching settings
 cache:
   enabled: true
   duration: 3600
 
-# Настройки безопасности
+# Security settings
 security:
   headers:
     X-Frame-Options: "SAMEORIGIN"
