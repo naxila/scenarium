@@ -31,7 +31,7 @@ export class JoinToStringFunction {
             return InterpolationSystem.interpolate(value, interpolationContext);
           }
           if (value && typeof value === 'object' && (value as any).function) {
-            const evaluated = await FunctionProcessor.evaluateResult(value, {}, context);
+            const evaluated = await FunctionProcessor.evaluateResult(value, {}, context, interpolationContext);
             return evaluated != null ? String(evaluated) : '';
           }
           return value != null ? String(value) : '';

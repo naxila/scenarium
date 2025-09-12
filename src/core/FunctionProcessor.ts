@@ -7,7 +7,8 @@ export class FunctionProcessor {
   static async executeUserFunction(
     funcName: string, 
     params: Record<string, any>, 
-    context: ProcessingContext
+    context: ProcessingContext,
+    existingInterpolationContext?: any
   ): Promise<any> {
     const actionProcessor = context.actionProcessor;
     const scenario = actionProcessor?.getScenario();
@@ -19,16 +20,26 @@ export class FunctionProcessor {
 
     // If function has no params, use empty object
     const paramDefs = funcDef.params || {};
-    const resolvedParams = this.resolveParams(paramDefs, params, context);
+    const resolvedParams = this.resolveParams(paramDefs, params, context, existingInterpolationContext);
     
+    // Debug: log context inheritance
+    if (existingInterpolationContext) {
+      console.log(`🔍 Function ${funcName} inheriting context:`, {
+        hasExistingContext: !!existingInterpolationContext,
+        localScopes: existingInterpolationContext.local?.getAllScopes(),
+        params: resolvedParams
+      });
+    }
     
-    return await this.evaluateResult(funcDef.result, resolvedParams, context);
+    return await this.evaluateResult(funcDef.result, resolvedParams, context, 
+      existingInterpolationContext || context.interpolationContext);
   }
 
   private static resolveParams(
     paramDefs: Record<string, any>,
     providedParams: Record<string, any>,
-    context: ProcessingContext
+    context: ProcessingContext,
+    interpolationContext?: any
   ): Record<string, any> {
     const resolved: Record<string, any> = {};
     
@@ -39,11 +50,14 @@ export class FunctionProcessor {
     }
     
     for (const [key, defaultValue] of Object.entries(paramDefs)) {
-      if (providedParams[key] !== undefined) {
-        resolved[key] = providedParams[key];
-      } else {
-        resolved[key] = defaultValue;
+      let value = providedParams[key] !== undefined ? providedParams[key] : defaultValue;
+      
+      // Interpolate the value if we have interpolation context
+      if (interpolationContext && typeof value === 'string') {
+        value = InterpolationSystem.interpolate(value, interpolationContext);
       }
+      
+      resolved[key] = value;
     }
     
     return resolved;
@@ -66,10 +80,13 @@ export class FunctionProcessor {
   static async evaluateResult(
     result: any, 
     params: Record<string, any>, 
-    context: ProcessingContext
+    context: ProcessingContext,
+    existingInterpolationContext?: any
   ): Promise<any> {
-    // Создаем контекст с параметрами функции
-    const interpolationContext = InterpolationContextBuilder.createContext(context, params);
+    // Используем существующий контекст или контекст из ProcessingContext, или создаем новый
+    const interpolationContext = existingInterpolationContext || 
+      context.interpolationContext || 
+      InterpolationContextBuilder.createContext(context, params);
     
     if (typeof result === 'object' && result !== null) {
       if (result.function) {
@@ -90,7 +107,7 @@ export class FunctionProcessor {
         if (scenario?.functions && scenario.functions[functionName]) {
           // Интерполируем параметры перед передачей в функцию
           const interpolatedParams = InterpolationSystem.interpolate(result, interpolationContext);
-          return await this.executeUserFunction(functionName, interpolatedParams, context);
+          return await this.executeUserFunction(functionName, interpolatedParams, context, interpolationContext);
         }
       }
       

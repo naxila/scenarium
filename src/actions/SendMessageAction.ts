@@ -8,14 +8,17 @@ export class SendMessageAction extends BaseActionProcessor {
   static readonly actionType = 'SendMessage';
   
   async process(action: any, context: ProcessingContext): Promise<void> {
-    // Create interpolation context for this action
-    const interpolationContext = this.createInterpolationContext(context);
+    // Use existing interpolation context or create new one
+    const interpolationContext = context.interpolationContext || this.createInterpolationContext(context);
     
-    // Create local scope for action-specific variables
-    interpolationContext.local.createScope();
+    // Create local scope for action-specific variables (only if we created new context)
+    const isNewContext = !context.interpolationContext;
+    if (isNewContext) {
+      interpolationContext.local.createScope();
+    }
     
     // Set action-specific variables
-    interpolationContext.local.setVariable('messageId', null);
+    // messageId is dynamic and should not be hardcoded in local context
     interpolationContext.local.setVariable('sent', false);
     interpolationContext.local.setVariable('error', null);
     
@@ -28,7 +31,7 @@ export class SendMessageAction extends BaseActionProcessor {
     // Support for inline functions in text field
     if (text && typeof text === 'object' && (text as any).function) {
       try {
-        const evaluated = await FunctionProcessor.evaluateResult(text, {}, context);
+        const evaluated = await FunctionProcessor.evaluateResult(text, {}, context, interpolationContext);
         text = String(evaluated ?? '');
       } catch (e) {
         console.error('Failed to evaluate text function:', e);
@@ -76,35 +79,74 @@ export class SendMessageAction extends BaseActionProcessor {
       // Отправляем или обновляем сообщение
       let message: any = null;
       const updateTarget = (context.localContext as any)?.__updateMessage__;
+      
+      console.log('🔍 SendMessage DEBUG - Message operation:', {
+        hasUpdateTarget: !!updateTarget,
+        updateTargetMessageId: updateTarget?.messageId,
+        chatId: chatId,
+        text: text.substring(0, 50) + '...',
+        isUpdate: !!(updateTarget && updateTarget.messageId)
+      });
+      
       if (updateTarget && updateTarget.messageId) {
-        await adapter.editMessageText(chatId, Number(updateTarget.messageId), text, options);
+        console.log('🔍 SendMessage DEBUG - Updating existing message');
+        const result = await adapter.editMessageText(chatId, Number(updateTarget.messageId), text, options);
+        console.log('✅ SendMessage DEBUG - Update result:', result);
         message = { message_id: Number(updateTarget.messageId) };
       } else {
+        console.log('🔍 SendMessage DEBUG - Sending new message');
         message = await adapter.sendMessage(chatId, text, options);
+        console.log('✅ SendMessage DEBUG - Send result:', message);
       }
       
       // Update local variables
       if (message && message.message_id) {
-        interpolationContext.local.setVariable('messageId', message.message_id);
+        // messageId is dynamic and should not be hardcoded in local context
         interpolationContext.local.setVariable('sent', true);
-      }
-      
-      // Сохраняем ID сообщения и actionIds для будущей очистки
-      if (!updateTarget && message && message.message_id) {
-        context.userContext.data.lastMessageId = message.message_id;
-        context.userContext.data.lastMessageActionIds = messageActionIds;
+        
+        // Обновляем lastMessageId ДО выполнения onSuccess
+        if (!updateTarget) {
+          context.userContext.data.lastMessageId = message.message_id;
+          context.userContext.data.lastMessageActionIds = messageActionIds;
+        }
       }
 
       // Коллбек onSuccess с доступом к messageId
       if (interpolatedAction.onSuccess && message && message.message_id) {
+        console.log('🔍 SendMessage DEBUG - onSuccess triggered:', {
+          messageId: message.message_id,
+          onSuccessActions: interpolatedAction.onSuccess,
+          localScopes: interpolationContext.local.getAllScopes()
+        });
+        
+        // Update local variables with message info
+        interpolationContext.local.setVariable('sent', true);
+        
+        console.log('🔍 SendMessage DEBUG - After setting sent in local scope:', {
+          localScopes: interpolationContext.local.getAllScopes()
+        });
+        
+        // Process onSuccess actions with special handling for CURRENT_MESSAGE_ID
+        const processedOnSuccess = interpolatedAction.onSuccess.map((action: any) => {
+          if (action.action === 'Store' && action.value === 'CURRENT_MESSAGE_ID') {
+            console.log('🔍 SendMessage DEBUG - Replacing CURRENT_MESSAGE_ID with actual messageId:', message.message_id);
+            return {
+              ...action,
+              value: message.message_id.toString()
+            };
+          }
+          return action;
+        });
+        
         const nextContext: ProcessingContext = {
           ...context,
           localContext: {
             ...context.localContext,
             messageId: message.message_id
-          }
+          },
+          interpolationContext: interpolationContext // Pass interpolation context to nested actions
         };
-        await this.processNestedActions(interpolatedAction.onSuccess, nextContext);
+        await this.processNestedActions(processedOnSuccess, nextContext);
       }
       
     } catch (error) {
@@ -112,8 +154,10 @@ export class SendMessageAction extends BaseActionProcessor {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       interpolationContext.local.setVariable('error', errorMessage);
     } finally {
-      // Clean up local scope when action completes
-      interpolationContext.local.clearScope();
+      // Clean up local scope only if we created new context
+      if (isNewContext) {
+        interpolationContext.local.clearScope();
+      }
     }
     
     this.updateUserActivity(context);

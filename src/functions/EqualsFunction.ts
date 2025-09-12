@@ -24,11 +24,11 @@ export class EqualsFunction {
       interpolationContext.local.setVariable('values', values);
       
       if (areEqual && params.trueResult) {
-        const result = await FunctionProcessor.evaluateResult(params.trueResult, {}, context);
+        const result = await FunctionProcessor.evaluateResult(params.trueResult, {}, context, interpolationContext);
         interpolationContext.local.setVariable('result', result);
         return result;
       } else if (!areEqual && params.falseResult) {
-        const result = await FunctionProcessor.evaluateResult(params.falseResult, {}, context);
+        const result = await FunctionProcessor.evaluateResult(params.falseResult, {}, context, interpolationContext);
         interpolationContext.local.setVariable('result', result);
         return result;
       }

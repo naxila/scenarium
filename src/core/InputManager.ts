@@ -16,17 +16,20 @@ export class InputManager {
       return true;
     }
 
-    // Save input value
+    // Save input value in user data (not nested in input object)
     const inputKey = awaiting.key as string;
-    const existingInput = (userContext as any).input || {};
-    const newInput = { ...existingInput, [inputKey]: text };
-    bot.updateUserContext(userId, { input: newInput, awaitingInput: undefined });
+    const updateData = { 
+      [inputKey]: text,  // Store directly as key: value (e.g., name: "John", email: "john@example.com")
+      awaitingInput: undefined 
+    };
+    bot.updateUserContext(userId, updateData);
 
     // Run onDone
     if (awaiting.onDone) {
       await bot.processUserAction(userId, awaiting.onDone);
       if (awaiting.clearInputOnDone) {
-        bot.updateUserContext(userId, { input: {} });
+        // Clear the specific input key instead of entire input object
+        bot.updateUserContext(userId, { [inputKey]: undefined });
       }
       return true;
     }

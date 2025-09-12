@@ -114,16 +114,22 @@ export class RequestApiAction extends BaseActionProcessor {
       };
     }
 
-    // onSuccess/onFailure с доступом к {{response.body}} и {{response.headers}}
+    // Set response data in local scope for nested actions
+    interpolationContext.local.setVariable('response', responseContext);
+    interpolationContext.local.setVariable('error', responseContext.error);
+    interpolationContext.local.setVariable('ok', ok);
+
+    // Create context for nested actions with response data
     const nextContext: ProcessingContext = {
       ...context,
       localContext: {
         ...context.localContext,
         response: responseContext,
-        error: responseContext.error
-      }
+        error: responseContext.error,
+        ok: ok
+      },
+      interpolationContext: interpolationContext // Pass interpolation context to nested actions
     };
-
 
     if (ok && onSuccess) {
       await this.processNestedActions(onSuccess, nextContext);

@@ -87,6 +87,11 @@ export class InterpolationSystem {
         break;
     }
     
+    // If value is undefined, return original variable syntax
+    if (value === undefined) {
+      return `{{${source}.${varName}}}`;
+    }
+    
     return this.formatValue(value);
   }
 
@@ -94,9 +99,20 @@ export class InterpolationSystem {
    * Find variable by priority: local -> params -> data -> env
    */
   private static findVariableByPriority(context: InterpolationContext, varName: string): string {
+    // Debug log for response.* variables
+    if (varName.startsWith('response.')) {
+      console.log(`🔍 Looking for ${varName}:`, {
+        localScopes: context.local.getAllScopes(),
+        hasParams: !!context.params,
+        hasData: !!context.data,
+        hasEnv: !!context.env
+      });
+    }
+    
     // 1. Search in local scope
     let value = context.local.findVariable(varName);
     if (value !== undefined) {
+      if (varName.startsWith('response.')) console.log(`✅ Found ${varName} in local:`, value);
       return this.formatValue(value);
     }
     
@@ -118,7 +134,8 @@ export class InterpolationSystem {
       return this.formatValue(value);
     }
     
-    // Variable not found, return original placeholder
+    // Variable not found - return original variable syntax
+    if (varName.startsWith('response.')) console.log(`❌ Variable ${varName} not found`);
     return `{{${varName}}}`;
   }
 
@@ -147,7 +164,7 @@ export class InterpolationSystem {
    */
   private static formatValue(value: any): string {
     if (value === null || value === undefined) {
-      return '';
+      return ''; // Return empty string for null/undefined values
     }
     
     if (typeof value === 'object') {

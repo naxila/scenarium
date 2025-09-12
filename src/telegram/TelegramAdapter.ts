@@ -373,11 +373,30 @@ export class TelegramAdapter {
   }
 
   async editMessageText(chatId: string, messageId: number, text: string, options?: any): Promise<void> {
-    await this.bot.editMessageText(text, {
-      chat_id: chatId,
-      message_id: messageId,
-      ...options
+    console.log('🔍 TelegramAdapter.editMessageText DEBUG:', {
+      chatId: chatId,
+      messageId: messageId,
+      text: text.substring(0, 100) + '...',
+      options: options,
+      textLength: text.length
     });
+    
+    try {
+      const result = await this.bot.editMessageText(text, {
+        chat_id: chatId,
+        message_id: messageId,
+        ...options
+      });
+      console.log('✅ TelegramAdapter.editMessageText SUCCESS:', result);
+    } catch (error) {
+      console.error('❌ TelegramAdapter.editMessageText ERROR:', {
+        error: error,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        chatId: chatId,
+        messageId: messageId
+      });
+      throw error;
+    }
   }
 
   async answerCallbackQuery(queryId: string, options?: any): Promise<void> {
@@ -390,10 +409,26 @@ export class TelegramAdapter {
 
   // Удаление сообщения
   async deleteMessage(chatId: string, messageId: number): Promise<void> {
+    console.log('🔍 TelegramAdapter.deleteMessage DEBUG:', {
+      chatId: chatId,
+      messageId: messageId,
+      chatIdType: typeof chatId,
+      messageIdType: typeof messageId
+    });
+    
     try {
-      await this.bot.deleteMessage(chatId, messageId);
+      const result = await this.bot.deleteMessage(chatId, messageId);
+      console.log('✅ TelegramAdapter.deleteMessage SUCCESS:', result);
       console.log(`✅ Message ${messageId} deleted in chat ${chatId}`);
     } catch (error) {
+      console.error('❌ TelegramAdapter.deleteMessage ERROR:', {
+        error: error,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        response: (error as any)?.response,
+        code: (error as any)?.code,
+        chatId: chatId,
+        messageId: messageId
+      });
       console.error(`Failed to delete message ${messageId} in chat ${chatId}:`, error);
       throw error;
     }

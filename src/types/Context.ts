@@ -18,4 +18,5 @@ export interface ProcessingContext {
   bot?: any; // Add bot for sending messages
   chatId?: string; // Add chatId for sending messages
   botInstance?: any; // Add botInstance for accessing bot methods
+  interpolationContext?: any; // Add interpolation context for nested actions
 }

@@ -14,15 +14,18 @@ export class NavigateAction extends BaseActionProcessor {
     interpolationContext.local.createScope();
     
     try {
-      // Interpolate the action using new system
-      const interpolatedAction = this.interpolate(action, interpolationContext);
-      
+      // Interpolate only the action's own fields, not nested actions
       const { 
         menuItem, 
         addToBackStack = true,
         removePreviousMessage = false,
         uniqueInStack = true 
-      } = interpolatedAction;
+      } = action;
+      
+      // Interpolate only the menuItem if it's a string
+      const interpolatedMenuItem = typeof menuItem === 'string' 
+        ? this.interpolate(menuItem, interpolationContext)
+        : menuItem;
     
 
     // Clear previous message actions
@@ -34,18 +37,18 @@ export class NavigateAction extends BaseActionProcessor {
     const isBackAction = context.localContext.isBackAction === true;
 
     // Update current menu
-    context.userContext.currentMenu = menuItem;
+    context.userContext.currentMenu = interpolatedMenuItem;
     this.updateUserActivity(context);
 
     // Maintain stack so that last element always corresponds to current menu
     if (addToBackStack && !isBackAction) {
-      this.addToBackStack(context, menuItem, uniqueInStack);
+      this.addToBackStack(context, interpolatedMenuItem, uniqueInStack);
     }
 
     // Get menu from scenario
-    const menu = context.scenario.menuItems[menuItem];
+    const menu = context.scenario.menuItems[interpolatedMenuItem];
     if (!menu) {
-      console.warn(`❌ Menu item ${menuItem} not found, falling back to start actions`);
+      console.warn(`❌ Menu item ${interpolatedMenuItem} not found, falling back to start actions`);
       await this.fallbackToStart(context);
       return;
     }
