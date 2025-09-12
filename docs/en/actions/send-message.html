@@ -106,7 +106,7 @@
                     <h3>Message with Variables</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello, {{userContext.data.name}}! You are in the {{userContext.currentMenu}} menu"
+  "text": "Hello, {{name}}! You are in the {{currentMenu}} menu"
 }</code></pre>
                 </div>
 
@@ -139,32 +139,32 @@
                     <div class="variable-card">
                         <h4>userContext</h4>
                         <ul>
-                            <li><code>{{userContext.userId}}</code> - User ID</li>
-                            <li><code>{{userContext.data.name}}</code> - User name</li>
-                            <li><code>{{userContext.currentMenu}}</code> - Current menu</li>
-                            <li><code>{{userContext.data.lastMessageId}}</code> - Last message ID</li>
+                            <li><code>{{userId}}</code> - User ID</li>
+                            <li><code>{{name}}</code> - User name</li>
+                            <li><code>{{currentMenu}}</code> - Current menu</li>
+                            <li><code>{{lastMessageId}}</code> - Last message ID</li>
                         </ul>
                     </div>
                     <div class="variable-card">
                         <h4>scenarioContext</h4>
                         <ul>
-                            <li><code>{{scenarioContext.data.apiUrl}}</code> - API URL</li>
-                            <li><code>{{scenarioContext.data.version}}</code> - Scenario version</li>
+                            <li><code>{{apiUrl}}</code> - API URL</li>
+                            <li><code>{{version}}</code> - Scenario version</li>
                         </ul>
                     </div>
                     <div class="variable-card">
                         <h4>localContext</h4>
                         <ul>
-                            <li><code>{{localContext.messageId}}</code> - Current message ID</li>
-                            <li><code>{{localContext.response}}</code> - API response</li>
-                            <li><code>{{localContext.error}}</code> - Error</li>
+                            <li><code>{{messageId}}</code> - Current message ID</li>
+                            <li><code>{{response}}</code> - API response</li>
+                            <li><code>{{error}}</code> - Error</li>
                         </ul>
                     </div>
                     <div class="variable-card">
                         <h4>input</h4>
                         <ul>
-                            <li><code>{{input.userName}}</code> - Entered name</li>
-                            <li><code>{{input.email}}</code> - Entered email</li>
+                            <li><code>{{userName}}</code> - Entered name</li>
+                            <li><code>{{email}}</code> - Entered email</li>
                         </ul>
                     </div>
                 </div>

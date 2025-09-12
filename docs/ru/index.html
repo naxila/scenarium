@@ -315,18 +315,18 @@ startBot().catch(console.error);</code></pre>
                     <h3>Создание кастомного действия</h3>
                     <p>Для создания кастомного действия реализуйте <code>ICustomAction</code> интерфейс:</p>
 
-                    <pre><code class="language-typescript">import { ICustomAction, ProcessingContext } from 'scenarium';
+                    <pre><code class="language-typescript">import { ICustomAction } from 'scenarium';
 
 export class MyCustomAction implements ICustomAction {
   readonly actionType = 'MyCustomAction';
 
-  async process(action: any, context: ProcessingContext): Promise<void> {
+  async process(action: any, context: any): Promise<void> {
     // Ваша кастомная логика здесь
-    const { userContext, scenarioContext, localContext } = context;
+    // Доступ к данным пользователя через интерполяцию: {{userId}}, {{name}}, и т.д.
     
     // Пример: Отправка кастомного сообщения
     await context.telegramService.sendMessage(
-      userContext.userId,
+      action.userId,
       `Кастомное действие выполнено! Данные: ${JSON.stringify(action.data)}`
     );
   }
@@ -370,7 +370,7 @@ const bot = BotFactory.createFromScenario({
         "action": "MyCustomAction",
         "data": {
           "message": "Привет от кастомного действия!",
-          "userId": "{{userContext.userId}}"
+          "userId": "{{userId}}"
         }
       }
     }
@@ -383,17 +383,15 @@ const bot = BotFactory.createFromScenario({
                     <pre><code class="language-typescript">export class AdvancedCustomAction implements ICustomAction {
   readonly actionType = 'AdvancedCustomAction';
 
-  async process(action: any, context: ProcessingContext): Promise<void> {
-    const { userContext, scenarioContext, localContext, telegramService } = context;
-    
+  async process(action: any, context: any): Promise<void> {
     try {
-      // Store data
-      await context.userSessionManager.setData(userContext.userId, 'lastAction', action.data);
+      // Store data using interpolation
+      await context.userSessionManager.setData(action.userId, 'lastAction', action.data);
       
       // Send message
-      await telegramService.sendMessage(
-        userContext.userId,
-        `Продвинутое действие выполнено для пользователя ${userContext.userId}`
+      await context.telegramService.sendMessage(
+        action.userId,
+        `Продвинутое действие выполнено для пользователя ${action.userId}`
       );
       
       // Navigate to another menu
@@ -404,8 +402,8 @@ const bot = BotFactory.createFromScenario({
       
     } catch (error) {
       console.error('Ошибка кастомного действия:', error);
-      await telegramService.sendMessage(
-        userContext.userId,
+      await context.telegramService.sendMessage(
+        action.userId,
         'Извините, что-то пошло не так!'
       );
     }
@@ -421,19 +419,19 @@ const bot = BotFactory.createFromScenario({
                     <h3>Создание кастомной функции</h3>
                     <p>Для создания кастомной функции реализуйте <code>ICustomFunction</code> интерфейс:</p>
 
-                    <pre><code class="language-typescript">import { ICustomFunction, ProcessingContext } from 'scenarium';
+                    <pre><code class="language-typescript">import { ICustomFunction } from 'scenarium';
 
 export class MyCustomFunction implements ICustomFunction {
   readonly functionName = 'MyCustomFunction';
 
-  async execute(params: any, context: ProcessingContext): Promise<any> {
+  async execute(params: any, context: any): Promise<any> {
     // Ваша кастомная логика здесь
-    const { userContext, scenarioContext, localContext } = context;
+    // Доступ к данным через интерполяцию: {{userId}}, {{name}}, и т.д.
     
     // Example: Process user data
     const result = {
       processedAt: new Date().toISOString(),
-      userId: userContext.userId,
+      userId: params.userId,
       input: params.input,
       processed: `Обработано: ${params.input}`
     };
@@ -472,7 +470,7 @@ const bot = BotFactory.createFromScenario({
         "action": "SendMessage",
         "text": {
           "function": "MyCustomFunction",
-          "input": "{{userContext.data.name}}"
+          "input": "{{name}}"
         }
       }
     }
@@ -485,18 +483,15 @@ const bot = BotFactory.createFromScenario({
                     <pre><code class="language-typescript">export class DataProcessorFunction implements ICustomFunction {
   readonly functionName = 'DataProcessor';
 
-  async execute(params: any, context: ProcessingContext): Promise<any> {
-    const { userContext, scenarioContext } = context;
-    
-    // Get user data
-    const userData = await context.userSessionManager.getData(userContext.userId);
+  async execute(params: any, context: any): Promise<any> {
+    // Доступ к данным пользователя через интерполяцию: {{name}}, {{email}}, и т.д.
     
     // Process data based on parameters
     switch (params.operation) {
       case 'formatUserInfo':
-        return this.formatUserInfo(userData, params.format);
+        return this.formatUserInfo(params.userData, params.format);
       case 'calculateAge':
-        return this.calculateAge(userData.birthDate);
+        return this.calculateAge(params.birthDate);
       case 'validateEmail':
         return this.validateEmail(params.email);
       default:

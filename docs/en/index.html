@@ -315,18 +315,18 @@ startBot().catch(console.error);</code></pre>
                     <h3>Creating a Custom Action</h3>
                     <p>To create a custom action, implement the <code>ICustomAction</code> interface:</p>
 
-                    <pre><code class="language-typescript">import { ICustomAction, ProcessingContext } from 'scenarium';
+                    <pre><code class="language-typescript">import { ICustomAction } from 'scenarium';
 
 export class MyCustomAction implements ICustomAction {
   readonly actionType = 'MyCustomAction';
 
-  async process(action: any, context: ProcessingContext): Promise<void> {
+  async process(action: any, context: any): Promise<void> {
     // Your custom logic here
-    const { userContext, scenarioContext, localContext } = context;
+    // Access user data via interpolation: {{userId}}, {{name}}, etc.
     
     // Example: Send a custom message
     await context.telegramService.sendMessage(
-      userContext.userId,
+      action.userId,
       `Custom action executed! Data: ${JSON.stringify(action.data)}`
     );
   }
@@ -370,7 +370,7 @@ const bot = BotFactory.createFromScenario({
         "action": "MyCustomAction",
         "data": {
           "message": "Hello from custom action!",
-          "userId": "{{userContext.userId}}"
+          "userId": "{{userId}}"
         }
       }
     }
@@ -383,17 +383,15 @@ const bot = BotFactory.createFromScenario({
                     <pre><code class="language-typescript">export class AdvancedCustomAction implements ICustomAction {
   readonly actionType = 'AdvancedCustomAction';
 
-  async process(action: any, context: ProcessingContext): Promise<void> {
-    const { userContext, scenarioContext, localContext, telegramService } = context;
-    
+  async process(action: any, context: any): Promise<void> {
     try {
-      // Store data
-      await context.userSessionManager.setData(userContext.userId, 'lastAction', action.data);
+      // Store data using interpolation
+      await context.userSessionManager.setData(action.userId, 'lastAction', action.data);
       
       // Send message
-      await telegramService.sendMessage(
-        userContext.userId,
-        `Advanced action executed for user ${userContext.userId}`
+      await context.telegramService.sendMessage(
+        action.userId,
+        `Advanced action executed for user ${action.userId}`
       );
       
       // Navigate to another menu
@@ -404,8 +402,8 @@ const bot = BotFactory.createFromScenario({
       
     } catch (error) {
       console.error('Custom action error:', error);
-      await telegramService.sendMessage(
-        userContext.userId,
+      await context.telegramService.sendMessage(
+        action.userId,
         'Sorry, something went wrong!'
       );
     }
@@ -421,19 +419,19 @@ const bot = BotFactory.createFromScenario({
                     <h3>Creating a Custom Function</h3>
                     <p>To create a custom function, implement the <code>ICustomFunction</code> interface:</p>
 
-                    <pre><code class="language-typescript">import { ICustomFunction, ProcessingContext } from 'scenarium';
+                    <pre><code class="language-typescript">import { ICustomFunction } from 'scenarium';
 
 export class MyCustomFunction implements ICustomFunction {
   readonly functionName = 'MyCustomFunction';
 
-  async execute(params: any, context: ProcessingContext): Promise<any> {
+  async execute(params: any, context: any): Promise<any> {
     // Your custom logic here
-    const { userContext, scenarioContext, localContext } = context;
+    // Access data via interpolation: {{userId}}, {{name}}, etc.
     
     // Example: Process user data
     const result = {
       processedAt: new Date().toISOString(),
-      userId: userContext.userId,
+      userId: params.userId,
       input: params.input,
       processed: `Processed: ${params.input}`
     };
@@ -472,7 +470,7 @@ const bot = BotFactory.createFromScenario({
         "action": "SendMessage",
         "text": {
           "function": "MyCustomFunction",
-          "input": "{{userContext.data.name}}"
+          "input": "{{name}}"
         }
       }
     }
@@ -485,18 +483,15 @@ const bot = BotFactory.createFromScenario({
                     <pre><code class="language-typescript">export class DataProcessorFunction implements ICustomFunction {
   readonly functionName = 'DataProcessor';
 
-  async execute(params: any, context: ProcessingContext): Promise<any> {
-    const { userContext, scenarioContext } = context;
-    
-    // Get user data
-    const userData = await context.userSessionManager.getData(userContext.userId);
+  async execute(params: any, context: any): Promise<any> {
+    // Access user data via interpolation: {{name}}, {{email}}, etc.
     
     // Process data based on parameters
     switch (params.operation) {
       case 'formatUserInfo':
-        return this.formatUserInfo(userData, params.format);
+        return this.formatUserInfo(params.userData, params.format);
       case 'calculateAge':
-        return this.calculateAge(userData.birthDate);
+        return this.calculateAge(params.birthDate);
       case 'validateEmail':
         return this.validateEmail(params.email);
       default:

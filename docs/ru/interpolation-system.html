@@ -100,35 +100,24 @@
 
                 <h3>Локальный контекст в действиях</h3>
                 <div class="code-block">
-                    <pre><code>// Действие создает локальную область
-context.local.createScope();
-context.local.setVariable('messageId', 123);
-context.local.setVariable('sent', true);
+                    <pre><code>// Действие автоматически создает локальную область видимости
+// Переменные доступны для интерполяции
 
-// Интерполяция
+// В тексте действия
 "text": "Сообщение {{messageId}} отправлено: {{sent}}"
 // Результат: "Сообщение 123 отправлено: true"</code></pre>
                 </div>
 
                 <h3>Вложенные области функций</h3>
                 <div class="code-block">
-                    <pre><code>// Функция A
-context.local.createScope();
-context.local.setVariable('x', 10);
+                    <pre><code>// Функции автоматически наследуют родительскую область видимости
+// Дочерние функции могут получить доступ к переменным родителя
+// Локальные переменные могут переопределить переменные родителя
+// Области видимости автоматически очищаются при завершении функций
 
-// Функция B (вложенная)
-context.local.createScope();
-context.local.setVariable('y', 20);
-// Может обращаться к x и y
-
-// Функция C (вложенная в B)
-context.local.createScope();
-context.local.setVariable('z', 30);
-// Может обращаться к x, y и z
-
-// Когда C завершается, очищается только z
-// Когда B завершается, очищается только y
-// Когда A завершается, очищается только x</code></pre>
+// Пример: Функция A устанавливает x=10, Функция B может получить доступ к x
+// Функция B устанавливает y=20, Функция C может получить доступ к x и y
+// Когда функции завершаются, их локальные переменные очищаются</code></pre>
                 </div>
 
                 <h3>Явные префиксы</h3>
@@ -146,41 +135,11 @@ context.local.setVariable('z', 30);
                 <ul>
                     <li><strong>Используйте прямой доступ:</strong> Предпочитайте <code>{{variableName}}</code> вместо <code>{{local.variableName}}</code> когда возможно</li>
                     <li><strong>Явные префиксы:</strong> Используйте префиксы когда нужно явно указать источник данных</li>
-                    <li><strong>Управление областями:</strong> Всегда вызывайте <code>clearScope()</code> при завершении действия/функции</li>
+                    <li><strong>Управление областями:</strong> Области видимости автоматически управляются системой</li>
                     <li><strong>Именование переменных:</strong> Используйте описательные имена чтобы избежать конфликтов</li>
                     <li><strong>Вложенные объекты:</strong> Используйте точечную нотацию для доступа к вложенным объектам</li>
                 </ul>
 
-                <h2>Справочник API</h2>
-
-                <h3>InterpolationContext</h3>
-                <div class="code-block">
-                    <pre><code>interface InterpolationContext {
-  env: Record<string, any>;      // Переменные окружения
-  data: Record<string, any>;     // Данные сценария
-  local: ScopeManager;           // Менеджер локальных областей
-  params: Record<string, any>;   // Параметры функций/действий
-}</code></pre>
-                </div>
-
-                <h3>ScopeManager</h3>
-                <div class="code-block">
-                    <pre><code>class ScopeManager {
-  createScope(initialData?: Record<string, any>): void;
-  setVariable(name: string, value: any): void;
-  getVariable(name: string): any;
-  findVariable(name: string): any;
-  clearScope(): void;
-  getCurrentScope(): Record<string, any>;
-}</code></pre>
-                </div>
-
-                <h3>InterpolationSystem</h3>
-                <div class="code-block">
-                    <pre><code>class InterpolationSystem {
-  static interpolate(value: any, context: InterpolationContext): any;
-}</code></pre>
-                </div>
             </div>
         </div>
     </div>
@@ -188,3 +147,4 @@ context.local.setVariable('z', 30);
     <script src="script.js"></script>
 </body>
 </html>
+

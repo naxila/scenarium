@@ -107,7 +107,7 @@
                         <h3>Сообщение с переменными</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Привет, {{userContext.data.name}}! Ты находишься в меню {{userContext.currentMenu}}"
+  "text": "Привет, {{name}}! Ты находишься в меню {{currentMenu}}"
 }</code></pre>
                     </div>
 
@@ -141,7 +141,7 @@
   "action": "SendMessage",
   "text": {
     "function": "JoinToString",
-    "values": ["Привет, ", "{{userContext.data.name}}", "! Сегодня ", "{{localContext.currentDate}}"]
+    "values": ["Привет, ", "{{name}}", "! Сегодня ", "{{currentDate}}"]
   }
 }</code></pre>
                     </div>
@@ -154,7 +154,7 @@
   "onSuccess": {
     "action": "Store",
     "key": "lastMessageSent",
-    "value": "{{localContext.messageId}}"
+    "value": "{{messageId}}"
   }
 }</code></pre>
                     </div>
@@ -164,32 +164,32 @@
                         <div class="variable-card">
                             <h4>userContext</h4>
                             <ul>
-                                <li><code>{{userContext.userId}}</code> - ID пользователя</li>
-                                <li><code>{{userContext.data.name}}</code> - Имя пользователя</li>
-                                <li><code>{{userContext.currentMenu}}</code> - Текущее меню</li>
-                                <li><code>{{userContext.data.lastMessageId}}</code> - ID последнего сообщения</li>
+                                <li><code>{{userId}}</code> - ID пользователя</li>
+                                <li><code>{{name}}</code> - Имя пользователя</li>
+                                <li><code>{{currentMenu}}</code> - Текущее меню</li>
+                                <li><code>{{lastMessageId}}</code> - ID последнего сообщения</li>
                             </ul>
                         </div>
                         <div class="variable-card">
                             <h4>scenarioContext</h4>
                             <ul>
-                                <li><code>{{scenarioContext.data.apiUrl}}</code> - URL API</li>
-                                <li><code>{{scenarioContext.data.version}}</code> - Версия сценария</li>
+                                <li><code>{{apiUrl}}</code> - URL API</li>
+                                <li><code>{{version}}</code> - Версия сценария</li>
                             </ul>
                         </div>
                         <div class="variable-card">
                             <h4>localContext</h4>
                             <ul>
-                                <li><code>{{localContext.messageId}}</code> - ID текущего сообщения</li>
-                                <li><code>{{localContext.response}}</code> - Ответ API</li>
-                                <li><code>{{localContext.error}}</code> - Ошибка</li>
+                                <li><code>{{messageId}}</code> - ID текущего сообщения</li>
+                                <li><code>{{response}}</code> - Ответ API</li>
+                                <li><code>{{error}}</code> - Ошибка</li>
                             </ul>
                         </div>
                         <div class="variable-card">
                             <h4>input</h4>
                             <ul>
-                                <li><code>{{input.userName}}</code> - Введенное имя</li>
-                                <li><code>{{input.email}}</code> - Введенный email</li>
+                                <li><code>{{userName}}</code> - Введенное имя</li>
+                                <li><code>{{email}}</code> - Введенный email</li>
                             </ul>
                         </div>
                     </div>

@@ -100,35 +100,24 @@
 
                 <h3>Local Context in Actions</h3>
                 <div class="code-block">
-                    <pre><code>// Action creates local scope
-context.local.createScope();
-context.local.setVariable('messageId', 123);
-context.local.setVariable('sent', true);
+                    <pre><code>// Action automatically creates local scope
+// Variables are available for interpolation
 
-// Interpolation
+// In action text
 "text": "Message {{messageId}} sent: {{sent}}"
 // Result: "Message 123 sent: true"</code></pre>
                 </div>
 
                 <h3>Nested Function Scopes</h3>
                 <div class="code-block">
-                    <pre><code>// Function A
-context.local.createScope();
-context.local.setVariable('x', 10);
+                    <pre><code>// Functions automatically inherit parent scope
+// Child functions can access parent variables
+// Local variables can override parent variables
+// Scopes are automatically cleaned up when functions complete
 
-// Function B (nested)
-context.local.createScope();
-context.local.setVariable('y', 20);
-// Can access both x and y
-
-// Function C (nested in B)
-context.local.createScope();
-context.local.setVariable('z', 30);
-// Can access x, y, and z
-
-// When C completes, only z is cleared
-// When B completes, only y is cleared
-// When A completes, only x is cleared</code></pre>
+// Example: Function A sets x=10, Function B can access x
+// Function B sets y=20, Function C can access both x and y
+// When functions complete, their local variables are cleared</code></pre>
                 </div>
 
                 <h3>Explicit Prefixes</h3>
@@ -146,41 +135,11 @@ context.local.setVariable('z', 30);
                 <ul>
                     <li><strong>Use Direct Access:</strong> Prefer <code>{{variableName}}</code> over <code>{{local.variableName}}</code> when possible</li>
                     <li><strong>Explicit Prefixes:</strong> Use prefixes when you need to be specific about data source</li>
-                    <li><strong>Scope Management:</strong> Always call <code>clearScope()</code> when action/function completes</li>
+                    <li><strong>Scope Management:</strong> Scopes are automatically managed by the system</li>
                     <li><strong>Variable Naming:</strong> Use descriptive names to avoid conflicts</li>
                     <li><strong>Nested Objects:</strong> Use dot notation for nested object access</li>
                 </ul>
 
-                <h2>API Reference</h2>
-
-                <h3>InterpolationContext</h3>
-                <div class="code-block">
-                    <pre><code>interface InterpolationContext {
-  env: Record<string, any>;      // Environment variables
-  data: Record<string, any>;     // Scenario data
-  local: ScopeManager;           // Local scope manager
-  params: Record<string, any>;   // Function/action parameters
-}</code></pre>
-                </div>
-
-                <h3>ScopeManager</h3>
-                <div class="code-block">
-                    <pre><code>class ScopeManager {
-  createScope(initialData?: Record<string, any>): void;
-  setVariable(name: string, value: any): void;
-  getVariable(name: string): any;
-  findVariable(name: string): any;
-  clearScope(): void;
-  getCurrentScope(): Record<string, any>;
-}</code></pre>
-                </div>
-
-                <h3>InterpolationSystem</h3>
-                <div class="code-block">
-                    <pre><code>class InterpolationSystem {
-  static interpolate(value: any, context: InterpolationContext): any;
-}</code></pre>
-                </div>
             </div>
         </div>
     </div>
@@ -188,3 +147,4 @@ context.local.setVariable('z', 30);
     <script src="script.js"></script>
 </body>
 </html>
+
