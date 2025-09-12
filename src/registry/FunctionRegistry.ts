@@ -1,6 +1,11 @@
 import { EqualsFunction } from '../functions/EqualsFunction';
 import { JoinToStringFunction } from '../functions/JoinToStringFunction';
 import { ReadStorageFunction } from '../functions/ReadStorageFunction';
+import { PlusFunction } from '../functions/PlusFunction';
+import { MinusFunction } from '../functions/MinusFunction';
+import { MultiplyFunction } from '../functions/MultiplyFunction';
+import { DivideFunction } from '../functions/DivideFunction';
+import { ModFunction } from '../functions/ModFunction';
 import { ProcessingContext } from '../types';
 import { ICustomFunction, RegistrationConfig } from '../types/PluginInterfaces';
 
@@ -20,6 +25,11 @@ export class FunctionRegistry {
     this.register('Equals', EqualsFunction.execute);
     this.register('JoinToString', JoinToStringFunction.execute);
     this.register('ReadStorage', ReadStorageFunction.execute);
+    this.register('Plus', PlusFunction.execute);
+    this.register('Minus', MinusFunction.execute);
+    this.register('Multiply', MultiplyFunction.execute);
+    this.register('Divide', DivideFunction.execute);
+    this.register('Mod', ModFunction.execute);
     
     this.isInitialized = true;
     console.log('FunctionRegistry initialized with standard functions');
@@ -40,7 +50,7 @@ export class FunctionRegistry {
       throw new Error('FunctionRegistry must be initialized before registering custom functions');
     }
 
-    if (this.registry.has(func.functionName) && !config.overwrite) {
+    if ((this.registry.has(func.functionName) || this.customFunctions.has(func.functionName)) && !config.overwrite) {
       throw new Error(`Function '${func.functionName}' already registered. Use overwrite: true to replace.`);
     }
 

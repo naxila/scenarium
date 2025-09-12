@@ -28,7 +28,12 @@
             <div class="content">
                 <h1>Interpolation System</h1>
                 
-                <p>The new interpolation system provides a unified and intuitive way to access variables in scenarios, actions, and functions. It works similarly to variable scoping in programming languages.</p>
+                <p>The interpolation system provides a unified and intuitive way to access variables in scenarios, actions, and functions. It works similarly to variable scoping in programming languages.</p>
+                
+                <div class="info-card">
+                    <h3>⚡ Important</h3>
+                    <p>Interpolation works <strong>only with variables</strong>. For function execution, use object syntax in actions and functions.</p>
+                </div>
 
                 <h2>Data Sources (Priority Order)</h2>
                 
@@ -148,7 +153,26 @@
                     <li><strong>Scope Management:</strong> Scopes are automatically managed by the system</li>
                     <li><strong>Variable Naming:</strong> Use descriptive names to avoid conflicts</li>
                     <li><strong>Nested Objects:</strong> Use dot notation for nested object access</li>
+                    <li><strong>Functions in Interpolation:</strong> Use object syntax in actions for function execution, not direct interpolation</li>
                 </ul>
+
+                <h2>⚠️ Limitations</h2>
+
+                <div class="warning-card">
+                    <h3>Functions in String Interpolation</h3>
+                    <p>Functions cannot be executed directly in string interpolation due to their asynchronous nature. Use object syntax instead:</p>
+                    
+                    <div class="code-example">
+                        <strong>❌ Wrong:</strong><br>
+                        <code>"text": "Result: {{Plus:values:5:10:15}}"</code><br><br>
+                        
+                        <strong>✅ Correct:</strong><br>
+                        <code>"text": {<br>
+                        &nbsp;&nbsp;"function": "JoinToString",<br>
+                        &nbsp;&nbsp;"values": ["Result: ", {"function": "Plus", "values": [5, 10, 15]}]<br>
+                        }</code>
+                    </div>
+                </div>
 
             </div>
         </div>
