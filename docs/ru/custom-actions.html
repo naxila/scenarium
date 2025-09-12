@@ -22,20 +22,20 @@
                     <h3>Интерфейс кастомного действия</h3>
                     <pre><code class="language-typescript">interface ICustomAction {
   name: string;
-  execute(context: ProcessingContext): Promise<void>;
+  execute(context: any): Promise<void>;
 }</code></pre>
                 </div>
                 
                 <h2>Пример: Действие погоды</h2>
                 <div class="example-card">
                     <h3>Реализация действия погоды</h3>
-                    <pre><code class="language-typescript">import { ICustomAction, ProcessingContext } from 'scenarium';
+                    <pre><code class="language-typescript">import { ICustomAction } from 'scenarium';
 
 export class WeatherAction implements ICustomAction {
   name = 'Weather';
   
-  async execute(context: ProcessingContext): Promise<void> {
-    const city = context.localContext.data.city || 'Moscow';
+  async execute(context: any): Promise<void> {
+    const city = context.city || 'Moscow';
     const weather = await this.getWeather(city);
     
     await context.bot.sendMessage(context.userId, 

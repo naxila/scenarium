@@ -20,32 +20,32 @@
                 <h3>userContext</h3>
                 <p>Contains information about the current user:</p>
                 <ul>
-                    <li><code>{{userContext.userId}}</code> - User's Telegram ID</li>
-                    <li><code>{{userContext.data.name}}</code> - User's name</li>
-                    <li><code>{{userContext.currentMenu}}</code> - Current menu name</li>
-                    <li><code>{{userContext.data.lastMessageId}}</code> - Last message ID</li>
+                    <li><code>{{userId}}</code> - User's Telegram ID</li>
+                    <li><code>{{name}}</code> - User's name</li>
+                    <li><code>{{currentMenu}}</code> - Current menu name</li>
+                    <li><code>{{lastMessageId}}</code> - Last message ID</li>
                 </ul>
                 
                 <h3>scenarioContext</h3>
                 <p>Contains scenario configuration data:</p>
                 <ul>
-                    <li><code>{{scenarioContext.data.apiUrl}}</code> - API URL</li>
-                    <li><code>{{scenarioContext.data.version}}</code> - Scenario version</li>
+                    <li><code>{{apiUrl}}</code> - API URL</li>
+                    <li><code>{{version}}</code> - Scenario version</li>
                 </ul>
                 
                 <h3>localContext</h3>
                 <p>Contains local execution data:</p>
                 <ul>
-                    <li><code>{{localContext.messageId}}</code> - Current message ID</li>
-                    <li><code>{{localContext.response}}</code> - API response</li>
-                    <li><code>{{localContext.error}}</code> - Error message</li>
+                    <li><code>{{messageId}}</code> - Current message ID</li>
+                    <li><code>{{response}}</code> - API response</li>
+                    <li><code>{{error}}</code> - Error message</li>
                 </ul>
                 
                 <h3>input</h3>
                 <p>Contains user input data:</p>
                 <ul>
-                    <li><code>{{input.userName}}</code> - Entered name</li>
-                    <li><code>{{input.email}}</code> - Entered email</li>
+                    <li><code>{{userName}}</code> - Entered name</li>
+                    <li><code>{{email}}</code> - Entered email</li>
                 </ul>
                 
                 <h2>Using Functions</h2>
@@ -55,7 +55,7 @@
                     <h3>Built-in Functions</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello {{userContext.data.name}}! Today is {{Date:YYYY-MM-DD}} and the sum of 5 and 3 is {{Math:add:5:3}}"
+  "text": "Hello {{name}}! Today is {{Date:YYYY-MM-DD}} and the sum of 5 and 3 is {{Math:add:5:3}}"
 }</code></pre>
                 </div>
                 
@@ -65,7 +65,7 @@
                     <h3>Personalized Welcome</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Welcome, {{userContext.data.name}}! You are currently in the {{userContext.currentMenu}} menu."
+  "text": "Welcome, {{name}}! You are currently in the {{currentMenu}} menu."
 }</code></pre>
                 </div>
                 
@@ -73,7 +73,7 @@
                     <h3>Dynamic API Response</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "API Response: {{localContext.response}}"
+  "text": "API Response: {{response}}"
 }</code></pre>
                 </div>
                 
@@ -81,7 +81,7 @@
                     <h3>User Input Processing</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Thank you, {{input.userName}}! We received your email: {{input.email}}"
+  "text": "Thank you, {{userName}}! We received your email: {{email}}"
 }</code></pre>
                 </div>
                 
@@ -92,7 +92,7 @@
                     <h3>Nested Example</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello {{userContext.data.name}}! The current time is {{Date:time}} and your ID is {{userContext.userId}}"
+  "text": "Hello {{name}}! The current time is {{Date:time}} and your ID is {{userId}}"
 }</code></pre>
                 </div>
                 
@@ -103,7 +103,7 @@
                     <h3>Safe Interpolation</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello {{userContext.data.name || 'User'}}! Welcome to our bot."
+  "text": "Hello {{name || 'User'}}! Welcome to our bot."
 }</code></pre>
                 </div>
             </section>

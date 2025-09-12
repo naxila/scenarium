@@ -20,32 +20,32 @@
                 <h3>userContext</h3>
                 <p>Содержит информацию о текущем пользователе:</p>
                 <ul>
-                    <li><code>{{userContext.userId}}</code> - ID пользователя в Telegram</li>
-                    <li><code>{{userContext.data.name}}</code> - Имя пользователя</li>
-                    <li><code>{{userContext.currentMenu}}</code> - Текущее меню</li>
-                    <li><code>{{userContext.data.lastMessageId}}</code> - ID последнего сообщения</li>
+                    <li><code>{{userId}}</code> - ID пользователя в Telegram</li>
+                    <li><code>{{name}}</code> - Имя пользователя</li>
+                    <li><code>{{currentMenu}}</code> - Текущее меню</li>
+                    <li><code>{{lastMessageId}}</code> - ID последнего сообщения</li>
                 </ul>
                 
                 <h3>scenarioContext</h3>
                 <p>Содержит данные конфигурации сценария:</p>
                 <ul>
-                    <li><code>{{scenarioContext.data.apiUrl}}</code> - URL API</li>
-                    <li><code>{{scenarioContext.data.version}}</code> - Версия сценария</li>
+                    <li><code>{{apiUrl}}</code> - URL API</li>
+                    <li><code>{{version}}</code> - Версия сценария</li>
                 </ul>
                 
                 <h3>localContext</h3>
                 <p>Содержит локальные данные выполнения:</p>
                 <ul>
-                    <li><code>{{localContext.messageId}}</code> - ID текущего сообщения</li>
-                    <li><code>{{localContext.response}}</code> - Ответ API</li>
-                    <li><code>{{localContext.error}}</code> - Сообщение об ошибке</li>
+                    <li><code>{{messageId}}</code> - ID текущего сообщения</li>
+                    <li><code>{{response}}</code> - Ответ API</li>
+                    <li><code>{{error}}</code> - Сообщение об ошибке</li>
                 </ul>
                 
                 <h3>input</h3>
                 <p>Содержит данные ввода пользователя:</p>
                 <ul>
-                    <li><code>{{input.userName}}</code> - Введенное имя</li>
-                    <li><code>{{input.email}}</code> - Введенный email</li>
+                    <li><code>{{userName}}</code> - Введенное имя</li>
+                    <li><code>{{email}}</code> - Введенный email</li>
                 </ul>
                 
                 <h2>Использование функций</h2>
@@ -55,7 +55,7 @@
                     <h3>Встроенные функции</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Привет {{userContext.data.name}}! Сегодня {{Date:YYYY-MM-DD}}, а сумма 5 и 3 равна {{Math:add:5:3}}"
+  "text": "Привет {{name}}! Сегодня {{Date:YYYY-MM-DD}}, а сумма 5 и 3 равна {{Math:add:5:3}}"
 }</code></pre>
                 </div>
                 
@@ -65,7 +65,7 @@
                     <h3>Персонализированное приветствие</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Добро пожаловать, {{userContext.data.name}}! Вы находитесь в меню {{userContext.currentMenu}}."
+  "text": "Добро пожаловать, {{name}}! Вы находитесь в меню {{currentMenu}}."
 }</code></pre>
                 </div>
                 
@@ -73,7 +73,7 @@
                     <h3>Динамический ответ API</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Ответ API: {{localContext.response}}"
+  "text": "Ответ API: {{response}}"
 }</code></pre>
                 </div>
                 
@@ -81,7 +81,7 @@
                     <h3>Обработка ввода пользователя</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Спасибо, {{input.userName}}! Мы получили ваш email: {{input.email}}"
+  "text": "Спасибо, {{userName}}! Мы получили ваш email: {{email}}"
 }</code></pre>
                 </div>
                 
@@ -92,7 +92,7 @@
                     <h3>Пример вложенности</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Привет {{userContext.data.name}}! Текущее время {{Date:time}}, а ваш ID {{userContext.userId}}"
+  "text": "Привет {{name}}! Текущее время {{Date:time}}, а ваш ID {{userId}}"
 }</code></pre>
                 </div>
                 
@@ -103,7 +103,7 @@
                     <h3>Безопасная интерполяция</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Привет {{userContext.data.name || 'Пользователь'}}! Добро пожаловать в нашего бота."
+  "text": "Привет {{name || 'Пользователь'}}! Добро пожаловать в нашего бота."
 }</code></pre>
                 </div>
             </section>
