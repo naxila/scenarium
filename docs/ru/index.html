@@ -639,58 +639,85 @@ const bot = BotFactory.createFromScenario({
                 <!-- Интерполяция -->
                 <section id="interpolation" class="section">
                     <h2>🔗 Интерполяция</h2>
-                    <p>Система интерполяции позволяет динамически подставлять переменные в тексты и параметры.</p>
+                    <p>Новая система интерполяции предоставляет унифицированный и интуитивный способ доступа к переменным в сценариях, действиях и функциях. Работает аналогично области видимости переменных в языках программирования.</p>
 
                     <h3>Доступные контексты</h3>
                     <div class="context-grid">
                         <div class="context-card">
-                            <h4>userContext</h4>
-                            <p>Данные пользователя</p>
+                            <h4>Переменные окружения</h4>
+                            <p>Системные переменные окружения</p>
                             <ul>
-                                <li><code>{{userContext.userId}}</code> - ID пользователя</li>
-                                <li><code>{{userContext.data.name}}</code> - Имя пользователя</li>
-                                <li><code>{{userContext.data.email}}</code> - Email пользователя</li>
-                                <li><code>{{userContext.currentMenu}}</code> - Текущее меню</li>
+                                <li><code>{{env.API_URL}}</code> - URL API из окружения</li>
+                                <li><code>{{env.BOT_TOKEN}}</code> - Токен бота из окружения</li>
                             </ul>
                         </div>
                         <div class="context-card">
-                            <h4>scenarioContext</h4>
-                            <p>Данные сценария</p>
+                            <h4>Данные пользователя</h4>
+                            <p>Данные из блока data сценария</p>
                             <ul>
-                                <li><code>{{scenarioContext.data.apiUrl}}</code> - URL API</li>
-                                <li><code>{{scenarioContext.data.version}}</code> - Версия сценария</li>
+                                <li><code>{{name}}</code> - Прямой доступ к данным пользователя</li>
+                                <li><code>{{email}}</code> - Прямой доступ к данным пользователя</li>
+                                <li><code>{{data.name}}</code> - Явный префикс data</li>
+                                <li><code>{{data.email}}</code> - Явный префикс data</li>
                             </ul>
                         </div>
                         <div class="context-card">
-                            <h4>localContext</h4>
-                            <p>Локальные переменные</p>
+                            <h4>Локальный контекст</h4>
+                            <p>Локальные переменные действий и функций</p>
                             <ul>
-                                <li><code>{{localContext.messageId}}</code> - ID сообщения</li>
-                                <li><code>{{localContext.response}}</code> - Ответ API</li>
-                                <li><code>{{localContext.error}}</code> - Ошибка</li>
+                                <li><code>{{messageId}}</code> - Прямой доступ к локальным переменным</li>
+                                <li><code>{{response.status}}</code> - Статус ответа API</li>
+                                <li><code>{{response.url}}</code> - URL ответа API</li>
+                                <li><code>{{local.messageId}}</code> - Явный префикс local</li>
                             </ul>
                         </div>
                         <div class="context-card">
-                            <h4>input</h4>
-                            <p>Пользовательский ввод</p>
+                            <h4>Параметры функций</h4>
+                            <p>Входные параметры функций</p>
                             <ul>
-                                <li><code>{{input.userName}}</code> - Введенное имя</li>
-                                <li><code>{{input.email}}</code> - Введенный email</li>
+                                <li><code>{{params.value}}</code> - Параметр функции</li>
+                                <li><code>{{params.separator}}</code> - Параметр функции</li>
                             </ul>
                         </div>
                     </div>
 
+                    <h3>Порядок приоритета</h3>
+                    <p>Переменные разрешаются в следующем порядке приоритета:</p>
+                    <ol>
+                        <li><strong>Локальный контекст</strong> - Переменные конкретного действия/функции</li>
+                        <li><strong>Параметры функций</strong> - Входные параметры функций</li>
+                        <li><strong>Данные пользователя</strong> - Блок data сценария</li>
+                        <li><strong>Окружение</strong> - Системные переменные окружения</li>
+                    </ol>
+
                     <h3>Примеры использования</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello, {{userContext.data.name}}! You are in menu {{userContext.currentMenu}}"
+  "text": "Привет, {{name}}! Вы в меню {{currentMenu}}"
 }</code></pre>
 
                     <pre><code class="language-json">{
   "action": "RequestApi",
-  "url": "{{scenarioContext.data.apiUrl}}/users/{{userContext.userId}}",
+  "url": "{{env.API_URL}}/users/{{userId}}",
   "headers": {
-    "Authorization": "Bearer {{userContext.data.token}}"
+    "Authorization": "Bearer {{token}}"
+  }
+}</code></pre>
+
+                    <h3>Примеры функций</h3>
+                    <pre><code class="language-json">{
+  "function": "FormatUserInfo",
+  "params": {
+    "name": "{{name}}",
+    "email": "{{email}}"
+  }
+}</code></pre>
+
+                    <pre><code class="language-json">{
+  "function": "JoinToString",
+  "params": {
+    "values": ["{{name}}", "{{email}}"],
+    "separator": ", "
   }
 }</code></pre>
                 </section>
@@ -755,7 +782,7 @@ const bot = BotFactory.createFromScenario({
     "Results": {
         "onNavigation": {
         "action": "SendMessage",
-        "text": "Спасибо за участие! Ваши ответы:\nИмя: {{input.name}}\nВозраст: {{input.age}}",
+        "text": "Спасибо за участие! Ваши ответы:\nИмя: {{name}}\nВозраст: {{age}}",
         "inlineActions": [
           {
             "title": "Назад в начало",
@@ -913,7 +940,7 @@ const bot = BotFactory.createFromScenario({
         "onDone": {
           "action": "Store",
           "key": "userName",
-          "value": "{{input.newName}}"
+          "value": "{{newName}}"
         },
         "onCancel": {
           "action": "Navigate",

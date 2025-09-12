@@ -101,8 +101,8 @@
                         <h3>Update specific message</h3>
                         <pre><code class="language-json">{
   "action": "UpdateMessage",
-  "messageId": "{{localContext.messageId}}",
-  "text": "Status: {{localContext.status}}"
+  "messageId": "{{messageId}}",
+  "text": "Status: {{status}}"
 }</code></pre>
                     </div>
 
@@ -114,9 +114,9 @@
     "function": "JoinToString",
     "values": [
       "Time: ",
-      "{{localContext.currentTime}}",
+      "{{currentTime}}",
       "\nStatus: ",
-      "{{localContext.status}}"
+      "{{status}}"
     ]
   }
 }</code></pre>
@@ -129,8 +129,8 @@
                         <ul>
                             <li>If <code>messageId</code> is specified - uses it</li>
                             <li>If <code>messageId</code> is a function - executes it</li>
-                            <li>Otherwise uses <code>localContext.messageId</code></li>
-                            <li>As last resort - <code>userContext.data.lastMessageId</code></li>
+                            <li>Otherwise uses <code>messageId</code> from local context</li>
+                            <li>As last resort - <code>lastMessageId</code> from user data</li>
                         </ul>
                     </div>
 

@@ -138,7 +138,7 @@
                     <h2>🔧 How it works</h2>
                     <div class="info-card">
                         <h3>Data search</h3>
-                        <p>Function searches data in <code>userContext.data.__storage[key]</code>:</p>
+                        <p>Function searches data in <code>data.__storage[key]</code>:</p>
                         <ul>
                             <li>If key found - returns <code>value</code></li>
                             <li>If key not found - returns <code>fallbackValue</code></li>
@@ -190,7 +190,7 @@
   "value": {
     "function": "JoinToString",
     "values": [
-      "{{localContext.currentDate}}",
+      "{{currentDate}}",
       " (previous: ",
       {
         "function": "ReadStorage",

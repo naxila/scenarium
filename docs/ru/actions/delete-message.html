@@ -65,7 +65,7 @@
                         <h3>Удаление конкретного сообщения</h3>
                         <pre><code class="language-json">{
   "action": "DeleteMessage",
-  "messageId": "{{localContext.messageId}}"
+  "messageId": "{{messageId}}"
 }</code></pre>
                     </div>
 
@@ -76,7 +76,7 @@
   "messageId": {
     "function": "ReadStorage",
     "key": "tempMessageId",
-    "fallbackValue": "{{userContext.data.lastMessageId}}"
+    "fallbackValue": "{{lastMessageId}}"
   }
 }</code></pre>
                     </div>
@@ -99,8 +99,8 @@
                         <ul>
                             <li>Если указан <code>messageId</code> - использует его</li>
                             <li>Если <code>messageId</code> - функция - выполняет её</li>
-                            <li>Иначе использует <code>localContext.messageId</code></li>
-                            <li>В крайнем случае - <code>userContext.data.lastMessageId</code></li>
+                            <li>Иначе использует <code>messageId</code> из локального контекста</li>
+                            <li>В крайнем случае - <code>lastMessageId</code> из данных пользователя</li>
                         </ul>
                     </div>
 

@@ -101,8 +101,8 @@
                         <h3>Обновление конкретного сообщения</h3>
                         <pre><code class="language-json">{
   "action": "UpdateMessage",
-  "messageId": "{{localContext.messageId}}",
-  "text": "Статус: {{localContext.status}}"
+  "messageId": "{{messageId}}",
+  "text": "Статус: {{status}}"
 }</code></pre>
                     </div>
 
@@ -114,9 +114,9 @@
     "function": "JoinToString",
     "values": [
       "Время: ",
-      "{{localContext.currentTime}}",
+      "{{currentTime}}",
       "\nСтатус: ",
-      "{{localContext.status}}"
+      "{{status}}"
     ]
   }
 }</code></pre>
@@ -129,8 +129,8 @@
                         <ul>
                             <li>Если указан <code>messageId</code> - использует его</li>
                             <li>Если <code>messageId</code> - функция - выполняет её</li>
-                            <li>Иначе использует <code>localContext.messageId</code></li>
-                            <li>В крайнем случае - <code>userContext.data.lastMessageId</code></li>
+                            <li>Иначе использует <code>messageId</code> из локального контекста</li>
+                            <li>В крайнем случае - <code>lastMessageId</code> из данных пользователя</li>
                         </ul>
                     </div>
 

@@ -70,7 +70,7 @@
                         <h3>Простое сравнение</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
-  "values": ["{{userContext.data.role}}", "admin"],
+  "values": ["{{role}}", "admin"],
   "trueResult": "Добро пожаловать, администратор!",
   "falseResult": "Доступ ограничен"
 }</code></pre>
@@ -81,7 +81,7 @@
                         <h3>Проверка статуса</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
-  "values": ["{{userContext.data.status}}", "active"],
+  "values": ["{{status}}", "active"],
   "trueResult": "✅ Аккаунт активен",
   "falseResult": "❌ Аккаунт заблокирован"
 }</code></pre>
@@ -91,7 +91,7 @@
                         <h3>Сравнение без результатов</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
-  "values": ["{{input.password}}", "{{userContext.data.password}}"]
+  "values": ["{{password}}", "{{storedPassword}}"]
 }</code></pre>
                         <p><strong>Результат:</strong> <code>true</code> или <code>false</code></p>
                     </div>
@@ -101,8 +101,8 @@
                         <pre><code class="language-json">{
   "function": "Equals",
   "values": [
-    "{{userContext.data.role}}",
-    "{{userContext.data.status}}",
+    "{{role}}",
+    "{{status}}",
     "admin",
     "active"
   ],
@@ -115,10 +115,10 @@
                         <h3>С вложенными функциями</h3>
                         <pre><code class="language-json">{
   "function": "Equals",
-  "values": ["{{userContext.data.language}}", "ru"],
+  "values": ["{{language}}", "ru"],
   "trueResult": {
     "function": "JoinToString",
-    "values": ["Привет, ", "{{userContext.data.name}}", "!"]
+    "values": ["Привет, ", "{{name}}", "!"]
   },
   "falseResult": {
     "function": "JoinToString",
@@ -137,7 +137,7 @@
     "action": "SendMessage",
     "text": {
       "function": "Equals",
-      "values": ["{{input.age}}", "18"],
+      "values": ["{{age}}", "18"],
       "trueResult": "Вы совершеннолетний",
       "falseResult": "Вам еще нет 18 лет"
     }
@@ -175,7 +175,7 @@
   "action": "Navigate",
   "menuItem": {
     "function": "Equals",
-    "values": ["{{userContext.data.role}}", "admin"],
+    "values": ["{{role}}", "admin"],
     "trueResult": "AdminPanel",
     "falseResult": "UserPanel"
   }
@@ -189,7 +189,7 @@
   "key": "accessLevel",
   "value": {
     "function": "Equals",
-    "values": ["{{userContext.data.role}}", "admin"],
+    "values": ["{{role}}", "admin"],
     "trueResult": "full",
     "falseResult": "limited"
   }
@@ -202,7 +202,7 @@
   "action": "SendMessage",
   "text": {
     "function": "Equals",
-    "values": ["{{userContext.data.notifications}}", "enabled"],
+    "values": ["{{notifications}}", "enabled"],
     "trueResult": "🔔 Уведомления включены",
     "falseResult": "🔕 Уведомления отключены"
   }

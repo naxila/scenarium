@@ -97,7 +97,7 @@
       "onInput": {
         "action": "Store",
         "key": "name",
-        "value": "{{input.text}}",
+        "value": "{{text}}",
         "onSuccess": {
           "action": "Navigate",
           "menuItem": "GetEmail"
@@ -112,7 +112,7 @@
       "onInput": {
         "action": "Store",
         "key": "email",
-        "value": "{{input.text}}",
+        "value": "{{text}}",
         "onSuccess": {
           "action": "Navigate",
           "menuItem": "Confirmation"
@@ -122,7 +122,7 @@
     "Confirmation": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "Thank you, {{userContext.data.name}}! Your email is {{userContext.data.email}}"
+        "text": "Thank you, {{name}}! Your email is {{email}}"
       }
     }
   }
@@ -141,11 +141,11 @@
         "action": "RequestApi",
         "url": "https://api.weather.com/current",
         "params": {
-          "city": "{{userContext.data.city || 'Moscow'}}"
+          "city": "{{city || 'Moscow'}}"
         },
         "onSuccess": {
           "action": "SendMessage",
-          "text": "Weather in {{userContext.data.city || 'Moscow'}}: {{localContext.response.temperature}}°C, {{localContext.response.description}}"
+          "text": "Weather in {{city || 'Moscow'}}: {{response.temperature}}°C, {{response.description}}"
         },
         "onError": {
           "action": "SendMessage",
@@ -165,7 +165,7 @@
     "Language": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "{{Translate:hello:{{userContext.data.language || 'en'}}}}",
+        "text": "{{Translate:hello:{{language || 'en'}}}}",
         "inlineActions": [
           {
             "title": "English",

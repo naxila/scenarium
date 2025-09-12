@@ -106,7 +106,7 @@
   "hint": "Как вас зовут?",
   "onDone": {
     "action": "SendMessage",
-    "text": "Приятно познакомиться, {{input.userName}}!"
+    "text": "Приятно познакомиться, {{userName}}!"
   }
 }</code></pre>
                     </div>
@@ -119,7 +119,7 @@
   "hint": "Введите ваш email:",
   "onDone": {
     "action": "SendMessage",
-    "text": "Email сохранен: {{input.email}}"
+    "text": "Email сохранен: {{email}}"
   },
   "onCancel": {
     "action": "SendMessage",
@@ -138,7 +138,7 @@
   "onDone": {
     "action": "Store",
     "key": "userPhone",
-    "value": "{{input.phone}}"
+    "value": "{{phone}}"
   },
   "onCancel": {
     "action": "Navigate",
@@ -156,7 +156,7 @@
   "clearInputOnDone": true,
   "onDone": {
     "action": "SendMessage",
-    "text": "Данные обработаны: {{input.tempData}}"
+    "text": "Данные обработаны: {{tempData}}"
   }
 }</code></pre>
                     </div>
@@ -173,7 +173,7 @@
     "hint": "В каком городе вы живете?",
     "onDone": {
       "action": "SendMessage",
-      "text": "Спасибо! Вам {{input.age}} лет, вы живете в {{input.city}}"
+      "text": "Спасибо! Вам {{age}} лет, вы живете в {{city}}"
     }
   }
 }</code></pre>
@@ -195,7 +195,7 @@
                         <h3>Обработка ввода</h3>
                         <p>При получении текста от пользователя:</p>
                         <ul>
-                            <li>Сохраняется в <code>{{input.key}}</code> где key - указанный ключ</li>
+                            <li>Сохраняется в <code>{{key}}</code> где key - указанный ключ</li>
                             <li>Выполняется действие <code>onDone</code> если настроено</li>
                             <li>Очищается состояние ожидания ввода</li>
                             <li>При <code>clearInputOnDone: true</code> ввод удаляется из сессии</li>
@@ -207,18 +207,18 @@
                         <div class="variable-card">
                             <h4>input</h4>
                             <ul>
-                                <li><code>{{input.userName}}</code> - Введенное имя</li>
-                                <li><code>{{input.email}}</code> - Введенный email</li>
-                                <li><code>{{input.phone}}</code> - Введенный телефон</li>
-                                <li><code>{{input.[key]}}</code> - Любой введенный ключ</li>
+                                <li><code>{{userName}}</code> - Введенное имя</li>
+                                <li><code>{{email}}</code> - Введенный email</li>
+                                <li><code>{{phone}}</code> - Введенный телефон</li>
+                                <li><code>{{[key]}}</code> - Любой введенный ключ</li>
                             </ul>
                         </div>
                         <div class="variable-card">
                             <h4>userContext</h4>
                             <ul>
-                                <li><code>{{userContext.userId}}</code> - ID пользователя</li>
-                                <li><code>{{userContext.currentMenu}}</code> - Текущее меню</li>
-                                <li><code>{{userContext.data}}</code> - Данные пользователя</li>
+                                <li><code>{{userId}}</code> - ID пользователя</li>
+                                <li><code>{{currentMenu}}</code> - Текущее меню</li>
+                                <li><code>{{data}}</code> - Данные пользователя</li>
                             </ul>
                         </div>
                     </div>

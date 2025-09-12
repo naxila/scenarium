@@ -100,7 +100,7 @@
                         <h3>With prefix and suffix</h3>
                         <pre><code class="language-json">{
   "function": "JoinToString",
-  "values": ["Hello", "{{userContext.data.name}}", "!"],
+  "values": ["Hello", "{{name}}", "!"],
   "separator": " ",
   "prefix": "👋 ",
   "suffix": " 👋"
@@ -114,13 +114,13 @@
   "function": "JoinToString",
   "values": [
     "User:",
-    "{{userContext.data.name}}",
+    "{{name}}",
     "Email:",
-    "{{userContext.data.email}}",
+    "{{email}}",
     "Status:",
     {
       "function": "Equals",
-      "values": ["{{userContext.data.status}}", "active"],
+      "values": ["{{status}}", "active"],
       "trueResult": "Active",
       "falseResult": "Inactive"
     }
@@ -178,10 +178,10 @@
     "function": "JoinToString",
     "values": [
       "Welcome, ",
-      "{{userContext.data.name}}",
+      "{{name}}",
       "!",
       "\n\nYour balance: ",
-      "{{userContext.data.balance}}",
+      "{{balance}}",
       " rub."
     ]
   }
@@ -196,9 +196,9 @@
   "value": {
     "function": "JoinToString",
     "values": [
-      "Name: {{userContext.data.name}}",
-      "Email: {{userContext.data.email}}",
-      "Phone: {{userContext.data.phone}}"
+      "Name: {{name}}",
+      "Email: {{email}}",
+      "Phone: {{phone}}"
     ],
     "separator": " | "
   }
@@ -227,6 +227,7 @@
                             <p>Read data from storage</p>
                         </a>
                     </div>
+
 
                 </section>
             

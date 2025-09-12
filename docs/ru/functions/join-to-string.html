@@ -100,7 +100,7 @@
                         <h3>С префиксом и суффиксом</h3>
                         <pre><code class="language-json">{
   "function": "JoinToString",
-  "values": ["Привет", "{{userContext.data.name}}", "!"],
+  "values": ["Привет", "{{name}}", "!"],
   "separator": " ",
   "prefix": "👋 ",
   "suffix": " 👋"
@@ -114,13 +114,13 @@
   "function": "JoinToString",
   "values": [
     "Пользователь:",
-    "{{userContext.data.name}}",
+    "{{name}}",
     "Email:",
-    "{{userContext.data.email}}",
+    "{{email}}",
     "Статус:",
     {
       "function": "Equals",
-      "values": ["{{userContext.data.status}}", "active"],
+      "values": ["{{status}}", "active"],
       "trueResult": "Активен",
       "falseResult": "Неактивен"
     }
@@ -178,10 +178,10 @@
     "function": "JoinToString",
     "values": [
       "Добро пожаловать, ",
-      "{{userContext.data.name}}",
+      "{{name}}",
       "!",
       "\n\nВаш баланс: ",
-      "{{userContext.data.balance}}",
+      "{{balance}}",
       " руб."
     ]
   }
@@ -196,9 +196,9 @@
   "value": {
     "function": "JoinToString",
     "values": [
-      "Имя: {{userContext.data.name}}",
-      "Email: {{userContext.data.email}}",
-      "Телефон: {{userContext.data.phone}}"
+      "Имя: {{name}}",
+      "Email: {{email}}",
+      "Телефон: {{phone}}"
     ],
     "separator": " | "
   }

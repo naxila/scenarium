@@ -106,7 +106,7 @@
   "hint": "What is your name?",
   "onDone": {
     "action": "SendMessage",
-    "text": "Nice to meet you, {{input.userName}}!"
+    "text": "Nice to meet you, {{userName}}!"
   }
 }</code></pre>
                     </div>
@@ -119,7 +119,7 @@
   "hint": "Enter your email:",
   "onDone": {
     "action": "SendMessage",
-    "text": "Email saved: {{input.email}}"
+    "text": "Email saved: {{email}}"
   },
   "onCancel": {
     "action": "SendMessage",
@@ -138,7 +138,7 @@
   "onDone": {
     "action": "Store",
     "key": "userPhone",
-    "value": "{{input.phone}}"
+    "value": "{{phone}}"
   },
   "onCancel": {
     "action": "Navigate",
@@ -156,7 +156,7 @@
   "clearInputOnDone": true,
   "onDone": {
     "action": "SendMessage",
-    "text": "Data processed: {{input.tempData}}"
+    "text": "Data processed: {{tempData}}"
   }
 }</code></pre>
                     </div>
@@ -173,7 +173,7 @@
     "hint": "What city do you live in?",
     "onDone": {
       "action": "SendMessage",
-      "text": "Thank you! You are {{input.age}} years old, you live in {{input.city}}"
+      "text": "Thank you! You are {{age}} years old, you live in {{city}}"
     }
   }
 }</code></pre>
@@ -195,7 +195,7 @@
                         <h3>Input processing</h3>
                         <p>When receiving text from user:</p>
                         <ul>
-                            <li>Saved in <code>{{input.key}}</code> where key is the specified key</li>
+                            <li>Saved in <code>{{key}}</code> where key is the specified key</li>
                             <li>Executes <code>onDone</code> action if configured</li>
                             <li>Clears input waiting state</li>
                             <li>When <code>clearInputOnDone: true</code> input is removed from session</li>
@@ -207,18 +207,18 @@
                         <div class="variable-card">
                             <h4>input</h4>
                             <ul>
-                                <li><code>{{input.userName}}</code> - Entered name</li>
-                                <li><code>{{input.email}}</code> - Entered email</li>
-                                <li><code>{{input.phone}}</code> - Entered phone</li>
-                                <li><code>{{input.[key]}}</code> - Any entered key</li>
+                                <li><code>{{userName}}</code> - Entered name</li>
+                                <li><code>{{email}}</code> - Entered email</li>
+                                <li><code>{{phone}}</code> - Entered phone</li>
+                                <li><code>{{[key]}}</code> - Any entered key</li>
                             </ul>
                         </div>
                         <div class="variable-card">
                             <h4>userContext</h4>
                             <ul>
-                                <li><code>{{userContext.userId}}</code> - User ID</li>
-                                <li><code>{{userContext.currentMenu}}</code> - Current menu</li>
-                                <li><code>{{userContext.data}}</code> - User data</li>
+                                <li><code>{{userId}}</code> - User ID</li>
+                                <li><code>{{currentMenu}}</code> - Current menu</li>
+                                <li><code>{{data}}</code> - User data</li>
                             </ul>
                         </div>
                     </div>

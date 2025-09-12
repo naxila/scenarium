@@ -138,7 +138,7 @@
                     <h2>🔧 Логика работы</h2>
                     <div class="info-card">
                         <h3>Поиск данных</h3>
-                        <p>Функция ищет данные в <code>userContext.data.__storage[key]</code>:</p>
+                        <p>Функция ищет данные в <code>data.__storage[key]</code>:</p>
                         <ul>
                             <li>Если ключ найден - возвращается <code>value</code></li>
                             <li>Если ключ не найден - возвращается <code>fallbackValue</code></li>
@@ -190,7 +190,7 @@
   "value": {
     "function": "JoinToString",
     "values": [
-      "{{localContext.currentDate}}",
+      "{{currentDate}}",
       " (предыдущий: ",
       {
         "function": "ReadStorage",

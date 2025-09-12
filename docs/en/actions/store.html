@@ -75,7 +75,7 @@
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "userName",
-  "value": "{{input.userName}}"
+  "value": "{{userName}}"
 }</code></pre>
                     </div>
 
@@ -85,10 +85,10 @@
   "action": "Store",
   "key": "userProfile",
   "value": {
-    "name": "{{input.name}}",
-    "email": "{{input.email}}",
-    "phone": "{{input.phone}}",
-    "createdAt": "{{localContext.currentDate}}"
+    "name": "{{name}}",
+    "email": "{{email}}",
+    "phone": "{{phone}}",
+    "createdAt": "{{currentDate}}"
   }
 }</code></pre>
                     </div>
@@ -98,7 +98,7 @@
                         <pre><code class="language-json">{
   "action": "Store",
   "key": "tempToken",
-  "value": "{{localContext.apiToken}}",
+  "value": "{{apiToken}}",
   "clearAfterRead": true
 }</code></pre>
                     </div>
@@ -111,9 +111,9 @@
   "value": {
     "function": "JoinToString",
     "values": [
-      "{{localContext.currentDate}}",
+      "{{currentDate}}",
       " (",
-      "{{userContext.data.timezone}}",
+      "{{timezone}}",
       ")"
     ]
   }
@@ -126,10 +126,10 @@
   "action": "Store",
   "key": "userPreferences",
   "value": {
-    "theme": "{{input.theme}}",
-    "language": "{{input.language}}",
-    "notifications": "{{input.notifications}}",
-    "lastUpdated": "{{localContext.timestamp}}"
+    "theme": "{{theme}}",
+    "language": "{{language}}",
+    "notifications": "{{notifications}}",
+    "lastUpdated": "{{timestamp}}"
   }
 }</code></pre>
                     </div>
@@ -141,10 +141,10 @@
   "key": "shoppingCart",
   "value": [
     {
-      "id": "{{input.productId}}",
-      "name": "{{input.productName}}",
-      "price": "{{input.price}}",
-      "quantity": "{{input.quantity}}"
+      "id": "{{productId}}",
+      "name": "{{productName}}",
+      "price": "{{price}}",
+      "quantity": "{{quantity}}"
     }
   ]
 }</code></pre>
@@ -176,7 +176,7 @@
                     <h2>🗂️ Storage structure</h2>
                     <div class="info-card">
                         <h3>Local storage</h3>
-                        <p>Data is saved in <code>userContext.data.__storage</code>:</p>
+                        <p>Data is saved in <code>data.__storage</code>:</p>
                         <pre><code class="language-json">{
   "__storage": {
     "userName": {
@@ -205,7 +205,7 @@
                         <h3>In interpolation</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello, {{userContext.data.__storage.userName.value}}!"
+  "text": "Hello, {{__storage.userName.value}}!"
 }</code></pre>
                     </div>
 

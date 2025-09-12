@@ -639,58 +639,85 @@ const bot = BotFactory.createFromScenario({
                 <!-- Interpolation -->
                 <section id="interpolation" class="section">
                     <h2>🔗 Interpolation</h2>
-                    <p>The interpolation system allows you to dynamically substitute variables in texts and parameters.</p>
+                    <p>The new interpolation system provides a unified and intuitive way to access variables in scenarios, actions, and functions. It works similarly to variable scoping in programming languages.</p>
 
                     <h3>Available Contexts</h3>
                     <div class="context-grid">
                         <div class="context-card">
-                            <h4>userContext</h4>
-                            <p>User data</p>
+                            <h4>Environment Variables</h4>
+                            <p>System environment variables</p>
                             <ul>
-                                <li><code>{{userContext.userId}}</code> - User ID</li>
-                                <li><code>{{userContext.data.name}}</code> - User name</li>
-                                <li><code>{{userContext.data.email}}</code> - User email</li>
-                                <li><code>{{userContext.currentMenu}}</code> - Current menu</li>
+                                <li><code>{{env.API_URL}}</code> - API URL from environment</li>
+                                <li><code>{{env.BOT_TOKEN}}</code> - Bot token from environment</li>
                             </ul>
                         </div>
                         <div class="context-card">
-                            <h4>scenarioContext</h4>
-                            <p>Scenario data</p>
+                            <h4>User Data</h4>
+                            <p>Data from scenario's data block</p>
                             <ul>
-                                <li><code>{{scenarioContext.data.apiUrl}}</code> - API URL</li>
-                                <li><code>{{scenarioContext.data.version}}</code> - Scenario version</li>
+                                <li><code>{{name}}</code> - Direct access to user data</li>
+                                <li><code>{{email}}</code> - Direct access to user data</li>
+                                <li><code>{{data.name}}</code> - Explicit data prefix</li>
+                                <li><code>{{data.email}}</code> - Explicit data prefix</li>
                             </ul>
                         </div>
                         <div class="context-card">
-                            <h4>localContext</h4>
-                            <p>Local variables</p>
+                            <h4>Local Context</h4>
+                            <p>Action and function local variables</p>
                             <ul>
-                                <li><code>{{localContext.messageId}}</code> - Message ID</li>
-                                <li><code>{{localContext.response}}</code> - API response</li>
-                                <li><code>{{localContext.error}}</code> - Error</li>
+                                <li><code>{{messageId}}</code> - Direct access to local variables</li>
+                                <li><code>{{response.status}}</code> - API response status</li>
+                                <li><code>{{response.url}}</code> - API response URL</li>
+                                <li><code>{{local.messageId}}</code> - Explicit local prefix</li>
                             </ul>
                         </div>
                         <div class="context-card">
-                            <h4>input</h4>
-                            <p>User input</p>
+                            <h4>Function Parameters</h4>
+                            <p>Function input parameters</p>
                             <ul>
-                                <li><code>{{input.userName}}</code> - Entered name</li>
-                                <li><code>{{input.email}}</code> - Entered email</li>
+                                <li><code>{{params.value}}</code> - Function parameter</li>
+                                <li><code>{{params.separator}}</code> - Function parameter</li>
                             </ul>
                         </div>
                     </div>
 
+                    <h3>Priority Order</h3>
+                    <p>Variables are resolved in the following priority order:</p>
+                    <ol>
+                        <li><strong>Local Context</strong> - Action/function specific variables</li>
+                        <li><strong>Function Parameters</strong> - Function input parameters</li>
+                        <li><strong>User Data</strong> - Scenario data block</li>
+                        <li><strong>Environment</strong> - System environment variables</li>
+                    </ol>
+
                     <h3>Usage Examples</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello, {{userContext.data.name}}! You are in menu {{userContext.currentMenu}}"
+  "text": "Hello, {{name}}! You are in menu {{currentMenu}}"
 }</code></pre>
 
                     <pre><code class="language-json">{
   "action": "RequestApi",
-  "url": "{{scenarioContext.data.apiUrl}}/users/{{userContext.userId}}",
+  "url": "{{env.API_URL}}/users/{{userId}}",
   "headers": {
-    "Authorization": "Bearer {{userContext.data.token}}"
+    "Authorization": "Bearer {{token}}"
+  }
+}</code></pre>
+
+                    <h3>Function Examples</h3>
+                    <pre><code class="language-json">{
+  "function": "FormatUserInfo",
+  "params": {
+    "name": "{{name}}",
+    "email": "{{email}}"
+  }
+}</code></pre>
+
+                    <pre><code class="language-json">{
+  "function": "JoinToString",
+  "params": {
+    "values": ["{{name}}", "{{email}}"],
+    "separator": ", "
   }
 }</code></pre>
                 </section>
@@ -755,7 +782,7 @@ const bot = BotFactory.createFromScenario({
     "Results": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "Thank you for participating! Your answers:\nName: {{input.name}}\nAge: {{input.age}}",
+        "text": "Thank you for participating! Your answers:\nName: {{name}}\nAge: {{age}}",
         "inlineActions": [
           {
             "title": "Back to Start",
@@ -913,7 +940,7 @@ const bot = BotFactory.createFromScenario({
         "onDone": {
           "action": "Store",
           "key": "userName",
-          "value": "{{input.newName}}"
+          "value": "{{newName}}"
         },
         "onCancel": {
           "action": "Navigate",

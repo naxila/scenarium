@@ -65,7 +65,7 @@
                         <h3>Delete specific message</h3>
                         <pre><code class="language-json">{
   "action": "DeleteMessage",
-  "messageId": "{{localContext.messageId}}"
+  "messageId": "{{messageId}}"
 }</code></pre>
                     </div>
 
@@ -76,7 +76,7 @@
   "messageId": {
     "function": "ReadStorage",
     "key": "tempMessageId",
-    "fallbackValue": "{{userContext.data.lastMessageId}}"
+    "fallbackValue": "{{lastMessageId}}"
   }
 }</code></pre>
                     </div>
@@ -99,8 +99,8 @@
                         <ul>
                             <li>If <code>messageId</code> is specified - uses it</li>
                             <li>If <code>messageId</code> is a function - executes it</li>
-                            <li>Otherwise uses <code>localContext.messageId</code></li>
-                            <li>As a last resort - <code>userContext.data.lastMessageId</code></li>
+                            <li>Otherwise uses <code>messageId</code> from local context</li>
+                            <li>As a last resort - <code>lastMessageId</code> from user data</li>
                         </ul>
                     </div>
 

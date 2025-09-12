@@ -69,8 +69,8 @@
   "action": "CustomAction",
   "handler": "processUserData",
   "userData": {
-    "name": "{{userContext.data.name}}",
-    "email": "{{userContext.data.email}}"
+    "name": "{{name}}",
+    "email": "{{email}}"
   },
   "options": {
     "validate": true,
@@ -86,7 +86,7 @@
           "handler": "calculateResult",
           "input": {
             "function": "JoinToString",
-            "values": ["{{input.value1}}", "{{input.value2}}"]
+            "values": ["{{value1}}", "{{value2}}"]
           },
           "operation": "multiply"
         }</code></pre>

@@ -141,12 +141,12 @@
   "baseUrl": "https://api.example.com",
   "path": "/users",
   "body": {
-    "name": "{{input.name}}",
-    "email": "{{input.email}}"
+    "name": "{{name}}",
+    "email": "{{email}}"
   },
   "headers": {
     "Content-Type": "application/json",
-    "Authorization": "Bearer {{userContext.data.token}}"
+    "Authorization": "Bearer {{token}}"
   },
   "onSuccess": {
     "action": "SendMessage",
@@ -164,7 +164,7 @@
   "path": "/weather",
   "params": {
     "q": "Moscow",
-    "appid": "{{scenarioContext.data.weatherApiKey}}",
+    "appid": "{{env.WEATHER_API_KEY}}",
     "units": "metric"
   },
   "onSuccess": {
