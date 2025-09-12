@@ -15,7 +15,7 @@
         <nav class="sidebar">
             <div class="sidebar-header">
                 <h1><a href="index.html" style="text-decoration: none; color: inherit;">🤖 Scenarium</a></h1>
-                <p class="version"><a href="https://github.com/naxila/scenarium" target="_blank" style="text-decoration: none; color: inherit;">v0.1.0-beta</a></p>
+                <p class="version"><a href="https://github.com/naxila/scenarium" target="_blank" style="text-decoration: none; color: inherit;">v0.1.0-alpha</a></p>
             </div>
             
             <div class="sidebar-content">
@@ -197,10 +197,7 @@
 require('dotenv').config();
 
 async function startBot() {
-  const bot = BotFactory.createFromScenario({
-    token: process.env.BOT_TOKEN,
-    scenario: require('./scenario.json')
-  });
+  const bot = await BotFactory.createBotFromFile('./scenario.json', process.env.BOT_TOKEN);
   
   await bot.start();
   console.log('✅ Bot started!');
@@ -225,10 +222,10 @@ startBot().catch(console.error);</code></pre>
                     <h3>Scenario Structure</h3>
                     <p>A scenario is a JSON file describing bot behavior:</p>
                     <pre><code class="language-json">{
-  "onStartActions": [...],     // Actions on startup
-  "menuItems": {...},          // Menu items
-  "functions": {...},          // Custom functions
-  "data": {...}               // Common data
+  "onStartActions": [...],     // Actions on startup (required)
+  "menuItems": {...},          // Menu items (optional)
+  "functions": {...},          // Custom functions (optional)
+  "data": {...}               // Common data (optional)
 }</code></pre>
 
                     <h3>Simple Scenario (single file)</h3>
@@ -345,20 +342,7 @@ RegistryManager.initialize();
 RegistryManager.registerAction('MyCustomAction', new MyCustomAction());
 
 // Now you can use it in your scenarios
-const bot = BotFactory.createFromScenario({
-  token: 'YOUR_BOT_TOKEN',
-  scenario: {
-    // ... your scenario
-    "actions": {
-      "myAction": {
-        "action": "MyCustomAction",
-        "data": {
-          "customParam": "value"
-        }
-      }
-    }
-  }
-});</code></pre>
+const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKEN');</code></pre>
 
                     <h3>Using Custom Actions in Scenarios</h3>
                     <p>Once registered, you can use your custom actions in JSON scenarios:</p>
@@ -453,12 +437,7 @@ RegistryManager.initialize();
 RegistryManager.registerFunction('MyCustomFunction', new MyCustomFunction());
 
 // Now you can use it in your scenarios
-const bot = BotFactory.createFromScenario({
-  token: 'YOUR_BOT_TOKEN',
-  scenario: {
-    // ... your scenario
-  }
-});</code></pre>
+const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKEN');</code></pre>
 
                     <h3>Using Custom Functions in Scenarios</h3>
                     <p>Use your custom functions in JSON scenarios for data processing:</p>

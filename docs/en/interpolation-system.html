@@ -12,7 +12,7 @@
             <div class="sidebar-content">
                 <div class="logo">
                     <h1>Scenarium</h1>
-                    <span class="version">v1.0.0</span>
+                    <span class="version">v0.1.0-alpha</span>
                 </div>
                 <nav class="nav-menu">
                     <a href="#" class="nav-link" data-path="index.html">Home</a>
@@ -62,11 +62,21 @@
                     
                     <div class="priority-item">
                         <h3>4. Environment (Lowest Priority)</h3>
-                        <p>System variables like timestamp, version, etc.</p>
+                        <p>System variables automatically provided by the interpolation system.</p>
                         <div class="code-example">
                             <code>{{timestamp}}</code> - Direct access<br>
                             <code>{{env.timestamp}}</code> - Explicit prefix
                         </div>
+                        
+                        <h4>Available system variables:</h4>
+                        <ul>
+                            <li><code>{{timestamp}}</code> or <code>{{env.timestamp}}</code> - Current date and time in ISO format</li>
+                            <li><code>{{version}}</code> or <code>{{env.version}}</code> - System version (0.1.0-alpha)</li>
+                            <li><code>{{date}}</code> or <code>{{env.date}}</code> - Current date in YYYY-MM-DD format</li>
+                            <li><code>{{time}}</code> or <code>{{env.time}}</code> - Current time in HH:MM:SS format</li>
+                        </ul>
+                        
+                        <p><strong>Note:</strong> These variables are generated automatically and are always available in any interpolation context.</p>
                     </div>
                 </div>
 

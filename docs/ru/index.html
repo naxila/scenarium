@@ -15,7 +15,7 @@
         <nav class="sidebar">
             <div class="sidebar-header">
                 <h1><a href="index.html" style="text-decoration: none; color: inherit;">🤖 Scenarium</a></h1>
-                <p class="version"><a href="https://github.com/naxila/scenarium" target="_blank" style="text-decoration: none; color: inherit;">v0.1.0-beta</a></p>
+                <p class="version"><a href="https://github.com/naxila/scenarium" target="_blank" style="text-decoration: none; color: inherit;">v0.1.0-alpha</a></p>
             </div>
             
             <div class="sidebar-content">
@@ -197,10 +197,7 @@
 require('dotenv').config();
 
 async function startBot() {
-  const bot = BotFactory.createFromScenario({
-    token: process.env.BOT_TOKEN,
-    scenario: require('./scenario.json')
-  });
+  const bot = await BotFactory.createBotFromFile('./scenario.json', process.env.BOT_TOKEN);
   
   await bot.start();
   console.log('✅ Bot started!');
@@ -225,10 +222,10 @@ startBot().catch(console.error);</code></pre>
                     <h3>Структура сценария</h3>
                     <p>Сценарий - это JSON-файл, описывающий поведение бота:</p>
                     <pre><code class="language-json">{
-  "onStartActions": [...],     // Действия при запуске
-  "menuItems": {...},          // Элементы меню
-  "functions": {...},          // Пользовательские функции
-  "data": {...}               // Общие данные
+  "onStartActions": [...],     // Действия при запуске (обязательно)
+  "menuItems": {...},          // Элементы меню (опционально)
+  "functions": {...},          // Пользовательские функции (опционально)
+  "data": {...}               // Общие данные (опционально)
 }</code></pre>
 
                     <h3>Простой сценарий (один файл)</h3>
@@ -345,20 +342,7 @@ RegistryManager.initialize();
 RegistryManager.registerAction('MyCustomAction', new MyCustomAction());
 
 // Теперь вы можете использовать это в ваших сценариях
-const bot = BotFactory.createFromScenario({
-  token: 'YOUR_BOT_TOKEN',
-  scenario: {
-    // ... your scenario
-    "actions": {
-      "myAction": {
-        "action": "MyCustomAction",
-        "data": {
-          "customParam": "value"
-        }
-      }
-    }
-  }
-});</code></pre>
+const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKEN');</code></pre>
 
                     <h3>Использование кастомных действий в сценариях</h3>
                     <p>После регистрации вы можете использовать ваши кастомные действия в JSON сценариях:</p>
@@ -453,12 +437,7 @@ RegistryManager.initialize();
 RegistryManager.registerFunction('MyCustomFunction', new MyCustomFunction());
 
 // Теперь вы можете использовать это в ваших сценариях
-const bot = BotFactory.createFromScenario({
-  token: 'YOUR_BOT_TOKEN',
-  scenario: {
-    // ... your scenario
-  }
-});</code></pre>
+const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKEN');</code></pre>
 
                     <h3>Использование кастомных функций в сценариях</h3>
                     <p>Используйте ваши кастомные функции в JSON сценариях для обработки данных:</p>

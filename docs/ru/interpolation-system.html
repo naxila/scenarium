@@ -12,7 +12,7 @@
             <div class="sidebar-content">
                 <div class="logo">
                     <h1>Scenarium</h1>
-                    <span class="version">v1.0.0</span>
+                    <span class="version">v0.1.0-alpha</span>
                 </div>
                 <nav class="nav-menu">
                     <a href="#" class="nav-link" data-path="index.html">Главная</a>
@@ -62,11 +62,21 @@
                     
                     <div class="priority-item">
                         <h3>4. Окружение (низший приоритет)</h3>
-                        <p>Системные переменные, такие как timestamp, version и т.д.</p>
+                        <p>Системные переменные, автоматически предоставляемые системой интерполяции.</p>
                         <div class="code-example">
                             <code>{{timestamp}}</code> - Прямой доступ<br>
                             <code>{{env.timestamp}}</code> - Явный префикс
                         </div>
+                        
+                        <h4>Доступные системные переменные:</h4>
+                        <ul>
+                            <li><code>{{timestamp}}</code> или <code>{{env.timestamp}}</code> - Текущая дата и время в ISO формате</li>
+                            <li><code>{{version}}</code> или <code>{{env.version}}</code> - Версия системы (0.1.0-alpha)</li>
+                            <li><code>{{date}}</code> или <code>{{env.date}}</code> - Текущая дата в формате YYYY-MM-DD</li>
+                            <li><code>{{time}}</code> или <code>{{env.time}}</code> - Текущее время в формате HH:MM:SS</li>
+                        </ul>
+                        
+                        <p><strong>Примечание:</strong> Эти переменные генерируются автоматически и всегда доступны в любом контексте интерполяции.</p>
                     </div>
                 </div>
 

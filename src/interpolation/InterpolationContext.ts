@@ -59,7 +59,7 @@ export class InterpolationContextBuilder {
     // Set environment variables
     builder.setEnv({
       timestamp: new Date().toISOString(),
-      version: '1.0.0',
+      version: '0.1.0-alpha',
       date: new Date().toISOString().split('T')[0],
       time: new Date().toTimeString().split(' ')[0]
     });
