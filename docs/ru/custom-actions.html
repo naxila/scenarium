@@ -16,66 +16,240 @@
                 <p>Кастомные действия позволяют расширить Scenarium собственной функциональностью. Вы можете создавать действия, которые выполняют специфические задачи, не покрытые встроенными действиями.</p>
                 
                 <h2>Создание кастомного действия</h2>
-                <p>Для создания кастомного действия необходимо реализовать интерфейс <code>ICustomAction</code>:</p>
+                <p>Для создания кастомного действия необходимо наследоваться от <code>BaseActionProcessor</code>:</p>
                 
                 <div class="code-block">
-                    <h3>Интерфейс кастомного действия</h3>
-                    <pre><code class="language-typescript">interface ICustomAction {
-  name: string;
-  execute(context: any): Promise<void>;
-}</code></pre>
-                </div>
-                
-                <h2>Пример: Действие погоды</h2>
-                <div class="example-card">
-                    <h3>Реализация действия погоды</h3>
-                    <pre><code class="language-typescript">import { ICustomAction } from 'scenarium';
+                    <h3>Базовый класс для кастомных действий</h3>
+                    <pre><code class="language-typescript">import { BaseActionProcessor } from 'scenarium';
 
-export class WeatherAction implements ICustomAction {
-  name = 'Weather';
-  
-  async execute(context: any): Promise<void> {
-    const city = context.city || 'Moscow';
-    const weather = await this.getWeather(city);
-    
-    await context.bot.sendMessage(context.userId, 
-      `Погода в ${city}: ${weather.temperature}°C, ${weather.description}`
-    );
+class MyCustomAction extends BaseActionProcessor {
+  get actionType() {
+    return 'MyCustomAction';
   }
-  
-  private async getWeather(city: string) {
-    // Ваша логика API погоды здесь
-    return {
-      temperature: 20,
-      description: 'Солнечно'
-    };
+
+  async process(action: any, context: any): Promise<void> {
+    // Ваша логика здесь
   }
 }</code></pre>
                 </div>
                 
+                <h2>Пример: Действие сброса сценария</h2>
+                <div class="example-card">
+                    <h3>Реализация действия сброса персонального сценария</h3>
+                    <pre><code class="language-typescript">const { BaseActionProcessor } = require('scenarium/dist/actions/BaseAction');
+
+class ResetPersonalScenarioAction extends BaseActionProcessor {
+  get actionType() {
+    return 'ResetPersonalScenario';
+  }
+
+  async process(action, context) {
+    // Создаем контекст интерполяции для этого действия
+    const interpolationContext = this.createInterpolationContext(context);
+    
+    // Создаем локальный скоуп для переменных действия
+    interpolationContext.local.createScope();
+    
+    try {
+      // Интерполируем действие с текущим контекстом
+      const interpolatedAction = this.interpolate(action, interpolationContext);
+      const { userId } = interpolatedAction;
+      
+      // Получаем реальный chatId из контекста
+      const chatId = context.chatId;
+      if (!chatId) {
+        throw new Error('ChatId not found in context');
+      }
+
+      // Устанавливаем локальные переменные действия
+      interpolationContext.local.setVariable('userId', userId);
+      interpolationContext.local.setVariable('chatId', chatId);
+      interpolationContext.local.setVariable('status', 'processing');
+
+      // Удаляем персональный сценарий из глобального хранилища
+      if (global.personalScenarios) {
+        global.personalScenarios.delete(chatId);
+        interpolationContext.local.setVariable('scenarioDeleted', true);
+      }
+      
+      // Сбрасываем сценарий на дефолтный
+      const advancedBotInstance = global.botManager?.getBotInstance('advanced-bot');
+      
+      if (advancedBotInstance) {
+        const { ScenarioLoader } = require('scenarium');
+        const defaultScenario = await ScenarioLoader.loadScenario('./scenarios/advanced-bot');
+        advancedBotInstance.updateScenario(defaultScenario);
+        
+        interpolationContext.local.setVariable('status', 'completed');
+        interpolationContext.local.setVariable('scenarioReset', true);
+        
+        await this.sendMessage(context, 
+          '🔄 Персональный сценарий сброшен!\n\n' +
+          'Сценарий сброшен для Ведомого бота (advanced-bot).\n' +
+          'Перейдите в [@boobsbbot](https://t.me/boobsbbot) и вызовите /start для тестирования.'
+        );
+      }
+    } finally {
+      // Очищаем локальный скоуп при завершении действия
+      interpolationContext.local.clearScope();
+    }
+  }
+
+  async sendMessage(context, text, options = {}) {
+    const { bot, chatId } = context;
+    if (bot && chatId) {
+      try {
+        return await bot.sendMessage(chatId, text, options);
+      } catch (error) {
+        console.error('Failed to send message:', error);
+      }
+    }
+  }
+}
+
+module.exports = ResetPersonalScenarioAction;</code></pre>
+                </div>
+                
+                <h2>Пример: Действие с ожиданием ввода</h2>
+                <div class="example-card">
+                    <h3>Реализация действия с множественным вводом</h3>
+                    <pre><code class="language-typescript">const { BaseActionProcessor } = require('scenarium/dist/actions/BaseAction');
+const { ActionRegistry } = require('scenarium');
+
+class MultiInputAction extends BaseActionProcessor {
+  get actionType() {
+    return 'MultiInput';
+  }
+
+  async process(action, context) {
+    // Создаем контекст интерполяции для этого действия
+    const interpolationContext = this.createInterpolationContext(context);
+    
+    // Создаем локальный скоуп для переменных действия
+    interpolationContext.local.createScope();
+    
+    try {
+      // Интерполируем действие с текущим контекстом
+      const interpolatedAction = this.interpolate(action, interpolationContext);
+      const { userId, botName, maxInputs = 3 } = interpolatedAction;
+      
+      // Устанавливаем локальные переменные действия
+      interpolationContext.local.setVariable('userId', userId);
+      interpolationContext.local.setVariable('botName', botName);
+      interpolationContext.local.setVariable('maxInputs', maxInputs);
+      interpolationContext.local.setVariable('actionId', `multi_${userId}_${Date.now()}`);
+      
+      const bot = context.bot;
+      const chatId = context.chatId;
+      
+      await this.sendMessage(context, `📝 Отправьте ${maxInputs} сообщений. Осталось: ${maxInputs}`);
+      
+      const actionId = interpolationContext.local.getVariable('actionId');
+      const inputs = [];
+    
+      // Устанавливаем статус обработки
+      interpolationContext.local.setVariable('status', 'waiting');
+      interpolationContext.local.setVariable('inputsCollected', 0);
+      
+      // Регистрируем ожидание множественных вводов
+      ActionRegistry.setActionWaiting(
+        actionId,
+        userId,
+        botName,
+        'message',
+        async (input, state) => {
+          // Обрабатываем ввод
+          const text = input.data.text;
+          inputs.push(text);
+          
+          // Обновляем локальные переменные
+          interpolationContext.local.setVariable('inputsCollected', inputs.length);
+          
+          const remaining = maxInputs - state.inputCount;
+          
+          if (remaining > 0) {
+            await this.sendMessage(context, `📝 Получено: ${state.inputCount}/${maxInputs}. Осталось: ${remaining}`);
+            return true; // Продолжаем ждать
+          } else {
+            interpolationContext.local.setVariable('status', 'completed');
+            await this.sendMessage(context, `✅ Все сообщения получены: ${inputs.join(', ')}`);
+            return false; // Завершаем ожидание
+          }
+        },
+        async (result) => {
+          // Действие завершено
+          console.log(`Получено ${result.inputCount} сообщений от пользователя ${userId}`);
+          await this.sendMessage(context, `🎉 Собрано ${result.inputCount} сообщений!`);
+        },
+        {
+          maxInputs: maxInputs,
+          timeout: 60000 // 1 минута таймаут
+        }
+      );
+    } finally {
+      // Очищаем локальный скоуп при завершении действия
+      interpolationContext.local.clearScope();
+    }
+  }
+
+  async sendMessage(context, text, options = {}) {
+    const { bot, chatId } = context;
+    if (bot && chatId) {
+      try {
+        return await bot.sendMessage(chatId, text, options);
+      } catch (error) {
+        console.error('Failed to send message:', error);
+      }
+    }
+  }
+}
+
+module.exports = MultiInputAction;</code></pre>
+                </div>
+
                 <h2>Регистрация кастомных действий</h2>
-                <p>Используйте <code>RegistryManager</code> для регистрации ваших кастомных действий:</p>
+                <p>Используйте <code>ActionRegistry</code> для регистрации ваших кастомных действий:</p>
                 
                 <div class="code-block">
                     <h3>Пример регистрации</h3>
-                    <pre><code class="language-typescript">import { RegistryManager } from 'scenarium';
-import { WeatherAction } from './WeatherAction';
+                    <pre><code class="language-typescript">const { ActionRegistry } = require('scenarium');
+const ResetPersonalScenarioAction = require('./actions/ResetPersonalScenarioAction');
+const MultiInputAction = require('./actions/MultiInputAction');
 
-// Регистрируем кастомное действие
-RegistryManager.registerAction(new WeatherAction());</code></pre>
+// Регистрируем кастомные действия
+ActionRegistry.registerAction(new ResetPersonalScenarioAction());
+ActionRegistry.registerAction(new MultiInputAction());</code></pre>
                 </div>
                 
                 <h2>Использование кастомных действий в сценариях</h2>
                 <p>После регистрации вы можете использовать ваше кастомное действие в сценариях:</p>
                 
                 <div class="example-card">
-                    <h3>Сценарий с кастомным действием</h3>
+                    <h3>Сценарий с кастомными действиями</h3>
                     <pre><code class="language-json">{
   "menuItems": {
-    "Weather": {
+    "Main": {
       "onNavigation": {
-        "action": "Weather",
-        "city": "London"
+        "action": "SendMessage",
+        "text": "🎯 Главное меню",
+        "inlineActions": [
+          {
+            "title": "🔄 Сбросить сценарий",
+            "onClick": {
+              "action": "ResetPersonalScenario",
+              "userId": "{{userId}}"
+            }
+          },
+          {
+            "title": "📝 Множественный ввод",
+            "onClick": {
+              "action": "MultiInput",
+              "userId": "{{userId}}",
+              "botName": "{{botName}}",
+              "maxInputs": 3
+            }
+          }
+        ]
       }
     }
   }
@@ -84,10 +258,13 @@ RegistryManager.registerAction(new WeatherAction());</code></pre>
                 
                 <h2>Лучшие практики</h2>
                 <ul>
-                    <li>Используйте описательные имена для ваших действий</li>
-                    <li>Обрабатывайте ошибки корректно</li>
-                    <li>Используйте объект контекста для доступа к данным пользователя и экземпляру бота</li>
-                    <li>Сосредоточьте действия на одной ответственности</li>
+                    <li><strong>Наследуйтесь от BaseActionProcessor</strong> - это обеспечивает правильную работу с интерполяцией и контекстом</li>
+                    <li><strong>Используйте локальные скоупы</strong> - создавайте и очищайте скоупы для изоляции переменных действия</li>
+                    <li><strong>Обрабатывайте ошибки корректно</strong> - используйте try/finally для гарантированной очистки ресурсов</li>
+                    <li><strong>Используйте интерполяцию</strong> - применяйте createInterpolationContext и interpolate для работы с переменными</li>
+                    <li><strong>Регистрируйте ожидание ввода</strong> - используйте ActionRegistry.setActionWaiting для асинхронных операций</li>
+                    <li><strong>Сосредоточьте действия на одной ответственности</strong> - каждое действие должно решать одну задачу</li>
+                    <li><strong>Используйте описательные имена</strong> - actionType должен четко отражать назначение действия</li>
                 </ul>
             </section>
         </div>

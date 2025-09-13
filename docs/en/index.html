@@ -395,46 +395,71 @@ const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKE
 }</code></pre>
                 </section>
 
-                <!-- Custom Functions -->
-                <section id="custom-functions" class="section">
-                    <h2>🔧 Custom Functions</h2>
+                <!-- Functions -->
+                <section id="functions" class="section">
+                    <h2>🔧 Functions</h2>
+                    <p>Scenarium supports two types of functions for data processing:</p>
+                    
+                    <div class="info-card">
+                        <h3>📝 Function Types</h3>
+                        <ul>
+                            <li><strong>Custom Functions</strong> - written in code (TypeScript/JavaScript) and registered in FunctionRegistry</li>
+                            <li><strong>User Functions</strong> - defined in JSON scenarios in the <code>functions</code> section</li>
+                        </ul>
+                    </div>
+
+                    <h3>🔧 Custom Functions</h3>
                     <p>Create custom functions to extend Scenarium's data processing capabilities.</p>
 
                     <h3>Creating a Custom Function</h3>
-                    <p>To create a custom function, implement the <code>ICustomFunction</code> interface:</p>
+                    <p>To create a custom function, create a class with a static <code>execute</code> method:</p>
 
-                    <pre><code class="language-typescript">import { ICustomFunction } from 'scenarium';
+                    <pre><code class="language-typescript">import { ProcessingContext } from 'scenarium';
+import { InterpolationContextBuilder, InterpolationSystem } from 'scenarium';
+import { FunctionProcessor } from 'scenarium';
 
-export class MyCustomFunction implements ICustomFunction {
-  readonly functionName = 'MyCustomFunction';
-
-  async execute(params: any, context: any): Promise<any> {
-    // Your custom logic here
-    // Access data via interpolation: {{userId}}, {{name}}, etc.
+export class MyCustomFunction {
+  static async execute(params: any, context: ProcessingContext): Promise<any> {
+    // Create interpolation context for this function
+    const interpolationContext = InterpolationContextBuilder.createContext(context, params);
     
-    // Example: Process user data
-    const result = {
-      processedAt: new Date().toISOString(),
-      userId: params.userId,
-      input: params.input,
-      processed: `Processed: ${params.input}`
-    };
+    // Create local scope for function-specific variables
+    interpolationContext.local.createScope();
     
-    return result;
+    try {
+      // Set function variables
+      interpolationContext.local.setVariable('input', params.input);
+      interpolationContext.local.setVariable('processedAt', new Date().toISOString());
+      
+      // Process input data
+      const processedInput = InterpolationSystem.interpolate(params.input, interpolationContext);
+      
+      // Update local variables
+      interpolationContext.local.setVariable('processedInput', processedInput);
+      
+      const result = {
+        processedAt: interpolationContext.local.getVariable('processedAt'),
+        input: processedInput,
+        processed: `Processed: ${processedInput}`
+      };
+      
+      return result;
+      
+    } finally {
+      // Clean up local scope when function completes
+      interpolationContext.local.clearScope();
+    }
   }
 }</code></pre>
 
                     <h3>Registering Custom Functions</h3>
-                    <p>Register your custom functions before creating bot instances:</p>
+                    <p>Register your custom functions in FunctionRegistry:</p>
 
-                    <pre><code class="language-typescript">import { RegistryManager } from 'scenarium';
+                    <pre><code class="language-typescript">import { FunctionRegistry } from 'scenarium';
 import { MyCustomFunction } from './MyCustomFunction';
 
-// Initialize the registry
-RegistryManager.initialize();
-
-// Register your custom function
-RegistryManager.registerFunction('MyCustomFunction', new MyCustomFunction());
+// Register custom function
+FunctionRegistry.registerFunction('MyCustomFunction', MyCustomFunction);
 
 // Now you can use it in your scenarios
 const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKEN');</code></pre>
@@ -455,6 +480,107 @@ const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKE
     }
   }
 }</code></pre>
+
+                    <h3>User Functions (JSON Scenarios)</h3>
+                    <p>User functions are defined directly in JSON scenarios and allow creating reusable logic without writing code:</p>
+
+                    <h4>Creating User Functions</h4>
+                    <p>Define functions in the <code>functions</code> section of your scenario:</p>
+
+                    <pre><code class="language-json">{
+  "functions": {
+    "FormatUserInfo": {
+      "params": {
+        "name": "",
+        "email": ""
+      },
+      "result": "👤 Name: **{{name}}**\n📧 Email: **{{email}}**"
+    },
+    "GetUserGreeting": {
+      "params": {
+        "user": {}
+      },
+      "result": {
+        "function": "JoinToString",
+        "values": [
+          "Hello, ",
+          {
+            "function": "FormatBold",
+            "text": "{{user.firstName}}"
+          },
+          "! 👋"
+        ],
+        "separator": ""
+      }
+    }
+  }
+}</code></pre>
+
+                    <h4>Using User Functions</h4>
+                    <p>Use user functions in scenario actions:</p>
+
+                    <pre><code class="language-json">{
+  "menuItems": {
+    "Profile": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": {
+          "function": "FormatUserInfo",
+          "name": "{{user.firstName}}",
+          "email": "{{user.email}}"
+        }
+      }
+    },
+    "Greeting": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": {
+          "function": "GetUserGreeting",
+          "user": "{{user}}"
+        }
+      }
+    }
+  }
+}</code></pre>
+
+                    <h4>Function Chains</h4>
+                    <p>User functions can call other functions (built-in or user-defined):</p>
+
+                    <pre><code class="language-json">{
+  "functions": {
+    "ComplexFormatting": {
+      "params": {
+        "data": {}
+      },
+      "result": {
+        "function": "JoinToString",
+        "values": [
+          "📊 **Report:**\n",
+          {
+            "function": "FormatBold",
+            "text": "{{data.title}}"
+          },
+          "\n📅 Date: {{data.date}}\n",
+          {
+            "function": "FormatUserInfo",
+            "name": "{{data.author}}",
+            "email": "{{data.authorEmail}}"
+          }
+        ],
+        "separator": ""
+      }
+    }
+  }
+}</code></pre>
+
+                    <h4>Best Practices for User Functions</h4>
+                    <ul>
+                        <li><strong>Use descriptive names</strong> - function names should clearly reflect their purpose</li>
+                        <li><strong>Define parameters</strong> - always specify parameters in the <code>params</code> section for clarity</li>
+                        <li><strong>Use interpolation</strong> - apply <code>{{variable}}</code> to access data</li>
+                        <li><strong>Create reusable functions</strong> - functions should be universal</li>
+                        <li><strong>Combine with built-in functions</strong> - use JoinToString, FormatBold and others</li>
+                    </ul>
 
                     <h3>Advanced Custom Functions</h3>
                     <p>Create complex data processing functions:</p>

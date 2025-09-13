@@ -16,66 +16,240 @@
                 <p>Custom actions allow you to extend Scenarium with your own functionality. You can create actions that perform specific tasks not covered by built-in actions.</p>
                 
                 <h2>Creating a Custom Action</h2>
-                <p>To create a custom action, you need to implement the <code>ICustomAction</code> interface:</p>
+                <p>To create a custom action, you need to extend the <code>BaseActionProcessor</code> class:</p>
                 
                 <div class="code-block">
-                    <h3>Custom Action Interface</h3>
-                    <pre><code class="language-typescript">interface ICustomAction {
-  name: string;
-  execute(context: any): Promise<void>;
-}</code></pre>
-                </div>
-                
-                <h2>Example: Weather Action</h2>
-                <div class="example-card">
-                    <h3>Weather Action Implementation</h3>
-                    <pre><code class="language-typescript">import { ICustomAction } from 'scenarium';
+                    <h3>Base Class for Custom Actions</h3>
+                    <pre><code class="language-typescript">import { BaseActionProcessor } from 'scenarium';
 
-export class WeatherAction implements ICustomAction {
-  name = 'Weather';
-  
-  async execute(context: any): Promise<void> {
-    const city = context.city || 'Moscow';
-    const weather = await this.getWeather(city);
-    
-    await context.bot.sendMessage(context.userId, 
-      `Weather in ${city}: ${weather.temperature}°C, ${weather.description}`
-    );
+class MyCustomAction extends BaseActionProcessor {
+  get actionType() {
+    return 'MyCustomAction';
   }
-  
-  private async getWeather(city: string) {
-    // Your weather API logic here
-    return {
-      temperature: 20,
-      description: 'Sunny'
-    };
+
+  async process(action: any, context: any): Promise<void> {
+    // Your logic here
   }
 }</code></pre>
                 </div>
                 
+                <h2>Example: Reset Scenario Action</h2>
+                <div class="example-card">
+                    <h3>Reset Personal Scenario Action Implementation</h3>
+                    <pre><code class="language-typescript">const { BaseActionProcessor } = require('scenarium/dist/actions/BaseAction');
+
+class ResetPersonalScenarioAction extends BaseActionProcessor {
+  get actionType() {
+    return 'ResetPersonalScenario';
+  }
+
+  async process(action, context) {
+    // Create interpolation context for this action
+    const interpolationContext = this.createInterpolationContext(context);
+    
+    // Create local scope for action-specific variables
+    interpolationContext.local.createScope();
+    
+    try {
+      // Interpolate the action with current context
+      const interpolatedAction = this.interpolate(action, interpolationContext);
+      const { userId } = interpolatedAction;
+      
+      // Get real chatId from context
+      const chatId = context.chatId;
+      if (!chatId) {
+        throw new Error('ChatId not found in context');
+      }
+
+      // Set action-specific local variables
+      interpolationContext.local.setVariable('userId', userId);
+      interpolationContext.local.setVariable('chatId', chatId);
+      interpolationContext.local.setVariable('status', 'processing');
+
+      // Remove personal scenario from global storage
+      if (global.personalScenarios) {
+        global.personalScenarios.delete(chatId);
+        interpolationContext.local.setVariable('scenarioDeleted', true);
+      }
+      
+      // Reset scenario to default
+      const advancedBotInstance = global.botManager?.getBotInstance('advanced-bot');
+      
+      if (advancedBotInstance) {
+        const { ScenarioLoader } = require('scenarium');
+        const defaultScenario = await ScenarioLoader.loadScenario('./scenarios/advanced-bot');
+        advancedBotInstance.updateScenario(defaultScenario);
+        
+        interpolationContext.local.setVariable('status', 'completed');
+        interpolationContext.local.setVariable('scenarioReset', true);
+        
+        await this.sendMessage(context, 
+          '🔄 Personal scenario reset!\n\n' +
+          'Scenario reset for Advanced Bot (advanced-bot).\n' +
+          'Go to [@boobsbbot](https://t.me/boobsbbot) and call /start to test.'
+        );
+      }
+    } finally {
+      // Clear local scope when action completes
+      interpolationContext.local.clearScope();
+    }
+  }
+
+  async sendMessage(context, text, options = {}) {
+    const { bot, chatId } = context;
+    if (bot && chatId) {
+      try {
+        return await bot.sendMessage(chatId, text, options);
+      } catch (error) {
+        console.error('Failed to send message:', error);
+      }
+    }
+  }
+}
+
+module.exports = ResetPersonalScenarioAction;</code></pre>
+                </div>
+                
+                <h2>Example: Input Waiting Action</h2>
+                <div class="example-card">
+                    <h3>Multi-Input Action Implementation</h3>
+                    <pre><code class="language-typescript">const { BaseActionProcessor } = require('scenarium/dist/actions/BaseAction');
+const { ActionRegistry } = require('scenarium');
+
+class MultiInputAction extends BaseActionProcessor {
+  get actionType() {
+    return 'MultiInput';
+  }
+
+  async process(action, context) {
+    // Create interpolation context for this action
+    const interpolationContext = this.createInterpolationContext(context);
+    
+    // Create local scope for action-specific variables
+    interpolationContext.local.createScope();
+    
+    try {
+      // Interpolate the action with current context
+      const interpolatedAction = this.interpolate(action, interpolationContext);
+      const { userId, botName, maxInputs = 3 } = interpolatedAction;
+      
+      // Set action-specific local variables
+      interpolationContext.local.setVariable('userId', userId);
+      interpolationContext.local.setVariable('botName', botName);
+      interpolationContext.local.setVariable('maxInputs', maxInputs);
+      interpolationContext.local.setVariable('actionId', `multi_${userId}_${Date.now()}`);
+      
+      const bot = context.bot;
+      const chatId = context.chatId;
+      
+      await this.sendMessage(context, `📝 Send ${maxInputs} messages. Remaining: ${maxInputs}`);
+      
+      const actionId = interpolationContext.local.getVariable('actionId');
+      const inputs = [];
+    
+      // Set processing status
+      interpolationContext.local.setVariable('status', 'waiting');
+      interpolationContext.local.setVariable('inputsCollected', 0);
+      
+      // Register waiting for multiple inputs
+      ActionRegistry.setActionWaiting(
+        actionId,
+        userId,
+        botName,
+        'message',
+        async (input, state) => {
+          // Process input
+          const text = input.data.text;
+          inputs.push(text);
+          
+          // Update local variables
+          interpolationContext.local.setVariable('inputsCollected', inputs.length);
+          
+          const remaining = maxInputs - state.inputCount;
+          
+          if (remaining > 0) {
+            await this.sendMessage(context, `📝 Received: ${state.inputCount}/${maxInputs}. Remaining: ${remaining}`);
+            return true; // Continue waiting
+          } else {
+            interpolationContext.local.setVariable('status', 'completed');
+            await this.sendMessage(context, `✅ All messages received: ${inputs.join(', ')}`);
+            return false; // Finish waiting
+          }
+        },
+        async (result) => {
+          // Action completed
+          console.log(`Received ${result.inputCount} messages from user ${userId}`);
+          await this.sendMessage(context, `🎉 Collected ${result.inputCount} messages!`);
+        },
+        {
+          maxInputs: maxInputs,
+          timeout: 60000 // 1 minute timeout
+        }
+      );
+    } finally {
+      // Clear local scope when action completes
+      interpolationContext.local.clearScope();
+    }
+  }
+
+  async sendMessage(context, text, options = {}) {
+    const { bot, chatId } = context;
+    if (bot && chatId) {
+      try {
+        return await bot.sendMessage(chatId, text, options);
+      } catch (error) {
+        console.error('Failed to send message:', error);
+      }
+    }
+  }
+}
+
+module.exports = MultiInputAction;</code></pre>
+                </div>
+
                 <h2>Registering Custom Actions</h2>
-                <p>Use the <code>RegistryManager</code> to register your custom actions:</p>
+                <p>Use the <code>ActionRegistry</code> to register your custom actions:</p>
                 
                 <div class="code-block">
                     <h3>Registration Example</h3>
-                    <pre><code class="language-typescript">import { RegistryManager } from 'scenarium';
-import { WeatherAction } from './WeatherAction';
+                    <pre><code class="language-typescript">const { ActionRegistry } = require('scenarium');
+const ResetPersonalScenarioAction = require('./actions/ResetPersonalScenarioAction');
+const MultiInputAction = require('./actions/MultiInputAction');
 
-// Register the custom action
-RegistryManager.registerAction(new WeatherAction());</code></pre>
+// Register custom actions
+ActionRegistry.registerAction(new ResetPersonalScenarioAction());
+ActionRegistry.registerAction(new MultiInputAction());</code></pre>
                 </div>
                 
                 <h2>Using Custom Actions in Scenarios</h2>
                 <p>Once registered, you can use your custom action in scenarios:</p>
                 
                 <div class="example-card">
-                    <h3>Scenario with Custom Action</h3>
+                    <h3>Scenario with Custom Actions</h3>
                     <pre><code class="language-json">{
   "menuItems": {
-    "Weather": {
+    "Main": {
       "onNavigation": {
-        "action": "Weather",
-        "city": "London"
+        "action": "SendMessage",
+        "text": "🎯 Main Menu",
+        "inlineActions": [
+          {
+            "title": "🔄 Reset Scenario",
+            "onClick": {
+              "action": "ResetPersonalScenario",
+              "userId": "{{userId}}"
+            }
+          },
+          {
+            "title": "📝 Multi Input",
+            "onClick": {
+              "action": "MultiInput",
+              "userId": "{{userId}}",
+              "botName": "{{botName}}",
+              "maxInputs": 3
+            }
+          }
+        ]
       }
     }
   }
@@ -84,10 +258,13 @@ RegistryManager.registerAction(new WeatherAction());</code></pre>
                 
                 <h2>Best Practices</h2>
                 <ul>
-                    <li>Use descriptive names for your actions</li>
-                    <li>Handle errors gracefully</li>
-                    <li>Use the context object to access user data and bot instance</li>
-                    <li>Keep actions focused on a single responsibility</li>
+                    <li><strong>Extend BaseActionProcessor</strong> - This ensures proper interpolation and context handling</li>
+                    <li><strong>Use local scopes</strong> - Create and clear scopes for action variable isolation</li>
+                    <li><strong>Handle errors gracefully</strong> - Use try/finally for guaranteed resource cleanup</li>
+                    <li><strong>Use interpolation</strong> - Apply createInterpolationContext and interpolate for variable handling</li>
+                    <li><strong>Register input waiting</strong> - Use ActionRegistry.setActionWaiting for asynchronous operations</li>
+                    <li><strong>Keep actions focused on single responsibility</strong> - Each action should solve one task</li>
+                    <li><strong>Use descriptive names</strong> - actionType should clearly reflect the action's purpose</li>
                 </ul>
             </section>
         </div>
