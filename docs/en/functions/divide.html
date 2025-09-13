@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divide - Scenarium</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+
+                <section class="section">
+                    <h1>➗ Divide</h1>
+                    <p class="lead">Arithmetic function for dividing numbers with variable interpolation support.</p>
+                    
+                    <div class="function-info">
+                        <div class="info-card">
+                            <h3>📋 Description</h3>
+                            <p>Divide is a mathematical function for dividing numbers. It divides the first number by all subsequent numbers in the array.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Purpose</h3>
+                            <ul>
+                                <li>Dividing multiple numbers</li>
+                                <li>Calculating ratios from variables</li>
+                                <li>Arithmetic operations in scenarios</li>
+                                <li>Processing numeric data</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Parameters</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>values</code></td>
+                                    <td>array</td>
+                                    <td>✅</td>
+                                    <td>Array of numbers (first number - dividend, rest - divisors)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Usage Examples</h2>
+                    
+                    <div class="example-card">
+                        <h3>Simple Division</h3>
+                        <pre><code class="language-json">{
+  "function": "Divide",
+  "values": [100, 4, 5]
+}</code></pre>
+                        <p><strong>Result:</strong> 5 (100 ÷ 4 ÷ 5)</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Division with Variables</h3>
+                        <pre><code class="language-json">{
+  "function": "Divide",
+  "values": ["{{total}}", "{{count}}", "{{factor}}"]
+}</code></pre>
+                        <p><strong>Result:</strong> total ÷ count ÷ factor</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Single Number</h3>
+                        <pre><code class="language-json">{
+  "function": "Divide",
+  "values": [50]
+}</code></pre>
+                        <p><strong>Result:</strong> 50 (no division)</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>In Message Text</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Average: ",
+      {
+        "function": "Divide",
+        "values": ["{{sum}}", "{{count}}"]
+      },
+      " points"
+    ]
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔗 Available Variables</h2>
+                    <div class="variables-grid">
+                        <div class="variable-card">
+                            <h4>Local Context</h4>
+                            <ul>
+                                <li><code>{{result}}</code> - Calculation result</li>
+                            </ul>
+                        </div>
+                        <div class="variable-card">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code>{{values}}</code> - Input values array</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚠️ Important Notes</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Empty array:</strong> Returns 1 if values array is empty</li>
+                            <li><strong>Single value:</strong> Returns the value itself if only one number provided</li>
+                            <li><strong>Division by zero:</strong> Causes an error if any divisor is zero</li>
+                            <li><strong>Type conversion:</strong> Strings are automatically converted to numbers</li>
+                            <li><strong>Invalid values:</strong> Invalid numbers cause an error</li>
+                            <li><strong>Interpolation:</strong> All string values are interpolated before calculation</li>
+                            <li><strong>Precision:</strong> Uses standard JavaScript floating-point division</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Related Functions</h2>
+                    <div class="related-functions">
+                        <a href="plus.html" class="nav-link">
+                            <h4>Plus</h4>
+                            <p>Addition of numbers</p>
+                        </a>
+                        <a href="minus.html" class="nav-link">
+                            <h4>Minus</h4>
+                            <p>Subtraction of numbers</p>
+                        </a>
+                        <a href="multiply.html" class="nav-link">
+                            <h4>Multiply</h4>
+                            <p>Multiplication of numbers</p>
+                        </a>
+                        <a href="mod.html" class="nav-link">
+                            <h4>Mod</h4>
+                            <p>Modulo operation</p>
+                        </a>
+                    </div>
+
+                </section>
+            
+        </div>
+    </div>
+</body>
+</html>

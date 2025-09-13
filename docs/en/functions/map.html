@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map - Scenarium</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+
+                <section class="section">
+                    <h1>🗺️ Map</h1>
+                    <p class="lead">Array processing function for transforming elements with variable interpolation support.</p>
+                    
+                    <div class="function-info">
+                        <div class="info-card">
+                            <h3>📋 Description</h3>
+                            <p>Map is a function for transforming each element in an array using a specified function or operation. It applies the transformation to every element and returns a new array.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Purpose</h3>
+                            <ul>
+                                <li>Transforming array elements</li>
+                                <li>Applying functions to each item</li>
+                                <li>Data processing in scenarios</li>
+                                <li>Batch operations on collections</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Parameters</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>array</code></td>
+                                    <td>array</td>
+                                    <td>✅</td>
+                                    <td>Array of values to transform</td>
+                                </tr>
+                                <tr>
+                                    <td><code>function</code></td>
+                                    <td>string</td>
+                                    <td>✅</td>
+                                    <td>Function name to apply to each element</td>
+                                </tr>
+                                <tr>
+                                    <td><code>params</code></td>
+                                    <td>object</td>
+                                    <td>❌</td>
+                                    <td>Additional parameters for the function</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Usage Examples</h2>
+                    
+                    <div class="example-card">
+                        <h3>Simple Array Transformation</h3>
+                        <pre><code class="language-json">{
+  "function": "Map",
+  "array": [1, 2, 3, 4, 5],
+  "function": "Plus",
+  "params": {
+    "values": ["{{item}}", 10]
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> [11, 12, 13, 14, 15]</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>String Transformation</h3>
+                        <pre><code class="language-json">{
+  "function": "Map",
+  "array": ["hello", "world", "test"],
+  "function": "String",
+  "params": {
+    "operation": "uppercase",
+    "input": "{{item}}"
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> ["HELLO", "WORLD", "TEST"]</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>With Variables</h3>
+                        <pre><code class="language-json">{
+  "function": "Map",
+  "array": "{{prices}}",
+  "function": "Multiply",
+  "params": {
+    "values": ["{{item}}", "{{taxRate}}"]
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> Array of prices multiplied by tax rate</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>In Message Text</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Processed values: ",
+      {
+        "function": "Map",
+        "array": ["{{rawData}}"],
+        "function": "String",
+        "params": {
+          "operation": "uppercase",
+          "input": "{{item}}"
+        }
+      }
+    ],
+    "separator": ", "
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔗 Available Variables</h2>
+                    <div class="variables-grid">
+                        <div class="variable-card">
+                            <h4>Local Context</h4>
+                            <ul>
+                                <li><code>{{result}}</code> - Transformed array result</li>
+                                <li><code>{{item}}</code> - Current array element being processed</li>
+                                <li><code>{{index}}</code> - Current element index (0-based)</li>
+                            </ul>
+                        </div>
+                        <div class="variable-card">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code>{{array}}</code> - Original input array</li>
+                                <li><code>{{function}}</code> - Function name being applied</li>
+                                <li><code>{{params}}</code> - Function parameters</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚠️ Important Notes</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Array required:</strong> Must provide a valid array in the array parameter</li>
+                            <li><strong>Function required:</strong> Must specify a valid function name</li>
+                            <li><strong>Item variable:</strong> Each element is available as {{item}} in function parameters</li>
+                            <li><strong>Index variable:</strong> Element index is available as {{index}} in function parameters</li>
+                            <li><strong>Interpolation:</strong> All string values are interpolated before processing</li>
+                            <li><strong>Error handling:</strong> If any element processing fails, the entire operation fails</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Related Functions</h2>
+                    <div class="related-functions">
+                        <a href="join-to-string.html" class="nav-link">
+                            <h4>JoinToString</h4>
+                            <p>Join array into string</p>
+                        </a>
+                        <a href="plus.html" class="nav-link">
+                            <h4>Plus</h4>
+                            <p>Addition of numbers</p>
+                        </a>
+                        <a href="multiply.html" class="nav-link">
+                            <h4>Multiply</h4>
+                            <p>Multiplication of numbers</p>
+                        </a>
+                    </div>
+
+                </section>
+            
+        </div>
+    </div>
+</body>
+</html>

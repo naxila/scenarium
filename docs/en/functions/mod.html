@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mod - Scenarium</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+
+                <section class="section">
+                    <h1>🔢 Mod</h1>
+                    <p class="lead">Arithmetic function for modulo operation with variable interpolation support.</p>
+                    
+                    <div class="function-info">
+                        <div class="info-card">
+                            <h3>📋 Description</h3>
+                            <p>Mod is a mathematical function for calculating the remainder of division. It performs modulo operation on the first number using the second number as divisor.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Purpose</h3>
+                            <ul>
+                                <li>Calculating remainders</li>
+                                <li>Checking even/odd numbers</li>
+                                <li>Cyclic operations</li>
+                                <li>Arithmetic operations in scenarios</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Parameters</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>values</code></td>
+                                    <td>array</td>
+                                    <td>✅</td>
+                                    <td>Array of exactly 2 numbers [dividend, divisor]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Usage Examples</h2>
+                    
+                    <div class="example-card">
+                        <h3>Simple Modulo</h3>
+                        <pre><code class="language-json">{
+  "function": "Mod",
+  "values": [17, 5]
+}</code></pre>
+                        <p><strong>Result:</strong> 2 (17 % 5)</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Modulo with Variables</h3>
+                        <pre><code class="language-json">{
+  "function": "Mod",
+  "values": ["{{number}}", "{{divisor}}"]
+}</code></pre>
+                        <p><strong>Result:</strong> number % divisor</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Check Even Number</h3>
+                        <pre><code class="language-json">{
+  "function": "Mod",
+  "values": ["{{value}}", 2]
+}</code></pre>
+                        <p><strong>Result:</strong> 0 if even, 1 if odd</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>In Message Text</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Remainder: ",
+      {
+        "function": "Mod",
+        "values": ["{{dividend}}", "{{divisor}}"]
+      }
+    ]
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔗 Available Variables</h2>
+                    <div class="variables-grid">
+                        <div class="variable-card">
+                            <h4>Local Context</h4>
+                            <ul>
+                                <li><code>{{result}}</code> - Calculation result</li>
+                            </ul>
+                        </div>
+                        <div class="variable-card">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code>{{values}}</code> - Input values array</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚠️ Important Notes</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Two values required:</strong> Must provide exactly 2 numbers in values array</li>
+                            <li><strong>Division by zero:</strong> Causes an error if divisor is zero</li>
+                            <li><strong>Type conversion:</strong> Strings are automatically converted to numbers</li>
+                            <li><strong>Invalid values:</strong> Invalid numbers cause an error</li>
+                            <li><strong>Interpolation:</strong> All string values are interpolated before calculation</li>
+                            <li><strong>Negative numbers:</strong> Handles negative numbers according to JavaScript modulo rules</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Related Functions</h2>
+                    <div class="related-functions">
+                        <a href="divide.html" class="nav-link">
+                            <h4>Divide</h4>
+                            <p>Division of numbers</p>
+                        </a>
+                        <a href="plus.html" class="nav-link">
+                            <h4>Plus</h4>
+                            <p>Addition of numbers</p>
+                        </a>
+                        <a href="multiply.html" class="nav-link">
+                            <h4>Multiply</h4>
+                            <p>Multiplication of numbers</p>
+                        </a>
+                    </div>
+
+                </section>
+            
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiply - Scenarium</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+
+                <section class="section">
+                    <h1>✖️ Multiply</h1>
+                    <p class="lead">Арифметическая функция для умножения чисел с поддержкой интерполяции переменных.</p>
+                    
+                    <div class="function-info">
+                        <div class="info-card">
+                            <h3>📋 Описание</h3>
+                            <p>Multiply - это математическая функция для умножения массива чисел. Перемножает все числа в массиве.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Назначение</h3>
+                            <ul>
+                                <li>Умножение нескольких чисел</li>
+                                <li>Вычисление произведения из переменных</li>
+                                <li>Арифметические операции в сценариях</li>
+                                <li>Обработка числовых данных</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Параметры</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Параметр</th>
+                                    <th>Тип</th>
+                                    <th>Обязательный</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>values</code></td>
+                                    <td>array</td>
+                                    <td>✅</td>
+                                    <td>Массив чисел для умножения</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Примеры использования</h2>
+                    
+                    <div class="example-card">
+                        <h3>Простое умножение</h3>
+                        <pre><code class="language-json">{
+  "function": "Multiply",
+  "values": [5, 4, 3]
+}</code></pre>
+                        <p><strong>Результат:</strong> 60 (5 × 4 × 3)</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Умножение с переменными</h3>
+                        <pre><code class="language-json">{
+  "function": "Multiply",
+  "values": ["{{price}}", "{{quantity}}", "{{rate}}"]
+}</code></pre>
+                        <p><strong>Результат:</strong> price × quantity × rate</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Одно число</h3>
+                        <pre><code class="language-json">{
+  "function": "Multiply",
+  "values": [25]
+}</code></pre>
+                        <p><strong>Результат:</strong> 25</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>В тексте сообщения</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Общая площадь: ",
+      {
+        "function": "Multiply",
+        "values": ["{{length}}", "{{width}}"]
+      },
+      " кв.м."
+    ]
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>🔗 Доступные переменные</h2>
+                    <div class="variables-grid">
+                        <div class="variable-card">
+                            <h4>Локальный контекст</h4>
+                            <ul>
+                                <li><code>{{result}}</code> - Результат вычисления</li>
+                            </ul>
+                        </div>
+                        <div class="variable-card">
+                            <h4>Параметры</h4>
+                            <ul>
+                                <li><code>{{values}}</code> - Массив входных значений</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚠️ Важные замечания</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Пустой массив:</strong> Возвращает 1 если массив values пустой</li>
+                            <li><strong>Одно значение:</strong> Возвращает само значение если передано только одно число</li>
+                            <li><strong>Преобразование типов:</strong> Строки автоматически преобразуются в числа</li>
+                            <li><strong>Некорректные значения:</strong> Некорректные числа вызывают ошибку</li>
+                            <li><strong>Интерполяция:</strong> Все строковые значения интерполируются перед вычислением</li>
+                            <li><strong>Обработка нуля:</strong> Любой ноль в массиве дает нулевое произведение</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Связанные функции</h2>
+                    <div class="related-functions">
+                        <a href="plus.html" class="nav-link">
+                            <h4>Plus</h4>
+                            <p>Сложение чисел</p>
+                        </a>
+                        <a href="minus.html" class="nav-link">
+                            <h4>Minus</h4>
+                            <p>Вычитание чисел</p>
+                        </a>
+                        <a href="divide.html" class="nav-link">
+                            <h4>Divide</h4>
+                            <p>Деление чисел</p>
+                        </a>
+                    </div>
+
+                </section>
+            
+        </div>
+    </div>
+</body>
+</html>
