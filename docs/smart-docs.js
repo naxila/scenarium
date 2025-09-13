@@ -110,7 +110,13 @@ class SmartDocs {
                 { href: '#functions', text: '🔧 Built-in Functions', icon: 'functions', submenu: [
                     { href: '#functions/join-to-string', text: 'JoinToString' },
                     { href: '#functions/equals', text: 'Equals' },
-                    { href: '#functions/read-storage', text: 'ReadStorage' }
+                    { href: '#functions/read-storage', text: 'ReadStorage' },
+                    { href: '#functions/plus', text: 'Plus' },
+                    { href: '#functions/minus', text: 'Minus' },
+                    { href: '#functions/multiply', text: 'Multiply' },
+                    { href: '#functions/divide', text: 'Divide' },
+                    { href: '#functions/mod', text: 'Mod' },
+                    { href: '#functions/map', text: 'Map' }
                 ]}
             ],
             ru: [
@@ -138,7 +144,13 @@ class SmartDocs {
                 { href: '#functions', text: '🔧 Встроенные функции', icon: 'functions', submenu: [
                     { href: '#functions/join-to-string', text: 'JoinToString' },
                     { href: '#functions/equals', text: 'Equals' },
-                    { href: '#functions/read-storage', text: 'ReadStorage' }
+                    { href: '#functions/read-storage', text: 'ReadStorage' },
+                    { href: '#functions/plus', text: 'Plus' },
+                    { href: '#functions/minus', text: 'Minus' },
+                    { href: '#functions/multiply', text: 'Multiply' },
+                    { href: '#functions/divide', text: 'Divide' },
+                    { href: '#functions/mod', text: 'Mod' },
+                    { href: '#functions/map', text: 'Map' }
                 ]}
             ]
         };
