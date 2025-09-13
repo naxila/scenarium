@@ -412,11 +412,51 @@ const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKE
                     <p>Создавайте кастомные функции для расширения возможностей обработки данных Scenarium.</p>
 
                     <h3>Создание кастомной функции</h3>
-                    <p>Для создания кастомной функции создайте класс со статическим методом <code>execute</code>:</p>
+                    <p>В Scenarium есть два способа создания кастомных функций:</p>
 
+                    <h4>Способ 1: Через интерфейс ICustomFunction</h4>
+                    <pre><code class="language-typescript">import { ICustomFunction, ProcessingContext } from 'scenarium';
+import { InterpolationContextBuilder, InterpolationSystem } from 'scenarium';
+
+export class MyCustomFunction implements ICustomFunction {
+  readonly functionName = 'MyCustomFunction';
+
+  async execute(params: any, context: ProcessingContext): Promise<any> {
+    // Создаем контекст интерполяции для этой функции
+    const interpolationContext = InterpolationContextBuilder.createContext(context, params);
+    
+    // Создаем локальный скоуп для переменных функции
+    interpolationContext.local.createScope();
+    
+    try {
+      // Устанавливаем переменные функции
+      interpolationContext.local.setVariable('input', params.input);
+      interpolationContext.local.setVariable('processedAt', new Date().toISOString());
+      
+      // Обрабатываем входные данные
+      const processedInput = InterpolationSystem.interpolate(params.input, interpolationContext);
+      
+      // Обновляем локальные переменные
+      interpolationContext.local.setVariable('processedInput', processedInput);
+      
+      const result = {
+        processedAt: interpolationContext.local.getVariable('processedAt'),
+        input: processedInput,
+        processed: `Обработано: ${processedInput}`
+      };
+      
+      return result;
+      
+    } finally {
+      // Очищаем локальный скоуп при завершении функции
+      interpolationContext.local.clearScope();
+    }
+  }
+}</code></pre>
+
+                    <h4>Способ 2: Через статический метод execute</h4>
                     <pre><code class="language-typescript">import { ProcessingContext } from 'scenarium';
 import { InterpolationContextBuilder, InterpolationSystem } from 'scenarium';
-import { FunctionProcessor } from 'scenarium';
 
 export class MyCustomFunction {
   static async execute(params: any, context: ProcessingContext): Promise<any> {
@@ -455,14 +495,29 @@ export class MyCustomFunction {
                     <h3>Регистрация кастомных функций</h3>
                     <p>Зарегистрируйте ваши кастомные функции в FunctionRegistry:</p>
 
+                    <h4>Для функций с интерфейсом ICustomFunction:</h4>
                     <pre><code class="language-typescript">import { FunctionRegistry } from 'scenarium';
 import { MyCustomFunction } from './MyCustomFunction';
 
-// Регистрируем кастомную функцию
-FunctionRegistry.registerFunction('MyCustomFunction', MyCustomFunction);
+// Регистрируем экземпляр функции
+FunctionRegistry.registerFunction('MyCustomFunction', new MyCustomFunction());</code></pre>
 
-// Теперь вы можете использовать это в ваших сценариях
+                    <h4>Для функций со статическим методом execute:</h4>
+                    <pre><code class="language-typescript">import { FunctionRegistry } from 'scenarium';
+import { MyCustomFunction } from './MyCustomFunction';
+
+// Регистрируем класс функции
+FunctionRegistry.registerFunction('MyCustomFunction', MyCustomFunction);</code></pre>
+
+                    <h4>Использование в сценариях:</h4>
+                    <pre><code class="language-typescript">// Теперь вы можете использовать это в ваших сценариях
 const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKEN');</code></pre>
+
+                    <h4>Какой способ выбрать?</h4>
+                    <ul>
+                        <li><strong>ICustomFunction</strong> - используйте для функций, которые нужны как экземпляры (например, MapFunction)</li>
+                        <li><strong>Статический execute</strong> - используйте для утилитарных функций (например, EqualsFunction, JoinToStringFunction)</li>
+                    </ul>
 
                     <h3>Использование кастомных функций в сценариях</h3>
                     <p>Используйте ваши кастомные функции в JSON сценариях для обработки данных:</p>

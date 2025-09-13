@@ -1,0 +1,136 @@
+{
+  "name": "Custom Functions and Actions Demo",
+  "description": "Демонстрация кастомных функций и действий в Scenarium",
+  "version": "1.0.0",
+  "botName": "CustomDemoBot",
+  "startMessage": {
+    "action": "SendMessage",
+    "text": "🤖 Добро пожаловать в демо кастомных функций и действий!\n\nВыберите действие:",
+    "inlineActions": [
+      {
+        "title": "📊 Показать статистику",
+        "onClick": {
+          "action": "ShowUserStats"
+        }
+      },
+      {
+        "title": "👥 Форматировать список",
+        "onClick": {
+          "action": "SendMessage",
+          "text": {
+            "function": "FormatUserList",
+            "users": "{{users}}",
+            "template": "👤 {{user.name}} - {{user.email}}",
+            "separator": "\n"
+          }
+        }
+      },
+      {
+        "title": "🔢 Рассчитать числа",
+        "onClick": {
+          "action": "SendMessage",
+          "text": {
+            "function": "JoinToString",
+            "values": [
+              "📈 Статистика чисел:",
+              {
+                "function": "CalculateStats",
+                "numbers": [10, 25, 30, 15, 20, 35, 40]
+              }
+            ],
+            "separator": "\n"
+          }
+        }
+      },
+      {
+        "title": "🔄 Обновить данные",
+        "onClick": {
+          "action": "Store",
+          "key": "users",
+          "value": [
+            {"name": "Анна", "email": "anna@example.com", "age": 25},
+            {"name": "Борис", "email": "boris@example.com", "age": 30},
+            {"name": "Виктория", "email": "vika@example.com", "age": 28}
+          ]
+        }
+      }
+    ]
+  },
+  "menuItems": {
+    "Stats": {
+      "onNavigation": {
+        "action": "ShowUserStats"
+      }
+    },
+    "Format": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": {
+          "function": "FormatUserList",
+          "users": "{{users}}",
+          "template": "👤 **{{user.name}}** ({{user.email}}) - {{user.age}} лет",
+          "separator": "\n"
+        }
+      }
+    },
+    "Calculate": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": {
+          "function": "JoinToString",
+          "values": [
+            "🔢 Результат вычислений:",
+            "Количество: {{count}}",
+            "Сумма: {{sum}}",
+            "Среднее: {{average}}",
+            "Минимум: {{min}}",
+            "Максимум: {{max}}"
+          ],
+          "separator": "\n"
+        },
+        "local": {
+          "numbers": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+        }
+      }
+    }
+  },
+  "functions": {
+    "FormatUserInfo": {
+      "params": {
+        "user": {}
+      },
+      "result": "👤 **{{user.name}}**\n📧 {{user.email}}\n🎂 {{user.age}} лет"
+    },
+    "GetUserGreeting": {
+      "params": {
+        "user": {}
+      },
+      "result": {
+        "function": "JoinToString",
+        "values": [
+          "Привет, ",
+          {
+            "function": "FormatBold",
+            "text": "{{user.name}}"
+          },
+          "! 👋"
+        ],
+        "separator": ""
+      }
+    },
+    "FormatBold": {
+      "params": {
+        "text": ""
+      },
+      "result": "**{{text}}**"
+    }
+  },
+  "data": {
+    "users": [
+      {"name": "Алиса", "email": "alice@example.com", "age": 25},
+      {"name": "Боб", "email": "bob@example.com", "age": 30},
+      {"name": "Чарли", "email": "charlie@example.com", "age": 28}
+    ],
+    "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  }
+}

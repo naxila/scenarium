@@ -412,11 +412,51 @@ const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKE
                     <p>Create custom functions to extend Scenarium's data processing capabilities.</p>
 
                     <h3>Creating a Custom Function</h3>
-                    <p>To create a custom function, create a class with a static <code>execute</code> method:</p>
+                    <p>In Scenarium, there are two ways to create custom functions:</p>
 
+                    <h4>Method 1: Through ICustomFunction interface</h4>
+                    <pre><code class="language-typescript">import { ICustomFunction, ProcessingContext } from 'scenarium';
+import { InterpolationContextBuilder, InterpolationSystem } from 'scenarium';
+
+export class MyCustomFunction implements ICustomFunction {
+  readonly functionName = 'MyCustomFunction';
+
+  async execute(params: any, context: ProcessingContext): Promise<any> {
+    // Create interpolation context for this function
+    const interpolationContext = InterpolationContextBuilder.createContext(context, params);
+    
+    // Create local scope for function-specific variables
+    interpolationContext.local.createScope();
+    
+    try {
+      // Set function variables
+      interpolationContext.local.setVariable('input', params.input);
+      interpolationContext.local.setVariable('processedAt', new Date().toISOString());
+      
+      // Process input data
+      const processedInput = InterpolationSystem.interpolate(params.input, interpolationContext);
+      
+      // Update local variables
+      interpolationContext.local.setVariable('processedInput', processedInput);
+      
+      const result = {
+        processedAt: interpolationContext.local.getVariable('processedAt'),
+        input: processedInput,
+        processed: `Processed: ${processedInput}`
+      };
+      
+      return result;
+      
+    } finally {
+      // Clean up local scope when function completes
+      interpolationContext.local.clearScope();
+    }
+  }
+}</code></pre>
+
+                    <h4>Method 2: Through static execute method</h4>
                     <pre><code class="language-typescript">import { ProcessingContext } from 'scenarium';
 import { InterpolationContextBuilder, InterpolationSystem } from 'scenarium';
-import { FunctionProcessor } from 'scenarium';
 
 export class MyCustomFunction {
   static async execute(params: any, context: ProcessingContext): Promise<any> {
@@ -455,14 +495,29 @@ export class MyCustomFunction {
                     <h3>Registering Custom Functions</h3>
                     <p>Register your custom functions in FunctionRegistry:</p>
 
+                    <h4>For functions with ICustomFunction interface:</h4>
                     <pre><code class="language-typescript">import { FunctionRegistry } from 'scenarium';
 import { MyCustomFunction } from './MyCustomFunction';
 
-// Register custom function
-FunctionRegistry.registerFunction('MyCustomFunction', MyCustomFunction);
+// Register function instance
+FunctionRegistry.registerFunction('MyCustomFunction', new MyCustomFunction());</code></pre>
 
-// Now you can use it in your scenarios
+                    <h4>For functions with static execute method:</h4>
+                    <pre><code class="language-typescript">import { FunctionRegistry } from 'scenarium';
+import { MyCustomFunction } from './MyCustomFunction';
+
+// Register function class
+FunctionRegistry.registerFunction('MyCustomFunction', MyCustomFunction);</code></pre>
+
+                    <h4>Using in scenarios:</h4>
+                    <pre><code class="language-typescript">// Now you can use it in your scenarios
 const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKEN');</code></pre>
+
+                    <h4>Which method to choose?</h4>
+                    <ul>
+                        <li><strong>ICustomFunction</strong> - use for functions that need to be instances (e.g., MapFunction)</li>
+                        <li><strong>Static execute</strong> - use for utility functions (e.g., EqualsFunction, JoinToStringFunction)</li>
+                    </ul>
 
                     <h3>Using Custom Functions in Scenarios</h3>
                     <p>Use your custom functions in JSON scenarios for data processing:</p>

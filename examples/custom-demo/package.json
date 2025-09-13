@@ -1,0 +1,25 @@
+{
+  "name": "scenarium-custom-demo",
+  "version": "1.0.0",
+  "description": "Demo project showcasing custom functions and actions in Scenarium",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "scenarium": "file:../../scenarium-0.1.0-alpha.tgz",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": [
+    "scenarium",
+    "telegram",
+    "bot",
+    "custom",
+    "functions",
+    "actions",
+    "demo"
+  ],
+  "author": "Scenarium Team",
+  "license": "MIT"
+}
