@@ -11,21 +11,21 @@
 
                 <section class="section">
                     <h1>🗺️ Map</h1>
-                    <p class="lead">Array processing function for transforming elements with variable interpolation support.</p>
+                    <p class="lead">Dynamic button generation function that creates inline actions from array data with variable interpolation support.</p>
                     
                     <div class="function-info">
                         <div class="info-card">
                             <h3>📋 Description</h3>
-                            <p>Map is a function for transforming each element in an array using a specified function or operation. It applies the transformation to every element and returns a new array.</p>
+                            <p>Map is a special function for creating dynamic inline actions (buttons) from array data. It generates buttons for each element in an array, allowing users to interact with data dynamically.</p>
                         </div>
                         
                         <div class="info-card">
                             <h3>🎯 Purpose</h3>
                             <ul>
-                                <li>Transforming array elements</li>
-                                <li>Applying functions to each item</li>
-                                <li>Data processing in scenarios</li>
-                                <li>Batch operations on collections</li>
+                                <li>Creating dynamic buttons from arrays</li>
+                                <li>Generating interactive menus</li>
+                                <li>Building data-driven interfaces</li>
+                                <li>Creating user selection options</li>
                             </ul>
                         </div>
                     </div>
@@ -43,22 +43,16 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><code>array</code></td>
+                                    <td><code>items</code></td>
                                     <td>array</td>
                                     <td>✅</td>
-                                    <td>Array of values to transform</td>
+                                    <td>Array of data to create buttons from</td>
                                 </tr>
                                 <tr>
-                                    <td><code>function</code></td>
-                                    <td>string</td>
-                                    <td>✅</td>
-                                    <td>Function name to apply to each element</td>
-                                </tr>
-                                <tr>
-                                    <td><code>params</code></td>
+                                    <td><code>forEach</code></td>
                                     <td>object</td>
-                                    <td>❌</td>
-                                    <td>Additional parameters for the function</td>
+                                    <td>✅</td>
+                                    <td>Template for each button with title and onClick action</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -67,84 +61,92 @@
                     <h2>💡 Usage Examples</h2>
                     
                     <div class="example-card">
-                        <h3>Simple Array Transformation</h3>
+                        <h3>Creating Buttons from Array</h3>
                         <pre><code class="language-json">{
-  "function": "Map",
-  "array": [1, 2, 3, 4, 5],
-  "function": "Plus",
-  "params": {
-    "values": ["{{item}}", 10]
+  "action": "SendMessage",
+  "text": "Choose a color:",
+  "inlineActions": {
+    "function": "Map",
+    "items": "{{colors}}",
+    "forEach": {
+      "title": "{{it}}",
+      "onClick": {
+        "action": "SendMessage",
+        "text": "You selected: {{it}}"
+      }
+    }
   }
 }</code></pre>
-                        <p><strong>Result:</strong> [11, 12, 13, 14, 15]</p>
+                        <p><strong>Result:</strong> Creates buttons for each color in the array</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>String Transformation</h3>
+                        <h3>Buttons with Index</h3>
                         <pre><code class="language-json">{
-  "function": "Map",
-  "array": ["hello", "world", "test"],
-  "function": "String",
-  "params": {
-    "operation": "uppercase",
-    "input": "{{item}}"
+  "inlineActions": {
+    "function": "Map",
+    "items": "{{products}}",
+    "forEach": {
+      "title": "{{index}}: {{it.name}} - {{it.price}}₽",
+      "onClick": {
+        "action": "SendMessage",
+        "text": "Selected: {{it.name}}\nPrice: {{it.price}}₽"
+      }
+    }
   }
 }</code></pre>
-                        <p><strong>Result:</strong> ["HELLO", "WORLD", "TEST"]</p>
+                        <p><strong>Result:</strong> Creates numbered buttons for each product</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>With Variables</h3>
+                        <h3>Generating Text from Array</h3>
                         <pre><code class="language-json">{
-  "function": "Map",
-  "array": "{{prices}}",
-  "function": "Multiply",
-  "params": {
-    "values": ["{{item}}", "{{taxRate}}"]
+  "action": "SendMessage",
+  "text": {
+    "function": "Map",
+    "items": "{{features}}",
+    "forEach": {
+      "function": "JoinToString",
+      "values": ["✅ ", "{{it}}", "\n"]
+    }
   }
 }</code></pre>
-                        <p><strong>Result:</strong> Array of prices multiplied by tax rate</p>
+                        <p><strong>Result:</strong> Creates formatted text list from array</p>
                     </div>
 
                     <div class="example-card">
-                        <h3>In Message Text</h3>
+                        <h3>Nested with JoinToString</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
   "text": {
     "function": "JoinToString",
-    "values": [
-      "Processed values: ",
-      {
-        "function": "Map",
-        "array": ["{{rawData}}"],
-        "function": "String",
-        "params": {
-          "operation": "uppercase",
-          "input": "{{item}}"
-        }
+    "values": {
+      "function": "Map",
+      "items": "{{features}}",
+      "forEach": {
+        "function": "JoinToString",
+        "values": ["✅ ", "{{it}}", "\n"]
       }
-    ],
-    "separator": ", "
+    }
   }
 }</code></pre>
+                        <p><strong>Result:</strong> Combines Map with JoinToString for complex text formatting</p>
                     </div>
 
                     <h2>🔗 Available Variables</h2>
                     <div class="variables-grid">
                         <div class="variable-card">
-                            <h4>Local Context</h4>
+                            <h4>In forEach Template</h4>
                             <ul>
-                                <li><code>{{result}}</code> - Transformed array result</li>
-                                <li><code>{{item}}</code> - Current array element being processed</li>
+                                <li><code>{{it}}</code> - Current array element being processed</li>
                                 <li><code>{{index}}</code> - Current element index (0-based)</li>
                             </ul>
                         </div>
                         <div class="variable-card">
                             <h4>Parameters</h4>
                             <ul>
-                                <li><code>{{array}}</code> - Original input array</li>
-                                <li><code>{{function}}</code> - Function name being applied</li>
-                                <li><code>{{params}}</code> - Function parameters</li>
+                                <li><code>{{items}}</code> - Original input array</li>
+                                <li><code>{{forEach}}</code> - Template object for each element</li>
                             </ul>
                         </div>
                     </div>
@@ -152,12 +154,13 @@
                     <h2>⚠️ Important Notes</h2>
                     <div class="warning-card">
                         <ul>
-                            <li><strong>Array required:</strong> Must provide a valid array in the array parameter</li>
-                            <li><strong>Function required:</strong> Must specify a valid function name</li>
-                            <li><strong>Item variable:</strong> Each element is available as {{item}} in function parameters</li>
-                            <li><strong>Index variable:</strong> Element index is available as {{index}} in function parameters</li>
+                            <li><strong>Items required:</strong> Must provide a valid array in the items parameter</li>
+                            <li><strong>forEach required:</strong> Must specify a template object for each element</li>
+                            <li><strong>Item variable:</strong> Each element is available as {{it}} in the forEach template</li>
+                            <li><strong>Index variable:</strong> Element index is available as {{index}} in the forEach template</li>
                             <li><strong>Interpolation:</strong> All string values are interpolated before processing</li>
-                            <li><strong>Error handling:</strong> If any element processing fails, the entire operation fails</li>
+                            <li><strong>Button creation:</strong> When used in inlineActions, creates interactive buttons</li>
+                            <li><strong>Text generation:</strong> When used in text, generates formatted text from array</li>
                         </ul>
                     </div>
 
