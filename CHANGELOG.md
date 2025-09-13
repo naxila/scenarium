@@ -2,9 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.0-beta] - 2025-01-11
+## [0.1.1-alpha] - 2025-01-13
 
-### Added
+### 🐛 Bug Fixes
+- Fixed Map function documentation with correct syntax
+- Updated author information in package.json
+- Corrected interpolation documentation examples
+
+### 📚 Documentation
+- Updated Map function examples to match real usage
+- Fixed parameter names (items/forEach instead of array/function/params)
+- Added real examples from map-demo-scenario.json
+- Updated English and Russian documentation
+- Added new built-in functions to navigation (Plus, Minus, Multiply, Divide, Mod, Map)
+
+### 🔧 Technical Changes
+- Updated smart-docs.js navigation with new functions
+- Removed unused sidebar files
+- Fixed function interpolation examples
+
+## [0.1.0-alpha] - 2025-01-11
+
+### ✨ Features
 - Initial release of Scenarium library
 - BotFactory for creating bots from JSON scenarios
 - MultiBotManager for managing multiple bots
@@ -13,7 +32,7 @@ All notable changes to this project will be documented in this file.
 - TypeScript support with full type definitions
 - Telegram API integration
 
-### Features
+### 🎯 Core Components
 - JSON-based bot scenarios
 - Extensible action and function system
 - TypeScript support
@@ -21,3 +40,5 @@ All notable changes to this project will be documented in this file.
 - Session management
 - Input handling
 - Message processing
+- Advanced interpolation system
+- Custom actions and functions support
