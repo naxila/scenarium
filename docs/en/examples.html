@@ -165,7 +165,11 @@
     "Language": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "{{Translate:hello:{{language || 'en'}}}}",
+        "text": {
+          "function": "Translate",
+          "key": "hello",
+          "language": "{{language || 'en'}}"
+        },
         "inlineActions": [
           {
             "title": "English",

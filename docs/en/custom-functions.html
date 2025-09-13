@@ -13,7 +13,7 @@
                 <p class="lead">Learn how to create and register custom functions for text interpolation and data processing.</p>
                 
                 <h2>What are Custom Functions?</h2>
-                <p>Custom functions allow you to process data and perform calculations that can be used in text interpolation. They are called using the <code>{{functionName:param1:param2}}</code> syntax.</p>
+                <p>Custom functions allow you to process data and perform calculations that can be used in object function syntax.</p>
                 
                 <h2>Creating a Custom Function</h2>
                 <p>To create a custom function, implement the <code>ICustomFunction</code> interface:</p>
@@ -75,7 +75,14 @@ RegistryManager.registerFunction(new MathFunction());</code></pre>
                     <h3>Text with Custom Function</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "The sum of 5 and 3 is {{Math:add:5:3}}, and the maximum is {{Math:max:5:3:8}}"
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "The sum of 5 and 3 is {{sum}}",
+      "and the maximum is {{max}}"
+    ],
+    "separator": ", "
+  }
 }</code></pre>
                 </div>
                 

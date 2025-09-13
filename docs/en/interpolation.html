@@ -49,13 +49,20 @@
                 </ul>
                 
                 <h2>Using Functions</h2>
-                <p>You can call functions using the <code>{{functionName:param1:param2}}</code> syntax:</p>
+                <p>Functions are used in object syntax, not in variable interpolation:</p>
                 
                 <div class="example-card">
                     <h3>Built-in Functions</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello {{name}}! Today is {{Date:YYYY-MM-DD}} and the sum of 5 and 3 is {{Math:add:5:3}}"
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Hello {{name}}! Today is {{date}}",
+      "The sum of 5 and 3 is {{sum}}"
+    ],
+    "separator": " "
+  }
 }</code></pre>
                 </div>
                 

@@ -49,13 +49,20 @@
                 </ul>
                 
                 <h2>Использование функций</h2>
-                <p>Вы можете вызывать функции, используя синтаксис <code>{{functionName:param1:param2}}</code>:</p>
+                <p>Функции используются в объектном синтаксисе, а не в интерполяции переменных:</p>
                 
                 <div class="example-card">
                     <h3>Встроенные функции</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Привет {{name}}! Сегодня {{Date:YYYY-MM-DD}}, а сумма 5 и 3 равна {{Math:add:5:3}}"
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Привет {{name}}! Сегодня {{date}}",
+      "Сумма 5 и 3 равна {{sum}}"
+    ],
+    "separator": " "
+  }
 }</code></pre>
                 </div>
                 
