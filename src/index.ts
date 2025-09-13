@@ -25,3 +25,6 @@ export * from './utils';
 
 // Re-export interpolation system
 export * from './interpolation';
+
+// Re-export functions
+export * from './functions';

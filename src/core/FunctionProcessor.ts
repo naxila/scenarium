@@ -83,10 +83,21 @@ export class FunctionProcessor {
     context: ProcessingContext,
     existingInterpolationContext?: any
   ): Promise<any> {
-    // Используем существующий контекст или контекст из ProcessingContext, или создаем новый
-    const interpolationContext = existingInterpolationContext || 
-      context.interpolationContext || 
-      InterpolationContextBuilder.createContext(context, params);
+    // ПРИНЦИП: Единственная ответственность за создание контекста
+    // Всегда используем существующий контекст, если он валидный
+    let interpolationContext = existingInterpolationContext;
+    
+    // Валидация контекста
+    if (!interpolationContext || !interpolationContext.local || !interpolationContext.data) {
+      console.log('🔧 FunctionProcessor: Creating new interpolation context due to invalid existing context');
+      interpolationContext = InterpolationContextBuilder.createContext(context, params);
+    }
+    
+    // Убеждаемся, что контекст передается в ProcessingContext для согласованности
+    const contextWithInterpolation = {
+      ...context,
+      interpolationContext
+    };
     
     if (typeof result === 'object' && result !== null) {
       if (result.function) {
@@ -98,25 +109,26 @@ export class FunctionProcessor {
           const combinedParams = { ...result, ...params };
           // Интерполируем параметры перед передачей в встроенную функцию
           const interpolatedParams = InterpolationSystem.interpolate(combinedParams, interpolationContext);
-          return await func(interpolatedParams, context);
+          // ПРИНЦИП: Передаем согласованный контекст с валидным interpolationContext
+          return await func(interpolatedParams, contextWithInterpolation);
         }
 
         // Выполнение пользовательских функций, описанных в сценарии
-        const actionProcessor = context.actionProcessor;
+        const actionProcessor = contextWithInterpolation.actionProcessor;
         const scenario = actionProcessor?.getScenario();
         if (scenario?.functions && scenario.functions[functionName]) {
           // Интерполируем параметры перед передачей в функцию
           const interpolatedParams = InterpolationSystem.interpolate(result, interpolationContext);
-          return await this.executeUserFunction(functionName, interpolatedParams, context, interpolationContext);
+          return await this.executeUserFunction(functionName, interpolatedParams, contextWithInterpolation, interpolationContext);
         }
       }
       
       const interpolated = InterpolationSystem.interpolate(result, interpolationContext);
       
       if (interpolated.action) {
-        const actionProcessor = context.actionProcessor;
+        const actionProcessor = contextWithInterpolation.actionProcessor;
         if (actionProcessor) {
-          await actionProcessor.processActions(interpolated, context);
+          await actionProcessor.processActions(interpolated, contextWithInterpolation);
         }
         return interpolated;
       }

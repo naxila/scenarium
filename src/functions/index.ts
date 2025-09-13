@@ -6,3 +6,4 @@ export { MinusFunction } from './MinusFunction';
 export { MultiplyFunction } from './MultiplyFunction';
 export { DivideFunction } from './DivideFunction';
 export { ModFunction } from './ModFunction';
+export { MapFunction } from './MapFunction';

@@ -1,6 +1,6 @@
-# Scenarium Demo - Interpolation System
+# Scenarium Demo - Hello World
 
-Demonstration project showcasing the new interpolation system in [Scenarium](https://www.npmjs.com/package/scenarium) library.
+Simple demonstration project showcasing basic Scenarium functionality with [Scenarium](https://www.npmjs.com/package/scenarium) library.
 
 ## 🚀 Launch in 3 commands
 
@@ -26,32 +26,41 @@ npm start
 scenarium-demo/
 ├── index.js                    # Main file (bot startup)
 ├── scenarios/
-│   ├── hello-world.json        # Simple scenario
-│   └── interpolation-demo.json # Interpolation system demo
+│   └── hello-world.json        # Simple hello world scenario
 ├── env.template                # .env template
 └── package.json               # Dependencies
 ```
 
-## 🎯 Interpolation Demo Features
+## 🎯 Hello World Features
 
-The demo showcases the new interpolation system with:
+The demo showcases basic Scenarium functionality with:
 
-- **Basic Variables**: Access to scenario data, user data, and environment variables
-- **Local Scopes**: Action and function-specific variables with proper scoping
-- **Functions**: JoinToString and Equals functions with interpolation
-- **Complex Objects**: Nested data structures and API requests
-- **Priority System**: Local → Params → Data → Environment
+- **Simple Navigation**: Basic menu system with back navigation
+- **Interactive Buttons**: Inline keyboard buttons for user interaction
+- **JSON Configuration**: Pure JSON scenario definition
+- **Game Example**: Simple number guessing game
 
 ### Example Usage
 
 ```json
 {
-  "data": {
-    "botName": "Demo Bot",
-    "user": { "name": "John" }
-  },
-  "action": "SendMessage",
-  "text": "Hello {{user.name}}! Welcome to {{botName}} at {{timestamp}}"
+  "menuItems": {
+    "Main": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "👋 Привет! Я простой бот на Scenarium!",
+        "inlineActions": [
+          {
+            "title": "📊 Информация",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "Info"
+            }
+          }
+        ]
+      }
+    }
+  }
 }
 ```
 

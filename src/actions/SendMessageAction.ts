@@ -8,159 +8,174 @@ export class SendMessageAction extends BaseActionProcessor {
   static readonly actionType = 'SendMessage';
   
   async process(action: any, context: ProcessingContext): Promise<void> {
-    // Use existing interpolation context or create new one
-    const interpolationContext = context.interpolationContext || this.createInterpolationContext(context);
-    
-    // Create local scope for action-specific variables (only if we created new context)
-    const isNewContext = !context.interpolationContext;
-    if (isNewContext) {
-      interpolationContext.local.createScope();
-    }
-    
-    // Set action-specific variables
-    // messageId is dynamic and should not be hardcoded in local context
-    interpolationContext.local.setVariable('sent', false);
-    interpolationContext.local.setVariable('error', null);
-    
-    // Interpolate the action using new system
-    const interpolatedAction = this.interpolate(action, interpolationContext);
-
-    const userId = context.userContext.userId;
-    let text = interpolatedAction.text;
-
-    // Support for inline functions in text field
-    if (text && typeof text === 'object' && (text as any).function) {
-      try {
-        const evaluated = await FunctionProcessor.evaluateResult(text, {}, context, interpolationContext);
-        text = String(evaluated ?? '');
-      } catch (e) {
-        console.error('Failed to evaluate text function:', e);
-        text = '❌ Error processing message';
-      }
-    }
-    
-    // Check that text is not empty
-    if (!text || text.trim() === '') {
-      console.warn('⚠️ Empty text detected, skipping message send');
-      return;
-    }
-    
-    console.log(`[User ${userId}] Sending message:`, text);
-    
-    const chatId = context.userContext.data.telegramData?.chatId || userId;
-    
-    try {
-      const actionProcessor = context.actionProcessor;
-      const botConstructor = actionProcessor?.getBotConstructor();
-      const adapter = botConstructor?.getAdapter();
-      
-      if (!adapter) {
-        console.warn('Telegram adapter not available, using fallback');
-        this.fallbackMessage(text, interpolatedAction.inlineActions);
-        return;
-      }
-      
-      const options: any = {};
-      const messageActionIds: string[] = []; // Для отслеживания действий этого сообщения
-      
-      // Добавляем inline клавиатуру если есть inlineActions
-      if (interpolatedAction.inlineActions && interpolatedAction.inlineActions.length > 0) {
-        options.reply_markup = this.createCompactInlineKeyboard(
-          interpolatedAction.inlineActions,
-          messageActionIds // Передаем массив для сохранения ID действий
-        );
-      }
-      
-      // Устанавливаем режим разметки по умолчанию, если не задан
-      if (!options.parse_mode) {
-        options.parse_mode = 'Markdown';
-      }
-
-      // Отправляем или обновляем сообщение
-      let message: any = null;
-      const updateTarget = (context.localContext as any)?.__updateMessage__;
-      
-      console.log('🔍 SendMessage DEBUG - Message operation:', {
-        hasUpdateTarget: !!updateTarget,
-        updateTargetMessageId: updateTarget?.messageId,
-        chatId: chatId,
-        text: text.substring(0, 50) + '...',
-        isUpdate: !!(updateTarget && updateTarget.messageId)
-      });
-      
-      if (updateTarget && updateTarget.messageId) {
-        console.log('🔍 SendMessage DEBUG - Updating existing message');
-        const result = await adapter.editMessageText(chatId, Number(updateTarget.messageId), text, options);
-        console.log('✅ SendMessage DEBUG - Update result:', result);
-        message = { message_id: Number(updateTarget.messageId) };
-      } else {
-        console.log('🔍 SendMessage DEBUG - Sending new message');
-        message = await adapter.sendMessage(chatId, text, options);
-        console.log('✅ SendMessage DEBUG - Send result:', message);
-      }
-      
-      // Update local variables
-      if (message && message.message_id) {
-        // messageId is dynamic and should not be hardcoded in local context
-        interpolationContext.local.setVariable('sent', true);
-        
-        // Обновляем lastMessageId ДО выполнения onSuccess
-        if (!updateTarget) {
-          context.userContext.data.lastMessageId = message.message_id;
-          context.userContext.data.lastMessageActionIds = messageActionIds;
-        }
-      }
-
-      // Коллбек onSuccess с доступом к messageId
-      if (interpolatedAction.onSuccess && message && message.message_id) {
-        console.log('🔍 SendMessage DEBUG - onSuccess triggered:', {
-          messageId: message.message_id,
-          onSuccessActions: interpolatedAction.onSuccess,
-          localScopes: interpolationContext.local.getAllScopes()
-        });
-        
-        // Update local variables with message info
-        interpolationContext.local.setVariable('sent', true);
-        
-        console.log('🔍 SendMessage DEBUG - After setting sent in local scope:', {
-          localScopes: interpolationContext.local.getAllScopes()
-        });
-        
-        // Process onSuccess actions with special handling for CURRENT_MESSAGE_ID
-        const processedOnSuccess = interpolatedAction.onSuccess.map((action: any) => {
-          if (action.action === 'Store' && action.value === 'CURRENT_MESSAGE_ID') {
-            console.log('🔍 SendMessage DEBUG - Replacing CURRENT_MESSAGE_ID with actual messageId:', message.message_id);
-            return {
-              ...action,
-              value: message.message_id.toString()
-            };
+    // Use withInterpolationContext for consistent context management
+    await this.withInterpolationContext(
+      context,
+      { sent: false, error: null }, // action-specific local variables
+      async (interpolationContext) => {
+        // Process inlineActions functions before interpolation
+        let processedAction = { ...action };
+        if (action.inlineActions && typeof action.inlineActions === 'object' && action.inlineActions.function) {
+          try {
+            console.log('🗺️ Processing inlineActions function before interpolation:', action.inlineActions.function);
+            console.log('🔍 Interpolation context debug:', {
+              hasLocal: !!interpolationContext.local,
+              hasUser: !!interpolationContext.user,
+              hasData: !!interpolationContext.data,
+              localMethods: interpolationContext.local ? Object.getOwnPropertyNames(interpolationContext.local) : 'undefined'
+            });
+            
+            // ПРИНЦИП: Делегируем ответственность за контекст FunctionProcessor
+            const processedInlineActions = await FunctionProcessor.evaluateResult(
+              action.inlineActions, 
+              {}, 
+              context, 
+              interpolationContext
+            );
+            console.log('🗺️ Processed inlineActions result:', processedInlineActions);
+            processedAction.inlineActions = processedInlineActions;
+          } catch (e) {
+            console.error('❌ Failed to evaluate inlineActions function:', e);
+            processedAction.inlineActions = [];
           }
-          return action;
-        });
+        }
         
-        const nextContext: ProcessingContext = {
-          ...context,
-          localContext: {
-            ...context.localContext,
-            messageId: message.message_id
-          },
-          interpolationContext: interpolationContext // Pass interpolation context to nested actions
-        };
-        await this.processNestedActions(processedOnSuccess, nextContext);
+        // Interpolate the action using new system
+        const interpolatedAction = this.interpolate(processedAction, interpolationContext);
+
+        const userId = context.userContext.userId;
+        let text = interpolatedAction.text;
+
+        // Support for inline functions in text field
+        if (text && typeof text === 'object' && (text as any).function) {
+          try {
+            const evaluated = await FunctionProcessor.evaluateResult(text, {}, context, interpolationContext);
+            text = String(evaluated ?? '');
+          } catch (e) {
+            console.error('Failed to evaluate text function:', e);
+            text = '❌ Error processing message';
+          }
+        }
+        
+        // Check that text is not empty
+        if (!text || text.trim() === '') {
+          console.warn('⚠️ Empty text detected, skipping message send');
+          return;
+        }
+        
+        console.log(`[User ${userId}] Sending message:`, text);
+        
+        const chatId = context.userContext.data.telegramData?.chatId || userId;
+        
+        try {
+          const actionProcessor = context.actionProcessor;
+          const botConstructor = actionProcessor?.getBotConstructor();
+          const adapter = botConstructor?.getAdapter();
+          
+          if (!adapter) {
+            console.warn('Telegram adapter not available, using fallback');
+            this.fallbackMessage(text, interpolatedAction.inlineActions);
+            return;
+          }
+          
+          const options: any = {};
+          const messageActionIds: string[] = []; // Для отслеживания действий этого сообщения
+          
+          // Добавляем inline клавиатуру если есть inlineActions
+          if (interpolatedAction.inlineActions && Array.isArray(interpolatedAction.inlineActions) && interpolatedAction.inlineActions.length > 0) {
+            options.reply_markup = this.createCompactInlineKeyboard(
+              interpolatedAction.inlineActions,
+              messageActionIds // Передаем массив для сохранения ID действий
+            );
+          }
+          
+          // Устанавливаем режим разметки по умолчанию, если не задан
+          if (!options.parse_mode) {
+            options.parse_mode = 'Markdown';
+          }
+
+          // Отправляем или обновляем сообщение
+          let message: any = null;
+          const updateTarget = (context.localContext as any)?.__updateMessage__;
+          
+          console.log('🔍 SendMessage DEBUG - Message operation:', {
+            hasUpdateTarget: !!updateTarget,
+            updateTargetMessageId: updateTarget?.messageId,
+            chatId: chatId,
+            text: text.substring(0, 50) + '...',
+            isUpdate: !!(updateTarget && updateTarget.messageId)
+          });
+          
+          if (updateTarget && updateTarget.messageId) {
+            console.log('🔍 SendMessage DEBUG - Updating existing message');
+            const result = await adapter.editMessageText(chatId, Number(updateTarget.messageId), text, options);
+            console.log('✅ SendMessage DEBUG - Update result:', result);
+            message = { message_id: Number(updateTarget.messageId) };
+          } else {
+            console.log('🔍 SendMessage DEBUG - Sending new message');
+            message = await adapter.sendMessage(chatId, text, options);
+            console.log('✅ SendMessage DEBUG - Send result:', message);
+          }
+          
+          // Update local variables
+          if (message && message.message_id) {
+            // messageId is dynamic and should not be hardcoded in local context
+            interpolationContext.local.setVariable('sent', true);
+            
+            // Обновляем lastMessageId ДО выполнения onSuccess
+            if (!updateTarget) {
+              context.userContext.data.lastMessageId = message.message_id;
+              context.userContext.data.lastMessageActionIds = messageActionIds;
+            }
+          }
+
+          // Коллбек onSuccess с доступом к messageId
+          if (interpolatedAction.onSuccess && message && message.message_id) {
+            console.log('🔍 SendMessage DEBUG - onSuccess triggered:', {
+              messageId: message.message_id,
+              onSuccessActions: interpolatedAction.onSuccess,
+              localScopes: interpolationContext.local.getAllScopes()
+            });
+            
+            // Update local variables with message info
+            interpolationContext.local.setVariable('sent', true);
+            
+            console.log('🔍 SendMessage DEBUG - After setting sent in local scope:', {
+              localScopes: interpolationContext.local.getAllScopes()
+            });
+            
+            // Process onSuccess actions with special handling for CURRENT_MESSAGE_ID
+            const processedOnSuccess = interpolatedAction.onSuccess.map((action: any) => {
+              if (action.action === 'Store' && action.value === 'CURRENT_MESSAGE_ID') {
+                console.log('🔍 SendMessage DEBUG - Replacing CURRENT_MESSAGE_ID with actual messageId:', message.message_id);
+                return {
+                  ...action,
+                  value: message.message_id.toString()
+                };
+              }
+              return action;
+            });
+            
+            const nextContext: ProcessingContext = {
+              ...context,
+              localContext: {
+                ...context.localContext,
+                messageId: message.message_id
+              },
+              interpolationContext: interpolationContext // Pass interpolation context to nested actions
+            };
+            await this.processNestedActions(processedOnSuccess, nextContext);
+          }
+          
+        } catch (error) {
+          console.error(`❌ Failed to send message:`, error);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          interpolationContext.local.setVariable('error', errorMessage);
+        }
+        
+        this.updateUserActivity(context);
       }
-      
-    } catch (error) {
-      console.error(`❌ Failed to send message:`, error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      interpolationContext.local.setVariable('error', errorMessage);
-    } finally {
-      // Clean up local scope only if we created new context
-      if (isNewContext) {
-        interpolationContext.local.clearScope();
-      }
-    }
-    
-    this.updateUserActivity(context);
+    );
   }
   
   private createCompactInlineKeyboard(inlineActions: any[], actionIdsStorage: string[]): any {

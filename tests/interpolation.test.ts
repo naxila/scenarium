@@ -165,7 +165,7 @@ describe('InterpolationSystem', () => {
           id: 'static-id',
           email: 'john@example.com'
         },
-        metadata: ['John', '30']
+        metadata: ['John', 30]
       });
     });
 
@@ -195,7 +195,7 @@ describe('InterpolationSystem', () => {
         boolean: true,
         null: null,
         undefined: undefined,
-        interpolatedNumber: '30'
+        interpolatedNumber: 30
       });
     });
   });
@@ -293,7 +293,7 @@ describe('InterpolationSystem', () => {
       
       const interpolationContext = InterpolationContextBuilder.createContext(contextWithObject);
       const result = InterpolationSystem.interpolate('{{objectValue}}', interpolationContext);
-      expect(result).toBe('{"key":"value","num":42}');
+      expect(result).toEqual({"key":"value","num":42});
     });
 
     test('should format arrays as JSON', () => {
@@ -307,7 +307,7 @@ describe('InterpolationSystem', () => {
       
       const interpolationContext = InterpolationContextBuilder.createContext(contextWithArray);
       const result = InterpolationSystem.interpolate('{{arrayValue}}', interpolationContext);
-      expect(result).toBe('[1,2,"three"]');
+      expect(result).toEqual([1,2,"three"]);
     });
   });
 });

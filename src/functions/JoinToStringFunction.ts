@@ -4,10 +4,21 @@ import { FunctionProcessor } from '../core/FunctionProcessor';
 
 export class JoinToStringFunction {
   static async execute(params: any, context: ProcessingContext): Promise<string> {
-    const { values, separator = '', prefix = '', suffix = '' } = params;
+    let { values, separator = '', prefix = '', suffix = '' } = params;
+    
+    // ПРИНЦИП: Единственная ответственность - JoinToString должна уметь получить массив из функций
+    if (values && typeof values === 'object' && values.function) {
+      console.log('🔗 JoinToString: Evaluating function to get values array');
+      try {
+        values = await FunctionProcessor.evaluateResult(values, {}, context, context.interpolationContext);
+      } catch (e) {
+        console.error('JoinToString: Failed to evaluate values function:', e);
+        return '';
+      }
+    }
     
     if (!Array.isArray(values)) {
-      console.warn('JoinToString: values is not an array', values);
+      console.warn('JoinToString: values is not an array after evaluation', values);
       return '';
     }
 

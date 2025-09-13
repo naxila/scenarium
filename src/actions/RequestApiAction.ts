@@ -1,5 +1,6 @@
 import { BaseActionProcessor } from './BaseAction';
 import { ProcessingContext } from '../types';
+import { FunctionProcessor } from '../core/FunctionProcessor';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 
@@ -21,8 +22,17 @@ export class RequestApiAction extends BaseActionProcessor {
       interpolationContext.local.setVariable('success', false);
       interpolationContext.local.setVariable('error', null);
       
-      // Interpolate the action using new system
-      const interpolatedAction = this.interpolate(action, interpolationContext);
+      // АРХИТЕКТУРНОЕ УЛУЧШЕНИЕ: Используем унифицированный метод обработки функций
+      let processedAction = { ...action };
+      
+      // Process body if it contains functions
+      if (action.body && typeof action.body === 'object' && !Array.isArray(action.body)) {
+        const processedBody = await this.processFunctionsInObject(action.body, context, interpolationContext);
+        processedAction.body = processedBody;
+      }
+      
+      // Interpolate the processed action using new system
+      const interpolatedAction = this.interpolate(processedAction, interpolationContext);
     
     const {
       method = 'GET',
@@ -142,6 +152,7 @@ export class RequestApiAction extends BaseActionProcessor {
       interpolationContext.local.clearScope();
     }
   }
+  
 }
 
 

@@ -6,6 +6,7 @@ import { MinusFunction } from '../functions/MinusFunction';
 import { MultiplyFunction } from '../functions/MultiplyFunction';
 import { DivideFunction } from '../functions/DivideFunction';
 import { ModFunction } from '../functions/ModFunction';
+import { MapFunction } from '../functions/MapFunction';
 import { ProcessingContext } from '../types';
 import { ICustomFunction, RegistrationConfig } from '../types/PluginInterfaces';
 
@@ -30,6 +31,7 @@ export class FunctionRegistry {
     this.register('Multiply', MultiplyFunction.execute);
     this.register('Divide', DivideFunction.execute);
     this.register('Mod', ModFunction.execute);
+    this.register('Map', MapFunction.execute);
     
     this.isInitialized = true;
     console.log('FunctionRegistry initialized with standard functions');

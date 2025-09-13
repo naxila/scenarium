@@ -64,9 +64,13 @@ export class InterpolationContextBuilder {
       time: new Date().toTimeString().split(' ')[0]
     });
 
-    // Set scenario data (combine scenarioContext and userContext.data)
+    // АРХИТЕКТУРНОЕ ИСПРАВЛЕНИЕ: Корректное извлечение данных сценария
+    // Debug logging removed for cleaner test output
+    
+    // Set scenario data (combine scenario.data, scenarioContext and userContext.data)
     const scenarioData = {
       ...baseContext.scenarioContext,
+      ...baseContext.scenario?.data,  // ИСПРАВЛЕНИЕ: Добавляем данные из scenario.data
       ...baseContext.userContext?.data
     };
     

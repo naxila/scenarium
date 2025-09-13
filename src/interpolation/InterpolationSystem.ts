@@ -26,13 +26,56 @@ export class InterpolationSystem {
 
   /**
    * Interpolate a string with {{variable}} syntax
+   * Returns raw value if string contains only single interpolation, otherwise returns string
    */
-  private static interpolateString(str: string, context: InterpolationContext): string {
+  private static interpolateString(str: string, context: InterpolationContext): any {
+    // Check if the string contains only a single interpolation without any other text
+    const interpolationMatch = str.match(/^\{\{([^}]+)\}\}$/);
+    if (interpolationMatch) {
+      // Single interpolation - preserve original type
+      const variable = interpolationMatch[1].trim();
+      
+      // Function calls are not supported in string interpolation
+      if (this.isFunctionCall(variable)) {
+        console.warn(`Function call ${variable} not supported in string interpolation. Use object syntax instead.`);
+        return `{{${variable}}}`;
+      }
+      
+      // Get the raw value without string conversion
+      let value: any;
+      
+      // Handle explicit prefixes
+      if (variable.startsWith('local.')) {
+        const varName = variable.substring(6);
+        value = context.local.findVariable(varName);
+      } else if (variable.startsWith('data.')) {
+        const varName = variable.substring(5);
+        value = this.getNestedValue(context.data, varName);
+      } else if (variable.startsWith('env.')) {
+        const varName = variable.substring(4);
+        value = this.getNestedValue(context.env, varName);
+      } else if (variable.startsWith('params.')) {
+        const varName = variable.substring(7);
+        value = this.getNestedValue(context.params, varName);
+      } else {
+        // Search by priority: local -> params -> data -> env
+        value = this.findVariableByPriorityRaw(context, variable);
+      }
+      
+      // If value is undefined, return original variable syntax
+      if (value === undefined) {
+        return `{{${variable}}}`;
+      }
+      
+      // Return the raw value (preserve type for Map function compatibility)
+      return value;
+    }
+    
+    // Multiple interpolations or mixed text - convert to string
     return str.replace(/\{\{([^}]+)\}\}/g, (match, variable) => {
       const trimmedVar = variable.trim();
       
       // Function calls are not supported in string interpolation
-      // Use FunctionProcessor.evaluateResult() with object syntax for functions
       if (this.isFunctionCall(trimmedVar)) {
         console.warn(`Function call ${trimmedVar} not supported in string interpolation. Use object syntax instead.`);
         return `{{${trimmedVar}}}`;
@@ -139,6 +182,38 @@ export class InterpolationSystem {
     // Variable not found - return original variable syntax
     if (varName.startsWith('response.')) console.log(`❌ Variable ${varName} not found`);
     return `{{${varName}}}`;
+  }
+
+  /**
+   * Find variable by priority: local -> params -> data -> env (returns raw value)
+   */
+  private static findVariableByPriorityRaw(context: InterpolationContext, varName: string): any {
+    // 1. Search in local scope
+    let value = context.local.findVariable(varName);
+    if (value !== undefined) {
+      return value;
+    }
+    
+    // 2. Search in params
+    value = this.getNestedValue(context.params, varName);
+    if (value !== undefined) {
+      return value;
+    }
+    
+    // 3. Search in data
+    value = this.getNestedValue(context.data, varName);
+    if (value !== undefined) {
+      return value;
+    }
+    
+    // 4. Search in env
+    value = this.getNestedValue(context.env, varName);
+    if (value !== undefined) {
+      return value;
+    }
+    
+    // Variable not found - return undefined
+    return undefined;
   }
 
   /**
