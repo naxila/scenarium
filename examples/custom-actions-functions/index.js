@@ -4,8 +4,9 @@ require('dotenv').config();
 // Import only one custom action
 const LogAction = require('./actions/LogAction').LogAction;
 
-// Import only one custom function
+// Import custom functions
 const { StringFunction } = require('./functions/StringFunction');
+const { MathFunction } = require('./functions/MathFunction');
 
 console.log('🎭 Custom Actions & Functions Demo');
 console.log('==================================');
@@ -34,15 +35,16 @@ async function startBot() {
     });
     console.log('✅ Custom action registered');
 
-    // Register only one custom function
-    console.log('🔧 Registering custom function...');
+    // Register custom functions
+    console.log('🔧 Registering custom functions...');
     RegistryManager.registerFunctions({
-      'String': new StringFunction()
+      'String': new StringFunction(),
+      'Math': new MathFunction()
     }, {
       overwrite: true,
       verbose: true
     });
-    console.log('✅ Custom function registered');
+    console.log('✅ Custom functions registered');
 
     // Create bot from minimal scenario
     const bot = await BotFactory.createBotFromFile('./scenarios/minimal-demo.json', token);

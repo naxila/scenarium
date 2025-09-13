@@ -24,6 +24,13 @@
               "action": "Navigate",
               "menuItem": "TestString"
             }
+          },
+          {
+            "title": "🧮 Test Math",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "TestMath"
+            }
           }
         ]
       }
@@ -69,15 +76,55 @@
         },
         {
           "action": "SendMessage",
-          "text": "• uppercase('hello') = HELLO"
+          "text": "• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}"
         },
         {
           "action": "SendMessage",
-          "text": "• length('test') = 4"
+          "text": "• length('test') = {{function: {String: {operation: 'length', input: 'test'}}}}"
         },
         {
           "action": "SendMessage",
-          "text": "• reverse('12345') = 54321"
+          "text": "• reverse('12345') = {{function: {String: {operation: 'reverse', input: '12345'}}}}"
+        },
+        {
+          "action": "SendMessage",
+          "text": "• lowercase('WORLD') = {{function: {String: {operation: 'lowercase', input: 'WORLD'}}}}"
+        },
+        {
+          "action": "SendMessage",
+          "text": "Choose an action:",
+          "inlineActions": [
+            {
+              "title": "🔙 Back",
+              "onClick": {
+                "action": "Back"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "TestMath": {
+      "onNavigation": [
+        {
+          "action": "SendMessage",
+          "text": "🧮 Testing custom Math function:"
+        },
+        {
+          "action": "SendMessage",
+          "text": "Function results:"
+        },
+        {
+          "action": "SendMessage",
+          "text": "• sum([1,2,3,4,5]) = {{function: {Math: {operation: 'sum', values: [1,2,3,4,5]}}}}"
+        },
+        {
+          "action": "SendMessage",
+          "text": "• max([10,5,8,15,3]) = {{function: {Math: {operation: 'max', values: [10,5,8,15,3]}}}}"
+        },
+        {
+          "action": "SendMessage",
+          "text": "• min([10,5,8,15,3]) = {{function: {Math: {operation: 'min', values: [10,5,8,15,3]}}}}"
         },
         {
           "action": "SendMessage",
