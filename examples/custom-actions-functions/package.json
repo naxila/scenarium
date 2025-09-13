@@ -1,0 +1,33 @@
+{
+  "name": "custom-actions-functions",
+  "version": "1.0.0",
+  "description": "Demo project showing how to create custom actions and functions with Scenarium library",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "scenarium",
+    "telegram",
+    "bot",
+    "custom",
+    "actions",
+    "functions",
+    "demo",
+    "example"
+  ],
+  "author": "Scenarium Custom Demo",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "scenarium": "file:../../scenarium-0.1.0-alpha.tgz",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "onStartActions": [
+    {
+      "action": "Navigate",
+      "menuItem": "Main"
+    }
+  ],
+  "menuItems": {
+    "Main": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "🎭 Minimal Custom Components Demo\n\nChoose a test:",
+        "inlineActions": [
+          {
+            "title": "📝 Test Log",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "TestLog"
+            }
+          },
+          {
+            "title": "🔤 Test String",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "TestString"
+            }
+          }
+        ]
+      }
+    },
+    "TestLog": {
+      "onNavigation": [
+        {
+          "action": "SendMessage",
+          "text": "📝 Testing custom Log action:"
+        },
+        {
+          "action": "Log",
+          "message": "Test message from user {{userContext.userId}}",
+          "level": "info"
+        },
+        {
+          "action": "SendMessage",
+          "text": "✅ Log action completed! Check the console."
+        },
+        {
+          "action": "SendMessage",
+          "text": "Choose an action:",
+          "inlineActions": [
+            {
+              "title": "🔙 Back",
+              "onClick": {
+                "action": "Back"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "TestString": {
+      "onNavigation": [
+        {
+          "action": "SendMessage",
+          "text": "🔤 Testing custom String function:"
+        },
+        {
+          "action": "SendMessage",
+          "text": "Function results:"
+        },
+        {
+          "action": "SendMessage",
+          "text": "• uppercase('hello') = HELLO"
+        },
+        {
+          "action": "SendMessage",
+          "text": "• length('test') = 4"
+        },
+        {
+          "action": "SendMessage",
+          "text": "• reverse('12345') = 54321"
+        },
+        {
+          "action": "SendMessage",
+          "text": "Choose an action:",
+          "inlineActions": [
+            {
+              "title": "🔙 Back",
+              "onClick": {
+                "action": "Back"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

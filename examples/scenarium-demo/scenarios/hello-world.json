@@ -9,17 +9,17 @@
     "Main": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "👋 Привет! Я простой бот на Scenarium!\n\nНажмите кнопку ниже:",
+        "text": "👋 Hello! I'm a simple Scenarium bot!\n\nClick the button below:",
         "inlineActions": [
           {
-            "title": "📊 Информация",
+            "title": "📊 Information",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Info"
             }
           },
           {
-            "title": "🎮 Играть",
+            "title": "🎮 Play",
             "onClick": {
               "action": "Navigate",
               "menuItem": "Game"
@@ -31,10 +31,10 @@
     "Info": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "ℹ️ **О боте**\n\nЭто демо-бот, созданный с помощью Scenarium - библиотеки для создания Telegram ботов из JSON сценариев.\n\n**Возможности:**\n• Простая навигация\n• Интерактивные кнопки\n• JSON конфигурация",
+        "text": "ℹ️ **About the bot**\n\nThis is a demo bot created with Scenarium - a library for creating Telegram bots from JSON scenarios.\n\n**Features:**\n• Simple navigation\n• Interactive buttons\n• JSON configuration",
         "inlineActions": [
           {
-            "title": "🔙 Назад",
+            "title": "🔙 Back",
             "onClick": {
               "action": "Back"
             }
@@ -45,31 +45,31 @@
     "Game": {
       "onNavigation": {
         "action": "SendMessage",
-        "text": "🎮 **Простая игра**\n\nУгадайте число от 1 до 3:",
+        "text": "🎮 **Simple Game**\n\nGuess a number from 1 to 3:",
         "inlineActions": [
           {
             "title": "1",
             "onClick": {
               "action": "SendMessage",
-              "text": "🎉 Поздравляю! Вы угадали число 1!"
+              "text": "🎉 Congratulations! You guessed number 1!"
             }
           },
           {
             "title": "2",
             "onClick": {
               "action": "SendMessage",
-              "text": "🎉 Поздравляю! Вы угадали число 2!"
+              "text": "🎉 Congratulations! You guessed number 2!"
             }
           },
           {
             "title": "3",
             "onClick": {
               "action": "SendMessage",
-              "text": "🎉 Поздравляю! Вы угадали число 3!"
+              "text": "🎉 Congratulations! You guessed number 3!"
             }
           },
           {
-            "title": "🔙 Назад",
+            "title": "🔙 Back",
             "onClick": {
               "action": "Back"
             }
