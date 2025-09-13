@@ -24,20 +24,21 @@
     "scenarium"
   ],
   "author": {
-    "name": "Scenarium Team",
-    "email": "scenarium@example.com"
+    "name": "naxila",
+    "email": "naxila@example.com"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/scenarium.git"
+    "url": "https://github.com/naxila/scenarium.git"
   },
-  "homepage": "https://github.com/your-username/scenarium#readme",
+  "homepage": "https://github.com/naxila/scenarium#readme",
   "bugs": {
-    "url": "https://github.com/your-username/scenarium/issues"
+    "url": "https://github.com/naxila/scenarium/issues"
   },
   "dependencies": {
-    "node-telegram-bot-api": "^0.64.0"
+    "node-telegram-bot-api": "^0.64.0",
+    "scenarium": "^0.1.0-alpha"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
