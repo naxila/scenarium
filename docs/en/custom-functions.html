@@ -16,44 +16,62 @@
                 <p>Custom functions allow you to process data and perform calculations that can be used in object function syntax.</p>
                 
                 <h2>Creating a Custom Function</h2>
-                <p>To create a custom function, implement the <code>ICustomFunction</code> interface:</p>
+                <p>To create a custom function, create a class with the following structure:</p>
                 
                 <div class="code-block">
-                    <h3>Custom Function Interface</h3>
-                    <pre><code class="language-typescript">interface ICustomFunction {
-  name: string;
-  execute(params: string[]): string | Promise<string>;
-}</code></pre>
+                    <h3>Custom Function Structure</h3>
+                    <pre><code class="language-javascript">class MyCustomFunction {
+  get functionName() { return 'MyFunction'; }
+
+  async execute(params, context) {
+    const interpolationContext = context.interpolationContext;
+    
+    if (!interpolationContext) {
+      throw new Error('MyCustomFunction: interpolationContext is required');
+    }
+    
+    // Your function logic here
+    return result;
+  }
+}
+
+module.exports = { MyCustomFunction };</code></pre>
                 </div>
                 
-                <h2>Example: Math Functions</h2>
+                <h2>Example: String Functions</h2>
                 <div class="example-card">
-                    <h3>Math Function Implementation</h3>
-                    <pre><code class="language-typescript">import { ICustomFunction } from 'scenarium';
+                    <h3>String Function Implementation</h3>
+                    <pre><code class="language-javascript">const { InterpolationSystem } = require('scenarium');
 
-export class MathFunction implements ICustomFunction {
-  name = 'Math';
-  
-  execute(params: string[]): string {
-    if (params.length < 2) return '0';
+class StringFunction {
+  get functionName() { return 'String'; }
+
+  async execute(params, context) {
+    const interpolationContext = context.interpolationContext;
     
-    const operation = params[0];
-    const numbers = params.slice(1).map(Number);
+    if (!interpolationContext) {
+      throw new Error('StringFunction: interpolationContext is required');
+    }
+    
+    const operation = InterpolationSystem.interpolate(params.operation, interpolationContext);
+    const input = InterpolationSystem.interpolate(params.input, interpolationContext);
     
     switch (operation) {
-      case 'add':
-        return numbers.reduce((a, b) => a + b, 0).toString();
-      case 'multiply':
-        return numbers.reduce((a, b) => a * b, 1).toString();
-      case 'max':
-        return Math.max(...numbers).toString();
-      case 'min':
-        return Math.min(...numbers).toString();
+      case 'uppercase':
+        return String(input).toUpperCase();
+      case 'lowercase':
+        return String(input).toLowerCase();
+      case 'reverse':
+        return String(input).split('').reverse().join('');
+      case 'length':
+        return String(input).length;
       default:
-        return '0';
+        throw new Error(`Unknown string operation: ${operation}`);
     }
   }
-}</code></pre>
+}
+
+module.exports = { StringFunction };</code></pre>
                 </div>
                 
                 <h2>Registering Custom Functions</h2>
@@ -61,54 +79,82 @@ export class MathFunction implements ICustomFunction {
                 
                 <div class="code-block">
                     <h3>Registration Example</h3>
-                    <pre><code class="language-typescript">import { RegistryManager } from 'scenarium';
-import { MathFunction } from './MathFunction';
+                    <pre><code class="language-javascript">const { RegistryManager } = require('scenarium');
+const { StringFunction } = require('./functions/StringFunction');
 
 // Register the custom function
-RegistryManager.registerFunction(new MathFunction());</code></pre>
+RegistryManager.registerFunctions({
+  'String': new StringFunction()
+}, {
+  overwrite: true,
+  verbose: true
+});</code></pre>
                 </div>
                 
-                <h2>Using Custom Functions in Text</h2>
-                <p>Once registered, you can use your custom function in message text:</p>
+                <h2>Using Custom Functions in Scenarios</h2>
+                <p>Once registered, you can use your custom function in scenario JSON:</p>
                 
                 <div class="example-card">
-                    <h3>Text with Custom Function</h3>
+                    <h3>Scenario with Custom Function</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": {
-    "function": "JoinToString",
-    "values": [
-      "The sum of 5 and 3 is {{sum}}",
-      "and the maximum is {{max}}"
-    ],
-    "separator": ", "
-  }
+  "text": "• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}"
 }</code></pre>
                 </div>
                 
-                <h2>Example: Date Function</h2>
                 <div class="example-card">
-                    <h3>Date Function Implementation</h3>
-                    <pre><code class="language-typescript">export class DateFunction implements ICustomFunction {
-  name = 'Date';
-  
-  execute(params: string[]): string {
-    const format = params[0] || 'YYYY-MM-DD';
-    const date = new Date();
-    
-    switch (format) {
-      case 'YYYY-MM-DD':
-        return date.toISOString().split('T')[0];
-      case 'DD/MM/YYYY':
-        return date.toLocaleDateString('en-GB');
-      case 'time':
-        return date.toLocaleTimeString();
-      default:
-        return date.toISOString();
-    }
-  }
+                    <h3>Multiple Function Examples</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Function results:\n• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}\n• length('test') = {{function: {String: {operation: 'length', input: 'test'}}}}\n• reverse('12345') = {{function: {String: {operation: 'reverse', input: '12345'}}}}"
 }</code></pre>
                 </div>
+                
+                <h2>Example: Math Function</h2>
+                <div class="example-card">
+                    <h3>Math Function Implementation</h3>
+                    <pre><code class="language-javascript">const { InterpolationSystem } = require('scenarium');
+
+class MathFunction {
+  get functionName() { return 'Math'; }
+
+  async execute(params, context) {
+    const interpolationContext = context.interpolationContext;
+    
+    if (!interpolationContext) {
+      throw new Error('MathFunction: interpolationContext is required');
+    }
+    
+    const operation = InterpolationSystem.interpolate(params.operation, interpolationContext);
+    const values = InterpolationSystem.interpolate(params.values, interpolationContext);
+    
+    switch (operation) {
+      case 'sum':
+        if (!Array.isArray(values)) throw new Error('MathFunction: sum operation requires an array of values');
+        return values.reduce((acc, val) => acc + parseFloat(val), 0);
+      case 'max':
+        if (!Array.isArray(values)) throw new Error('MathFunction: max operation requires an array of values');
+        return Math.max(...values.map(parseFloat));
+      case 'min':
+        if (!Array.isArray(values)) throw new Error('MathFunction: min operation requires an array of values');
+        return Math.min(...values.map(parseFloat));
+      default:
+        throw new Error(`Unknown math operation: ${operation}`);
+    }
+  }
+}
+
+module.exports = { MathFunction };</code></pre>
+                </div>
+                
+                <h2>Demo Project</h2>
+                <p>Check out the complete working example in the <code>custom-actions-functions</code> demo project:</p>
+                <ul>
+                    <li><strong>StringFunction</strong> - String manipulation operations</li>
+                    <li><strong>MathFunction</strong> - Mathematical calculations</li>
+                    <li><strong>DateFunction</strong> - Date and time operations</li>
+                </ul>
+                <p>Run the demo: <code>cd examples/custom-actions-functions && npm install && node index.js</code></p>
                 
                 <h2>Best Practices</h2>
                 <ul>
@@ -116,6 +162,8 @@ RegistryManager.registerFunction(new MathFunction());</code></pre>
                     <li>Handle invalid parameters gracefully</li>
                     <li>Keep functions pure when possible (no side effects)</li>
                     <li>Use async functions for operations that require external data</li>
+                    <li>Always check for <code>interpolationContext</code> availability</li>
+                    <li>Use <code>InterpolationSystem.interpolate()</code> for parameter processing</li>
                 </ul>
             </section>
         </div>

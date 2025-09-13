@@ -16,44 +16,62 @@
                 <p>Кастомные функции позволяют обрабатывать данные и выполнять вычисления, которые можно использовать в объектном синтаксисе функций.</p>
                 
                 <h2>Создание кастомной функции</h2>
-                <p>Для создания кастомной функции реализуйте интерфейс <code>ICustomFunction</code>:</p>
+                <p>Для создания кастомной функции создайте класс со следующей структурой:</p>
                 
                 <div class="code-block">
-                    <h3>Интерфейс кастомной функции</h3>
-                    <pre><code class="language-typescript">interface ICustomFunction {
-  name: string;
-  execute(params: string[]): string | Promise<string>;
-}</code></pre>
+                    <h3>Структура кастомной функции</h3>
+                    <pre><code class="language-javascript">class MyCustomFunction {
+  get functionName() { return 'MyFunction'; }
+
+  async execute(params, context) {
+    const interpolationContext = context.interpolationContext;
+    
+    if (!interpolationContext) {
+      throw new Error('MyCustomFunction: interpolationContext is required');
+    }
+    
+    // Ваша логика функции здесь
+    return result;
+  }
+}
+
+module.exports = { MyCustomFunction };</code></pre>
                 </div>
                 
-                <h2>Пример: Математические функции</h2>
+                <h2>Пример: Строковые функции</h2>
                 <div class="example-card">
-                    <h3>Реализация математических функций</h3>
-                    <pre><code class="language-typescript">import { ICustomFunction } from 'scenarium';
+                    <h3>Реализация строковых функций</h3>
+                    <pre><code class="language-javascript">const { InterpolationSystem } = require('scenarium');
 
-export class MathFunction implements ICustomFunction {
-  name = 'Math';
-  
-  execute(params: string[]): string {
-    if (params.length < 2) return '0';
+class StringFunction {
+  get functionName() { return 'String'; }
+
+  async execute(params, context) {
+    const interpolationContext = context.interpolationContext;
     
-    const operation = params[0];
-    const numbers = params.slice(1).map(Number);
+    if (!interpolationContext) {
+      throw new Error('StringFunction: interpolationContext is required');
+    }
+    
+    const operation = InterpolationSystem.interpolate(params.operation, interpolationContext);
+    const input = InterpolationSystem.interpolate(params.input, interpolationContext);
     
     switch (operation) {
-      case 'add':
-        return numbers.reduce((a, b) => a + b, 0).toString();
-      case 'multiply':
-        return numbers.reduce((a, b) => a * b, 1).toString();
-      case 'max':
-        return Math.max(...numbers).toString();
-      case 'min':
-        return Math.min(...numbers).toString();
+      case 'uppercase':
+        return String(input).toUpperCase();
+      case 'lowercase':
+        return String(input).toLowerCase();
+      case 'reverse':
+        return String(input).split('').reverse().join('');
+      case 'length':
+        return String(input).length;
       default:
-        return '0';
+        throw new Error(`Unknown string operation: ${operation}`);
     }
   }
-}</code></pre>
+}
+
+module.exports = { StringFunction };</code></pre>
                 </div>
                 
                 <h2>Регистрация кастомных функций</h2>
@@ -61,54 +79,82 @@ export class MathFunction implements ICustomFunction {
                 
                 <div class="code-block">
                     <h3>Пример регистрации</h3>
-                    <pre><code class="language-typescript">import { RegistryManager } from 'scenarium';
-import { MathFunction } from './MathFunction';
+                    <pre><code class="language-javascript">const { RegistryManager } = require('scenarium');
+const { StringFunction } = require('./functions/StringFunction');
 
 // Регистрируем кастомную функцию
-RegistryManager.registerFunction(new MathFunction());</code></pre>
+RegistryManager.registerFunctions({
+  'String': new StringFunction()
+}, {
+  overwrite: true,
+  verbose: true
+});</code></pre>
                 </div>
                 
-                <h2>Использование кастомных функций в тексте</h2>
-                <p>После регистрации вы можете использовать вашу кастомную функцию в тексте сообщений:</p>
+                <h2>Использование кастомных функций в сценариях</h2>
+                <p>После регистрации вы можете использовать вашу кастомную функцию в JSON сценариях:</p>
                 
                 <div class="example-card">
-                    <h3>Текст с кастомной функцией</h3>
+                    <h3>Сценарий с кастомной функцией</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": {
-    "function": "JoinToString",
-    "values": [
-      "Сумма 5 и 3 равна {{sum}}",
-      "а максимум {{max}}"
-    ],
-    "separator": ", "
-  }
+  "text": "• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}"
 }</code></pre>
                 </div>
                 
-                <h2>Пример: Функция даты</h2>
                 <div class="example-card">
-                    <h3>Реализация функции даты</h3>
-                    <pre><code class="language-typescript">export class DateFunction implements ICustomFunction {
-  name = 'Date';
-  
-  execute(params: string[]): string {
-    const format = params[0] || 'YYYY-MM-DD';
-    const date = new Date();
-    
-    switch (format) {
-      case 'YYYY-MM-DD':
-        return date.toISOString().split('T')[0];
-      case 'DD/MM/YYYY':
-        return date.toLocaleDateString('ru-RU');
-      case 'time':
-        return date.toLocaleTimeString('ru-RU');
-      default:
-        return date.toISOString();
-    }
-  }
+                    <h3>Примеры нескольких функций</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Результаты функций:\n• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}\n• length('test') = {{function: {String: {operation: 'length', input: 'test'}}}}\n• reverse('12345') = {{function: {String: {operation: 'reverse', input: '12345'}}}}"
 }</code></pre>
                 </div>
+                
+                <h2>Пример: Математические функции</h2>
+                <div class="example-card">
+                    <h3>Реализация математических функций</h3>
+                    <pre><code class="language-javascript">const { InterpolationSystem } = require('scenarium');
+
+class MathFunction {
+  get functionName() { return 'Math'; }
+
+  async execute(params, context) {
+    const interpolationContext = context.interpolationContext;
+    
+    if (!interpolationContext) {
+      throw new Error('MathFunction: interpolationContext is required');
+    }
+    
+    const operation = InterpolationSystem.interpolate(params.operation, interpolationContext);
+    const values = InterpolationSystem.interpolate(params.values, interpolationContext);
+    
+    switch (operation) {
+      case 'sum':
+        if (!Array.isArray(values)) throw new Error('MathFunction: sum operation requires an array of values');
+        return values.reduce((acc, val) => acc + parseFloat(val), 0);
+      case 'max':
+        if (!Array.isArray(values)) throw new Error('MathFunction: max operation requires an array of values');
+        return Math.max(...values.map(parseFloat));
+      case 'min':
+        if (!Array.isArray(values)) throw new Error('MathFunction: min operation requires an array of values');
+        return Math.min(...values.map(parseFloat));
+      default:
+        throw new Error(`Unknown math operation: ${operation}`);
+    }
+  }
+}
+
+module.exports = { MathFunction };</code></pre>
+                </div>
+                
+                <h2>Демо проект</h2>
+                <p>Посмотрите полный рабочий пример в демо проекте <code>custom-actions-functions</code>:</p>
+                <ul>
+                    <li><strong>StringFunction</strong> - Операции со строками</li>
+                    <li><strong>MathFunction</strong> - Математические вычисления</li>
+                    <li><strong>DateFunction</strong> - Операции с датами и временем</li>
+                </ul>
+                <p>Запустите демо: <code>cd examples/custom-actions-functions && npm install && node index.js</code></p>
                 
                 <h2>Лучшие практики</h2>
                 <ul>
@@ -116,6 +162,8 @@ RegistryManager.registerFunction(new MathFunction());</code></pre>
                     <li>Корректно обрабатывайте неверные параметры</li>
                     <li>Старайтесь делать функции чистыми (без побочных эффектов)</li>
                     <li>Используйте асинхронные функции для операций, требующих внешних данных</li>
+                    <li>Всегда проверяйте доступность <code>interpolationContext</code></li>
+                    <li>Используйте <code>InterpolationSystem.interpolate()</code> для обработки параметров</li>
                 </ul>
             </section>
         </div>
