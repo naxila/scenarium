@@ -1,6 +1,6 @@
 {
   "name": "scenarium",
-  "version": "0.1.0-alpha",
+  "version": "0.1.0-beta",
   "description": "TypeScript library for creating Telegram bots from JSON scenarios",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,8 +24,8 @@
     "scenarium"
   ],
   "author": {
-    "name": "naxila",
-    "email": "naxila@example.com"
+    "name": "Alikhan",
+    "email": "nexenorigin@gmail.com"
   },
   "license": "MIT",
   "repository": {
@@ -37,8 +37,7 @@
     "url": "https://github.com/naxila/scenarium/issues"
   },
   "dependencies": {
-    "node-telegram-bot-api": "^0.64.0",
-    "scenarium": "^0.1.0-alpha"
+    "node-telegram-bot-api": "^0.64.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
