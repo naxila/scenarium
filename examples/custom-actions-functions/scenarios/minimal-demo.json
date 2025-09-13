@@ -76,7 +76,7 @@
         },
         {
           "action": "SendMessage",
-          "text": {
+M          "text": {
             "function": "JoinToString",
             "values": [
               "• uppercase('hello') = ",
