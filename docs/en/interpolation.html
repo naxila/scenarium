@@ -99,19 +99,24 @@
                     <h3>Nested Example</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello {{name}}! The current time is {{Date:time}} and your ID is {{userId}}"
+  "text": "Hello {{name}}! Your ID is {{userId}} and you are in {{currentMenu}}"
 }</code></pre>
                 </div>
                 
                 <h2>Error Handling</h2>
-                <p>If a variable or function is not found, it will be replaced with an empty string. Make sure to handle missing data gracefully:</p>
+                <p>If a variable is not found, it will remain as the original variable syntax (e.g., <code>{{unknownVariable}}</code>). Make sure to handle missing data gracefully:</p>
                 
                 <div class="example-card">
                     <h3>Safe Interpolation</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Hello {{name || 'User'}}! Welcome to our bot."
+  "text": "Hello {{name}}! Welcome to our bot."
 }</code></pre>
+                </div>
+                
+                <div class="code-block">
+                    <h3>Note about missing variables</h3>
+                    <p>If a variable is not found, it will be replaced with the original variable syntax (e.g., <code>{{unknownVariable}}</code>). Always ensure your variables are properly defined in the context.</p>
                 </div>
             </section>
         </div>

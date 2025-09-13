@@ -92,13 +92,51 @@ RegistryManager.registerFunctions({
                 </div>
                 
                 <h2>Using Custom Functions in Scenarios</h2>
-                <p>Once registered, you can use your custom function in scenario JSON:</p>
+                <p>Once registered, you can use your custom function in scenario JSON. <strong>Important:</strong> Custom functions must be used in object syntax, not in string interpolation:</p>
+                
+                <div class="code-block">
+                    <h3>❌ Incorrect (String Interpolation)</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Result: {{function: {String: {operation: 'uppercase', input: 'hello'}}}}"
+}</code></pre>
+                </div>
+                
+                <div class="code-block">
+                    <h3>✅ Correct (Object Syntax)</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Result: ",
+      {
+        "function": "String",
+        "operation": "uppercase",
+        "input": "hello"
+      }
+    ],
+    "separator": ""
+  }
+}</code></pre>
+                </div>
                 
                 <div class="example-card">
                     <h3>Scenario with Custom Function</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}"
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• uppercase('hello') = ",
+      {
+        "function": "String",
+        "operation": "uppercase",
+        "input": "hello"
+      }
+    ],
+    "separator": ""
+  }
 }</code></pre>
                 </div>
                 
@@ -106,7 +144,52 @@ RegistryManager.registerFunctions({
                     <h3>Multiple Function Examples</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Function results:\n• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}\n• length('test') = {{function: {String: {operation: 'length', input: 'test'}}}}\n• reverse('12345') = {{function: {String: {operation: 'reverse', input: '12345'}}}}"
+  "text": "Function results:"
+},
+{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• uppercase('hello') = ",
+      {
+        "function": "String",
+        "operation": "uppercase",
+        "input": "hello"
+      }
+    ],
+    "separator": ""
+  }
+},
+{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• length('test') = ",
+      {
+        "function": "String",
+        "operation": "length",
+        "input": "test"
+      }
+    ],
+    "separator": ""
+  }
+},
+{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• reverse('12345') = ",
+      {
+        "function": "String",
+        "operation": "reverse",
+        "input": "12345"
+      }
+    ],
+    "separator": ""
+  }
 }</code></pre>
                 </div>
                 
@@ -145,6 +228,40 @@ class MathFunction {
 }
 
 module.exports = { MathFunction };</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>Math Function Usage in Scenario</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• sum([1,2,3,4,5]) = ",
+      {
+        "function": "Math",
+        "operation": "sum",
+        "values": [1,2,3,4,5]
+      }
+    ],
+    "separator": ""
+  }
+},
+{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• max([10,5,8,15,3]) = ",
+      {
+        "function": "Math",
+        "operation": "max",
+        "values": [10,5,8,15,3]
+      }
+    ],
+    "separator": ""
+  }
+}</code></pre>
                 </div>
                 
                 <h2>Demo Project</h2>

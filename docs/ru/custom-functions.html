@@ -92,13 +92,51 @@ RegistryManager.registerFunctions({
                 </div>
                 
                 <h2>Использование кастомных функций в сценариях</h2>
-                <p>После регистрации вы можете использовать вашу кастомную функцию в JSON сценариях:</p>
+                <p>После регистрации вы можете использовать вашу кастомную функцию в JSON сценариях. <strong>Важно:</strong> Кастомные функции должны использоваться в объектном синтаксисе, а не в строковой интерполяции:</p>
+                
+                <div class="code-block">
+                    <h3>❌ Неправильно (Строковая интерполяция)</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Результат: {{function: {String: {operation: 'uppercase', input: 'hello'}}}}"
+}</code></pre>
+                </div>
+                
+                <div class="code-block">
+                    <h3>✅ Правильно (Объектный синтаксис)</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "Результат: ",
+      {
+        "function": "String",
+        "operation": "uppercase",
+        "input": "hello"
+      }
+    ],
+    "separator": ""
+  }
+}</code></pre>
+                </div>
                 
                 <div class="example-card">
                     <h3>Сценарий с кастомной функцией</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}"
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• uppercase('hello') = ",
+      {
+        "function": "String",
+        "operation": "uppercase",
+        "input": "hello"
+      }
+    ],
+    "separator": ""
+  }
 }</code></pre>
                 </div>
                 
@@ -106,7 +144,52 @@ RegistryManager.registerFunctions({
                     <h3>Примеры нескольких функций</h3>
                     <pre><code class="language-json">{
   "action": "SendMessage",
-  "text": "Результаты функций:\n• uppercase('hello') = {{function: {String: {operation: 'uppercase', input: 'hello'}}}}\n• length('test') = {{function: {String: {operation: 'length', input: 'test'}}}}\n• reverse('12345') = {{function: {String: {operation: 'reverse', input: '12345'}}}}"
+  "text": "Результаты функций:"
+},
+{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• uppercase('hello') = ",
+      {
+        "function": "String",
+        "operation": "uppercase",
+        "input": "hello"
+      }
+    ],
+    "separator": ""
+  }
+},
+{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• length('test') = ",
+      {
+        "function": "String",
+        "operation": "length",
+        "input": "test"
+      }
+    ],
+    "separator": ""
+  }
+},
+{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• reverse('12345') = ",
+      {
+        "function": "String",
+        "operation": "reverse",
+        "input": "12345"
+      }
+    ],
+    "separator": ""
+  }
 }</code></pre>
                 </div>
                 
@@ -145,6 +228,40 @@ class MathFunction {
 }
 
 module.exports = { MathFunction };</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>Использование математических функций в сценарии</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• sum([1,2,3,4,5]) = ",
+      {
+        "function": "Math",
+        "operation": "sum",
+        "values": [1,2,3,4,5]
+      }
+    ],
+    "separator": ""
+  }
+},
+{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": [
+      "• max([10,5,8,15,3]) = ",
+      {
+        "function": "Math",
+        "operation": "max",
+        "values": [10,5,8,15,3]
+      }
+    ],
+    "separator": ""
+  }
+}</code></pre>
                 </div>
                 
                 <h2>Демо проект</h2>
