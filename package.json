@@ -37,7 +37,8 @@
     "url": "https://github.com/naxila/scenarium/issues"
   },
   "dependencies": {
-    "node-telegram-bot-api": "^0.64.0"
+    "node-telegram-bot-api": "^0.64.0",
+    "scenarium": "0.1.2-alpha"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
