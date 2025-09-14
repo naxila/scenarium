@@ -2,43 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.1-alpha] - 2025-01-13
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### 🐛 Bug Fixes
-- Fixed Map function documentation with correct syntax
-- Updated author information in package.json
-- Corrected interpolation documentation examples
+## [0.1.2-alpha] - 2024-12-19
 
-### 📚 Documentation
-- Updated Map function examples to match real usage
-- Fixed parameter names (items/forEach instead of array/function/params)
-- Added real examples from map-demo-scenario.json
-- Updated English and Russian documentation
-- Added new built-in functions to navigation (Plus, Minus, Multiply, Divide, Mod, Map)
+### Added
+- **AnalyticsInterface** - новый класс для интеграции аналитики с callback'ами событий
+- **AnalyticsCallbacks** - интерфейс для обработки событий аналитики:
+  - `onMessageReceived` - входящие сообщения
+  - `onMessageSent` - исходящие сообщения  
+  - `onUserStarted` - начало работы пользователя
+  - `onUserAction` - действия пользователя
+  - `onError` - обработка ошибок
+- **SimpleBotInterface** - упрощенный интерфейс для быстрого создания ботов
+- Интеграция аналитики в `TelegramAdapter` с минимальными изменениями архитектуры
+- Поддержка callback'ов в `BotFactory` и `TelegramBotConstructor`
+- Примеры использования в `examples/analytics-example.js`
+- Документация по `AnalyticsInterface` в `ANALYTICS_INTERFACE.md`
 
-### 🔧 Technical Changes
-- Updated smart-docs.js navigation with new functions
-- Removed unused sidebar files
-- Fixed function interpolation examples
+### Changed
+- `TelegramAdapter` теперь поддерживает опциональные `analyticsCallbacks`
+- `BotFactory.createBot()` принимает параметр `analyticsCallbacks`
+- `TelegramBotConstructor` передает callback'и в `TelegramAdapter`
 
-## [0.1.0-alpha] - 2025-01-11
+### Fixed
+- Улучшена обработка ошибок в callback'ах аналитики
+- Оптимизирована производительность при работе с аналитикой
 
-### ✨ Features
-- Initial release of Scenarium library
-- BotFactory for creating bots from JSON scenarios
-- MultiBotManager for managing multiple bots
-- Action system with built-in actions
-- Function system with built-in functions
-- TypeScript support with full type definitions
-- Telegram API integration
+### Security
+- Callback'и аналитики выполняются в безопасном контексте без доступа к внутренним данным бота
 
-### 🎯 Core Components
-- JSON-based bot scenarios
-- Extensible action and function system
-- TypeScript support
-- Multiple bot management
-- Session management
-- Input handling
-- Message processing
-- Advanced interpolation system
-- Custom actions and functions support
+## [0.1.1-alpha] - 2024-12-18
+
+### Added
+- Базовая функциональность библиотеки
+- Поддержка JSON сценариев для Telegram ботов
+- TypeScript типизация
+- Система меню и навигации
+- Обработка команд и сообщений
+- Система сессий пользователей
