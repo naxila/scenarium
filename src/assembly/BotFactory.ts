@@ -1,6 +1,7 @@
 import { Scenario, ScenarioConfig } from '../types/Scenario';
 import { TelegramBotConstructor } from './TelegramBotConstructor';
 import { ScenarioLoader } from '../core/ScenarioLoader';
+import { AnalyticsCallbacks } from '../telegram/TelegramAdapter';
 
 export class BotFactory {
   /**
@@ -29,9 +30,9 @@ export class BotFactory {
   /**
    * Creates a bot from configuration (backward compatibility)
    */
-  static createBot(scenarioConfig: ScenarioConfig, botName?: string): TelegramBotConstructor {
+  static createBot(scenarioConfig: ScenarioConfig, botName?: string, analyticsCallbacks?: AnalyticsCallbacks): TelegramBotConstructor {
     this.validateScenario(scenarioConfig.scenario);
-    return new TelegramBotConstructor(scenarioConfig, botName);
+    return new TelegramBotConstructor(scenarioConfig, botName, analyticsCallbacks);
   }
 
   private static validateScenario(scenario: Scenario): void {

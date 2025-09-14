@@ -5,15 +5,26 @@ import { InputManager } from '../core/InputManager';
 import { TelegramBotConstructor } from '../assembly/TelegramBotConstructor';
 import { ActionRegistry } from '../registry/ActionRegistry';
 
+// Интерфейс для callback'ов аналитики
+export interface AnalyticsCallbacks {
+  onMessageReceived?: (userId: string, message: string, messageData: any) => void;
+  onMessageSent?: (userId: string, message: string, messageData: any) => void;
+  onUserStarted?: (userId: string, userData: any) => void;
+  onUserAction?: (userId: string, action: string, actionData: any) => void;
+  onError?: (error: Error, context: any) => void;
+}
+
 export class TelegramAdapter {
   private bot: TelegramBot;
   private botConstructor: TelegramBotConstructor;
   private botName: string;
+  private analyticsCallbacks?: AnalyticsCallbacks;
 
-  constructor(token: string, botConstructor: TelegramBotConstructor, botName: string = 'default') {
+  constructor(token: string, botConstructor: TelegramBotConstructor, botName: string = 'default', analyticsCallbacks?: AnalyticsCallbacks) {
     this.bot = new TelegramBot(token, { polling: true });
     this.botConstructor = botConstructor;
     this.botName = botName;
+    this.analyticsCallbacks = analyticsCallbacks;
     
     this.setupHandlers();
   }
@@ -23,6 +34,11 @@ export class TelegramAdapter {
     this.bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
       const userId = msg.chat.id.toString();
       const startPayload = match?.[1]; // Parameters after /start
+
+      // Вызываем callback аналитики для начала работы пользователя
+      if (this.analyticsCallbacks?.onUserStarted) {
+        this.analyticsCallbacks.onUserStarted(userId, { startPayload, message: msg });
+      }
 
       try {
         await this.handleStartCommand(userId, startPayload, msg);
@@ -65,6 +81,11 @@ export class TelegramAdapter {
 
       const userId = msg.chat.id.toString();
       const text = msg.text || '';
+
+      // Вызываем callback аналитики для входящего сообщения
+      if (this.analyticsCallbacks?.onMessageReceived) {
+        this.analyticsCallbacks.onMessageReceived(userId, text, msg);
+      }
 
       try {
         await this.handleUserMessage(userId, text, msg);
@@ -222,6 +243,12 @@ export class TelegramAdapter {
   }
 
   private async handleUserMessage(userId: string, text: string, msg: any): Promise<void> {
+    // Вызываем callback аналитики для входящего сообщения
+    if (this.analyticsCallbacks?.onMessageReceived) {
+      console.log('🔍 TelegramAdapter - вызываем onMessageReceived callback');
+      this.analyticsCallbacks.onMessageReceived(userId, text, msg);
+    }
+
     // Проверяем, ждет ли какое-то действие ввода
     const handled = await ActionRegistry.processInput(userId, this.botName, {
       type: 'message',
@@ -369,7 +396,14 @@ export class TelegramAdapter {
 
   // Публичные методы для управления ботом
   async sendMessage(chatId: string, text: string, options?: any): Promise<any> {
-    return await this.bot.sendMessage(chatId, text, options);
+    const result = await this.bot.sendMessage(chatId, text, options);
+    
+    // Вызываем callback аналитики для отправленного сообщения
+    if (this.analyticsCallbacks?.onMessageSent) {
+      this.analyticsCallbacks.onMessageSent(chatId, text, { result, options });
+    }
+    
+    return result;
   }
 
   async editMessageText(chatId: string, messageId: number, text: string, options?: any): Promise<void> {

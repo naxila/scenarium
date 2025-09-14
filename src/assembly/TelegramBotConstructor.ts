@@ -1,7 +1,7 @@
 import { ScenarioConfig } from '../types/Scenario';
 import { BotInstance } from '../core/BotInstance';
 import { FunctionRegistry } from '../registry/FunctionRegistry';
-import { TelegramAdapter } from '../telegram/TelegramAdapter';
+import { TelegramAdapter, AnalyticsCallbacks } from '../telegram/TelegramAdapter';
 import { ActionProcessor } from '../core/ActionProcessor';
 
 export class TelegramBotConstructor {
@@ -10,11 +10,13 @@ export class TelegramBotConstructor {
   private isRunning = false;
   private token: string;
   private botName: string;
+  private analyticsCallbacks?: AnalyticsCallbacks;
 
-  constructor(config: ScenarioConfig, botName?: string) {
+  constructor(config: ScenarioConfig, botName?: string, analyticsCallbacks?: AnalyticsCallbacks) {
     FunctionRegistry.initialize();
     this.token = config.telegramBotToken || '';
     this.botName = botName || 'unknown';
+    this.analyticsCallbacks = analyticsCallbacks;
     
     // Create BotInstance with self as botConstructor and bot name
     this.botInstance = new BotInstance(config.scenario, config.sessionTimeout, this, this.botName);
@@ -107,7 +109,8 @@ export class TelegramBotConstructor {
     this.adapter = new TelegramAdapter(
       this.token,
       this,
-      this.botName
+      this.botName,
+      this.analyticsCallbacks
     );
     
     this.isRunning = true;

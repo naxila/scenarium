@@ -3,6 +3,7 @@ import { ActionRegistry, FunctionRegistry } from './registry';
 import { RegistryManager } from './registry/RegistryManager';
 import { MultiBotManager } from './core/MultiBotManager';
 import { ScenarioLoader } from './core/ScenarioLoader';
+import { AnalyticsInterface } from './AnalyticsInterface';
 
 // Initialize registries
 FunctionRegistry.initialize();
@@ -14,6 +15,7 @@ export { BotFactory, TelegramBotConstructor };
 export { ActionRegistry, FunctionRegistry, RegistryManager };
 export { MultiBotManager };
 export { ScenarioLoader };
+export { AnalyticsInterface };
 
 // Re-export types
 export * from './types';
