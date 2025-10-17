@@ -43,6 +43,40 @@
                 <h3>onStartActions</h3>
                 <p>Действия, которые выполняются при запуске бота или когда пользователь отправляет команду /start.</p>
                 
+                <h4>Параметры запуска (startParams)</h4>
+                <p>Scenarium автоматически парсит параметры из команды /start и делает их доступными в onStartActions через объект <code>startParams</code>:</p>
+                
+                <div class="code-block">
+                    <h5>Поддерживаемые форматы:</h5>
+                    <ul>
+                        <li><strong>Telegram ссылки:</strong> <code>?start=123</code> → <code>{{startParams.start}}</code></li>
+                        <li><strong>URL параметры:</strong> <code>param1=value1&param2=value2</code></li>
+                        <li><strong>Пробельные параметры:</strong> <code>name John age 25</code></li>
+                    </ul>
+                </div>
+                
+                <div class="code-block">
+                    <h5>Доступные переменные в onStartActions:</h5>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "SendMessage",
+      "text": "Добро пожаловать! Параметры: {{startParams.start}}\nПользователь: {{telegram.firstName}}"
+    }
+  ]
+}</code></pre>
+                </div>
+                
+                <h4>Объект telegram</h4>
+                <p>В onStartActions доступен объект <code>telegram</code> с информацией о пользователе и чате:</p>
+                <ul>
+                    <li><code>{{telegram.chatId}}</code> - ID чата</li>
+                    <li><code>{{telegram.userId}}</code> - ID пользователя</li>
+                    <li><code>{{telegram.firstName}}</code> - Имя пользователя</li>
+                    <li><code>{{telegram.username}}</code> - Username пользователя</li>
+                    <li><code>{{telegram.chatType}}</code> - Тип чата (private, group, etc.)</li>
+                </ul>
+                
                 <h3>menuItems</h3>
                 <p>Определяет все доступные меню и их поведение. Каждое меню может иметь:</p>
                 <ul>
@@ -81,6 +115,39 @@
       "onNavigation": {
         "action": "SendMessage",
         "text": "Это раздел помощи. Как я могу вам помочь?"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>Бот с поддержкой параметров запуска</h3>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "SendMessage",
+      "text": "🚀 Добро пожаловать, {{telegram.firstName}}!\n\n{{#if startParams.start}}🎯 Код запуска: {{startParams.start}}{{/if}}\n{{#if startParams.ref}}📋 Реферал: {{startParams.ref}}{{/if}}"
+    },
+    {
+      "action": "Navigate",
+      "menuItem": "Main"
+    }
+  ],
+  "menuItems": {
+    "Main": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Главное меню",
+        "inlineActions": [
+          {
+            "title": "Профиль",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "Profile"
+            }
+          }
+        ]
       }
     }
   }

@@ -17,6 +17,30 @@
                 
                 <h2>Available Variables</h2>
                 
+                <h3>startParams (Start Parameters)</h3>
+                <p>Available only in <code>onStartActions</code>. Contains parameters from the /start command:</p>
+                <ul>
+                    <li><code>{{startParams.start}}</code> - Parameter from Telegram link (?start=value)</li>
+                    <li><code>{{startParams.param1}}</code> - Any URL parameters (param1=value1)</li>
+                    <li><code>{{startPayload}}</code> - Raw parameter string</li>
+                    <li><code>{{startTime}}</code> - Bot start time</li>
+                </ul>
+                
+                <h3>telegram (Telegram Information)</h3>
+                <p>Available only in <code>onStartActions</code>. Contains user and chat information:</p>
+                <ul>
+                    <li><code>{{telegram.chatId}}</code> - Chat ID</li>
+                    <li><code>{{telegram.userId}}</code> - User ID</li>
+                    <li><code>{{telegram.firstName}}</code> - User first name</li>
+                    <li><code>{{telegram.lastName}}</code> - User last name</li>
+                    <li><code>{{telegram.username}}</code> - User username</li>
+                    <li><code>{{telegram.chatType}}</code> - Chat type (private, group, etc.)</li>
+                    <li><code>{{telegram.isBot}}</code> - Is bot</li>
+                    <li><code>{{telegram.languageCode}}</code> - Language code</li>
+                    <li><code>{{telegram.messageId}}</code> - Message ID</li>
+                    <li><code>{{telegram.date}}</code> - Message date</li>
+                </ul>
+                
                 <h3>userContext</h3>
                 <p>Contains information about the current user:</p>
                 <ul>
@@ -67,6 +91,30 @@
                 </div>
                 
                 <h2>Example Scenarios</h2>
+                
+                <div class="example-card">
+                    <h3>Using startParams and telegram in onStartActions</h3>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "SendMessage",
+      "text": "🚀 Welcome, {{telegram.firstName}}!\n\n{{#if startParams.start}}🎯 Start code: {{startParams.start}}{{/if}}\n{{#if startParams.ref}}📋 Referral: {{startParams.ref}}{{/if}}\n\n👤 Your ID: {{telegram.userId}}\n💬 Chat: {{telegram.chatId}}"
+    }
+  ]
+}</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>Handling different startParams formats</h3>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "SendMessage",
+      "text": "{{#if startParams.start}}🎯 Telegram code: {{startParams.start}}{{/if}}\n{{#if startParams.promo}}🎁 Promo: {{startParams.promo}}{{/if}}\n{{#if startParams.name}}👤 Name: {{startParams.name}}{{/if}}"
+    }
+  ]
+}</code></pre>
+                </div>
                 
                 <div class="example-card">
                     <h3>Personalized Welcome</h3>

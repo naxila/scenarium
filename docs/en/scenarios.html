@@ -43,6 +43,40 @@
                 <h3>onStartActions</h3>
                 <p>Actions that are executed when the bot starts or when a user sends /start command.</p>
                 
+                <h4>Start Parameters (startParams)</h4>
+                <p>Scenarium automatically parses parameters from the /start command and makes them available in onStartActions through the <code>startParams</code> object:</p>
+                
+                <div class="code-block">
+                    <h5>Supported formats:</h5>
+                    <ul>
+                        <li><strong>Telegram links:</strong> <code>?start=123</code> → <code>{{startParams.start}}</code></li>
+                        <li><strong>URL parameters:</strong> <code>param1=value1&param2=value2</code></li>
+                        <li><strong>Space-separated parameters:</strong> <code>name John age 25</code></li>
+                    </ul>
+                </div>
+                
+                <div class="code-block">
+                    <h5>Available variables in onStartActions:</h5>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "SendMessage",
+      "text": "Welcome! Parameters: {{startParams.start}}\nUser: {{telegram.firstName}}"
+    }
+  ]
+}</code></pre>
+                </div>
+                
+                <h4>Telegram object</h4>
+                <p>In onStartActions, the <code>telegram</code> object is available with user and chat information:</p>
+                <ul>
+                    <li><code>{{telegram.chatId}}</code> - Chat ID</li>
+                    <li><code>{{telegram.userId}}</code> - User ID</li>
+                    <li><code>{{telegram.firstName}}</code> - User first name</li>
+                    <li><code>{{telegram.username}}</code> - User username</li>
+                    <li><code>{{telegram.chatType}}</code> - Chat type (private, group, etc.)</li>
+                </ul>
+                
                 <h3>menuItems</h3>
                 <p>Defines all available menus and their behavior. Each menu can have:</p>
                 <ul>
@@ -51,7 +85,7 @@
                     <li><code>onCallback</code> - Actions when user clicks inline buttons</li>
                 </ul>
                 
-                <h2>Example Scenario</h2>
+                <h2>Example Scenarios</h2>
                 <div class="example-card">
                     <h3>Simple Welcome Bot</h3>
                     <pre><code class="language-json">{
@@ -81,6 +115,39 @@
       "onNavigation": {
         "action": "SendMessage",
         "text": "This is the help section. How can I assist you?"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>Bot with Start Parameters Support</h3>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "SendMessage",
+      "text": "🚀 Welcome, {{telegram.firstName}}!\n\n{{#if startParams.start}}🎯 Start code: {{startParams.start}}{{/if}}\n{{#if startParams.ref}}📋 Referral: {{startParams.ref}}{{/if}}"
+    },
+    {
+      "action": "Navigate",
+      "menuItem": "Main"
+    }
+  ],
+  "menuItems": {
+    "Main": {
+      "onNavigation": {
+        "action": "SendMessage",
+        "text": "Main Menu",
+        "inlineActions": [
+          {
+            "title": "Profile",
+            "onClick": {
+              "action": "Navigate",
+              "menuItem": "Profile"
+            }
+          }
+        ]
       }
     }
   }

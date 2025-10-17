@@ -22,9 +22,9 @@ export class TelegramBotConstructor {
     this.botInstance = new BotInstance(config.scenario, config.sessionTimeout, this, this.botName);
   }
 
-  async startForUser(userId: string): Promise<void> {
+  async startForUser(userId: string, localContext: Record<string, any> = {}): Promise<void> {
     const scenario = this.botInstance.getScenario();
-    await this.botInstance.processForUser(userId, scenario.onStartActions);
+    await this.botInstance.processForUser(userId, scenario.onStartActions, localContext);
   }
 
   async processUserAction(userId: string, action: any): Promise<void> {

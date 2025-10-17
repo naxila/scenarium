@@ -17,6 +17,30 @@
                 
                 <h2>Доступные переменные</h2>
                 
+                <h3>startParams (Параметры запуска)</h3>
+                <p>Доступны только в <code>onStartActions</code>. Содержат параметры из команды /start:</p>
+                <ul>
+                    <li><code>{{startParams.start}}</code> - Параметр из Telegram ссылки (?start=value)</li>
+                    <li><code>{{startParams.param1}}</code> - Любые URL параметры (param1=value1)</li>
+                    <li><code>{{startPayload}}</code> - Исходная строка параметров</li>
+                    <li><code>{{startTime}}</code> - Время запуска бота</li>
+                </ul>
+                
+                <h3>telegram (Информация о Telegram)</h3>
+                <p>Доступны только в <code>onStartActions</code>. Содержат информацию о пользователе и чате:</p>
+                <ul>
+                    <li><code>{{telegram.chatId}}</code> - ID чата</li>
+                    <li><code>{{telegram.userId}}</code> - ID пользователя</li>
+                    <li><code>{{telegram.firstName}}</code> - Имя пользователя</li>
+                    <li><code>{{telegram.lastName}}</code> - Фамилия пользователя</li>
+                    <li><code>{{telegram.username}}</code> - Username пользователя</li>
+                    <li><code>{{telegram.chatType}}</code> - Тип чата (private, group, etc.)</li>
+                    <li><code>{{telegram.isBot}}</code> - Является ли ботом</li>
+                    <li><code>{{telegram.languageCode}}</code> - Код языка</li>
+                    <li><code>{{telegram.messageId}}</code> - ID сообщения</li>
+                    <li><code>{{telegram.date}}</code> - Дата сообщения</li>
+                </ul>
+                
                 <h3>userContext</h3>
                 <p>Содержит информацию о текущем пользователе:</p>
                 <ul>
@@ -67,6 +91,30 @@
                 </div>
                 
                 <h2>Примеры сценариев</h2>
+                
+                <div class="example-card">
+                    <h3>Использование startParams и telegram в onStartActions</h3>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "SendMessage",
+      "text": "🚀 Добро пожаловать, {{telegram.firstName}}!\n\n{{#if startParams.start}}🎯 Код запуска: {{startParams.start}}{{/if}}\n{{#if startParams.ref}}📋 Реферал: {{startParams.ref}}{{/if}}\n\n👤 Ваш ID: {{telegram.userId}}\n💬 Чат: {{telegram.chatId}}"
+    }
+  ]
+}</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3>Обработка различных форматов startParams</h3>
+                    <pre><code class="language-json">{
+  "onStartActions": [
+    {
+      "action": "SendMessage",
+      "text": "{{#if startParams.start}}🎯 Telegram код: {{startParams.start}}{{/if}}\n{{#if startParams.promo}}🎁 Промо: {{startParams.promo}}{{/if}}\n{{#if startParams.name}}👤 Имя: {{startParams.name}}{{/if}}"
+    }
+  ]
+}</code></pre>
+                </div>
                 
                 <div class="example-card">
                     <h3>Персонализированное приветствие</h3>

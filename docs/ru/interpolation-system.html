@@ -48,7 +48,17 @@
                     </div>
                     
                     <div class="priority-item">
-                        <h3>2. Параметры функций/действий</h3>
+                        <h3>2. Параметры запуска (startParams) и Telegram данные</h3>
+                        <p>Доступны только в <code>onStartActions</code>. Содержат параметры из команды /start и информацию о пользователе.</p>
+                        <div class="code-example">
+                            <code>{{startParams.start}}</code> - Прямой доступ<br>
+                            <code>{{telegram.firstName}}</code> - Прямой доступ<br>
+                            <code>{{startPayload}}</code> - Исходная строка параметров
+                        </div>
+                    </div>
+                    
+                    <div class="priority-item">
+                        <h3>3. Параметры функций/действий</h3>
                         <p>Параметры, передаваемые в функции и действия.</p>
                         <div class="code-example">
                             <code>{{param1}}</code> - Прямой доступ<br>
@@ -57,7 +67,7 @@
                     </div>
                     
                     <div class="priority-item">
-                        <h3>3. Данные сценария</h3>
+                        <h3>4. Данные сценария</h3>
                         <p>Переменные, определенные в блоке <code>data</code> сценария.</p>
                         <div class="code-example">
                             <code>{{apiUrl}}</code> - Прямой доступ<br>
@@ -66,7 +76,7 @@
                     </div>
                     
                     <div class="priority-item">
-                        <h3>4. Окружение (низший приоритет)</h3>
+                        <h3>5. Окружение (низший приоритет)</h3>
                         <p>Системные переменные, автоматически предоставляемые системой интерполяции.</p>
                         <div class="code-example">
                             <code>{{timestamp}}</code> - Прямой доступ<br>

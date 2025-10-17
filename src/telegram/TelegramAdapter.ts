@@ -4,6 +4,7 @@ import { ActionMappingService } from '../telegram/ActionMappingService';
 import { InputManager } from '../core/InputManager';
 import { TelegramBotConstructor } from '../assembly/TelegramBotConstructor';
 import { ActionRegistry } from '../registry/ActionRegistry';
+import { parseStartParams } from '../utils/startParamsParser';
 
 // Интерфейс для callback'ов аналитики
 export interface AnalyticsCallbacks {
@@ -150,6 +151,10 @@ export class TelegramAdapter {
     
     const botInstance = this.botConstructor;
     
+    // Парсим start параметры
+    const startParams = parseStartParams(startPayload);
+    console.log(`📋 Parsed start params for user ${userId}:`, startParams);
+    
     // Просто передаем объект с данными - они все пойдут в data
     this.botConstructor.updateUserContext(userId, {
       telegramData: {
@@ -159,12 +164,25 @@ export class TelegramAdapter {
         username: msg.chat.username,
         type: msg.chat.type
       },
+      telegram: {
+        chatId: msg.chat.id,
+        userId: msg.from?.id,
+        firstName: msg.from?.first_name || msg.chat.first_name,
+        lastName: msg.from?.last_name || msg.chat.last_name,
+        username: msg.from?.username || msg.chat.username,
+        chatType: msg.chat.type,
+        isBot: msg.from?.is_bot || false,
+        languageCode: msg.from?.language_code,
+        messageId: msg.message_id,
+        date: msg.date
+      },
       startPayload: startPayload,
+      startParams: startParams,
       startTime: new Date().toISOString()
     });
   
-    // Запускаем onStartActions для пользователя
-    await this.botConstructor.startForUser(userId);
+    // Запускаем onStartActions для пользователя с startParams в локальном контексте
+    await this.botConstructor.startForUser(userId, { startParams });
   }
 
   private async handleMenuCommand(userId: string, msg: any): Promise<void> {

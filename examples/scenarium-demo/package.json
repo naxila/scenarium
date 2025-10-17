@@ -17,7 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^17.2.2",
-    "scenarium": "file:../../scenarium-0.1.0-alpha.tgz"
+    "scenarium": "file:../../"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

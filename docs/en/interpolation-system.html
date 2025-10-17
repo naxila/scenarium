@@ -48,7 +48,17 @@
                     </div>
                     
                     <div class="priority-item">
-                        <h3>2. Function/Action Parameters</h3>
+                        <h3>2. Start Parameters (startParams) and Telegram Data</h3>
+                        <p>Available only in <code>onStartActions</code>. Contains parameters from the /start command and user information.</p>
+                        <div class="code-example">
+                            <code>{{startParams.start}}</code> - Direct access<br>
+                            <code>{{telegram.firstName}}</code> - Direct access<br>
+                            <code>{{startPayload}}</code> - Raw parameter string
+                        </div>
+                    </div>
+                    
+                    <div class="priority-item">
+                        <h3>3. Function/Action Parameters</h3>
                         <p>Parameters passed to functions and actions.</p>
                         <div class="code-example">
                             <code>{{param1}}</code> - Direct access<br>
@@ -57,7 +67,7 @@
                     </div>
                     
                     <div class="priority-item">
-                        <h3>3. Scenario Data</h3>
+                        <h3>4. Scenario Data</h3>
                         <p>Variables defined in the scenario's <code>data</code> block.</p>
                         <div class="code-example">
                             <code>{{apiUrl}}</code> - Direct access<br>
@@ -66,7 +76,7 @@
                     </div>
                     
                     <div class="priority-item">
-                        <h3>4. Environment (Lowest Priority)</h3>
+                        <h3>5. Environment (Lowest Priority)</h3>
                         <p>System variables automatically provided by the interpolation system.</p>
                         <div class="code-example">
                             <code>{{timestamp}}</code> - Direct access<br>
