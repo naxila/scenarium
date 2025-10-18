@@ -39,7 +39,7 @@ export class JoinToStringFunction {
       const interpolatedValues = await Promise.all(values.map(async (value) => {
         try {
           if (typeof value === 'string') {
-            return InterpolationSystem.interpolate(value, interpolationContext);
+            return InterpolationSystem.interpolateAndClean(value, interpolationContext);
           }
           if (value && typeof value === 'object' && (value as any).function) {
             const evaluated = await FunctionProcessor.evaluateResult(value, {}, context, interpolationContext);

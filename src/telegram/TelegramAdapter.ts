@@ -158,6 +158,28 @@ export class TelegramAdapter {
     console.log('✅ Telegram bot handlers configured');
   }
 
+  /**
+   * Обновляет telegram контекст в userContext.data
+   */
+  private updateTelegramContext(userId: string, msg: any): void {
+    this.botConstructor.updateUserContext(userId, {
+      telegram: {
+        chatId: msg.chat.id,
+        userId: msg.from?.id,
+        firstName: msg.from?.first_name || msg.chat.first_name,
+        lastName: msg.from?.last_name || msg.chat.last_name,
+        username: msg.from?.username || msg.chat.username,
+        chatType: msg.chat.type,
+        isBot: msg.from?.is_bot || false,
+        languageCode: msg.from?.language_code,
+        messageId: msg.message_id,
+        date: msg.date
+      },
+      lastActivity: new Date().toISOString(),
+      lastMessage: msg.text || ''
+    });
+  }
+
   private async handleStartCommand(userId: string, startPayload: string | undefined, msg: any): Promise<void> {
     console.log(`🚀 User ${userId} started bot`);
     
@@ -200,6 +222,9 @@ export class TelegramAdapter {
   private async handleMenuCommand(userId: string, msg: any): Promise<void> {
     console.log(`📋 User ${userId} requested menu`);
     
+    // Обновляем telegram контекст
+    this.updateTelegramContext(userId, msg);
+    
     const botInstance = this.botConstructor;
     
     // Просто запускаем start actions вместо проверки меню
@@ -215,6 +240,9 @@ export class TelegramAdapter {
 
   private async handleHelpCommand(userId: string, msg: any): Promise<void> {
     console.log(`❓ User ${userId} requested help`);
+    
+    // Обновляем telegram контекст
+    this.updateTelegramContext(userId, msg);
     
     const botInstance = this.botConstructor;
     
@@ -278,6 +306,9 @@ export class TelegramAdapter {
       return;
     }
 
+    // Обновляем telegram контекст
+    this.updateTelegramContext(userId, msg);
+
     // Проверяем, ждет ли какое-то действие ввода контакта
     const inputData = {
       type: 'contact',
@@ -314,11 +345,8 @@ export class TelegramAdapter {
 
     const botInstance = this.botConstructor;
     
-    // Обновляем время последней активности
-    this.botConstructor.updateUserContext(userId, {
-      lastActivity: new Date().toISOString(),
-      lastMessage: text
-    });
+    // Обновляем telegram контекст при каждом сообщении
+    this.updateTelegramContext(userId, msg);
 
     // Проверка: ожидается ли ввод от пользователя
     const userContext = this.botConstructor.getUserContext(userId);
@@ -365,6 +393,11 @@ export class TelegramAdapter {
   }
 
   private async handleCallbackQuery(userId: string, data: string, query: any): Promise<void> {
+    // Обновляем telegram контекст
+    if (query.message) {
+      this.updateTelegramContext(userId, query.message);
+    }
+    
     // Проверяем, ждет ли какое-то действие ввода
     const handled = await ActionRegistry.processInput(userId, this.botName, {
       type: 'callback',

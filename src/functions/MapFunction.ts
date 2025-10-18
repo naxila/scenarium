@@ -29,7 +29,7 @@ export class MapFunction implements ICustomFunction {
     }
     
     // Get the items array
-    const items = InterpolationSystem.interpolate(params.items, interpolationContext);
+    const items = InterpolationSystem.interpolateAndClean(params.items, interpolationContext);
     
     console.log('🗺️ Map function items after interpolation:', items);
     
@@ -58,7 +58,7 @@ export class MapFunction implements ICustomFunction {
       
       try {
         // Interpolate the template for this item
-        const result = InterpolationSystem.interpolate(forEachTemplate, interpolationContext);
+        const result = InterpolationSystem.interpolateAndClean(forEachTemplate, interpolationContext);
         results.push(result);
       } finally {
         // Clean up the scope for this iteration

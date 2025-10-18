@@ -297,6 +297,7 @@ export class RequestApiAction extends BaseActionProcessor {
       // Вызываем onFailure если он есть
       if (action.onFailure) {
         console.log('🔍 Calling onFailure for pre-request error...');
+        console.log('🔍 onFailure content:', JSON.stringify(action.onFailure, null, 2));
         await this.processNestedActions(action.onFailure, nextContext);
       } else {
         console.log('🔍 No onFailure defined for pre-request error');

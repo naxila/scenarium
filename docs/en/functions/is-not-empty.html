@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IsNotEmpty - Scenarium</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../actions/index.html">Actions</a></li>
+                <li><a href="../functions/index.html">Functions</a></li>
+                <li><a href="../interpolation/index.html">Interpolation</a></li>
+            </ul>
+            <ul class="functions-list">
+                <li><a href="equals.html">Equals</a></li>
+                <li><a href="join-to-string.html">JoinToString</a></li>
+                <li><a href="read-storage.html">ReadStorage</a></li>
+                <li><a href="plus.html">Plus</a></li>
+                <li><a href="minus.html">Minus</a></li>
+                <li><a href="multiply.html">Multiply</a></li>
+                <li><a href="divide.html">Divide</a></li>
+                <li><a href="mod.html">Mod</a></li>
+                <li><a href="map.html">Map</a></li>
+                <li><a href="dump.html">Dump</a></li>
+                <li><a href="is-not-empty.html">IsNotEmpty</a></li>
+            </ul>
+        </nav>
+        
+        <main class="content">
+            <h1>IsNotEmpty</h1>
+            
+            <p>The <code>IsNotEmpty</code> function checks that a value is not an empty string, null, or undefined.</p>
+            
+            <h2>Syntax</h2>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": "value to check"
+}</code></pre>
+            
+            <h2>Parameters</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>value</td>
+                        <td>any</td>
+                        <td>Yes</td>
+                        <td>Value to check (can be an interpolated field)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Return Value</h2>
+            <ul>
+                <li><code>true</code> - if the value is not empty, not null, and not undefined</li>
+                <li><code>false</code> - if the value is an empty string, null, or undefined</li>
+            </ul>
+            
+            <h2>Usage Examples</h2>
+            
+            <h3>Example 1: Checking a string</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": "Hello World"
+}
+// Returns: true</code></pre>
+            
+            <h3>Example 2: Checking an empty string</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": ""
+}
+// Returns: false</code></pre>
+            
+            <h3>Example 3: Checking null</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": null
+}
+// Returns: false</code></pre>
+            
+            <h3>Example 4: Checking an interpolated field</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": "{{response.body.phone}}"
+}
+// Returns: true if the field exists and is not empty, false otherwise</code></pre>
+            
+            <h3>Example 5: Checking a string with spaces</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": "   "
+}
+// Returns: false (spaces are considered an empty string)</code></pre>
+            
+            <h2>Notes</h2>
+            <ul>
+                <li>The function automatically trims whitespace from the beginning and end of strings before checking</li>
+                <li>Numbers, objects, and arrays are considered non-empty values</li>
+                <li>Useful for checking data availability before using it</li>
+                <li>Can be used in conditions for conditional logic</li>
+            </ul>
+        </main>
+    </div>
+</body>
+</html>

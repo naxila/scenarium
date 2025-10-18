@@ -34,7 +34,7 @@ export class DumpFunction {
       try {
         const interpolationContext = InterpolationContextBuilder.createContext(context, params);
         console.log('🔍 Before interpolation, value:', value);
-        value = await InterpolationSystem.interpolate(value, interpolationContext);
+        value = await InterpolationSystem.interpolateAndClean(value, interpolationContext);
         console.log('🔍 After interpolation, value:', value, 'type:', typeof value);
       } catch (e) {
         console.error('🔍 Dump: Failed to interpolate value:', e);

@@ -17,13 +17,13 @@ export class ModFunction {
       // Process dividend
       let processedDividend = dividend;
       if (typeof dividend === 'string') {
-        processedDividend = InterpolationSystem.interpolate(dividend, interpolationContext);
+        processedDividend = InterpolationSystem.interpolateAndClean(dividend, interpolationContext);
       }
       
       // Process divisor
       let processedDivisor = divisor;
       if (typeof divisor === 'string') {
-        processedDivisor = InterpolationSystem.interpolate(divisor, interpolationContext);
+        processedDivisor = InterpolationSystem.interpolateAndClean(divisor, interpolationContext);
       }
       
       const num1 = ModFunction.parseNumber(processedDividend);

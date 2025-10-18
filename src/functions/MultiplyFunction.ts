@@ -23,7 +23,7 @@ export class MultiplyFunction {
         // Interpolate value if it's a string
         let processedValue = value;
         if (typeof value === 'string') {
-          processedValue = InterpolationSystem.interpolate(value, interpolationContext);
+          processedValue = InterpolationSystem.interpolateAndClean(value, interpolationContext);
         }
         
         const num = MultiplyFunction.parseNumber(processedValue);

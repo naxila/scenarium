@@ -78,7 +78,8 @@ export class BotInstance {
       actionProcessor: this.actionProcessor,
       bot: this.botConstructor?.getBot?.() || null,
       chatId: userId,
-      botInstance: this
+      botInstance: this,
+      telegram: userContext.data?.telegram // Add telegram context from userContext.data
     };
   
     await this.actionProcessor.processActions(actions, processingContext);

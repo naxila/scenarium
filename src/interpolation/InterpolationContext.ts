@@ -80,6 +80,11 @@ export class InterpolationContextBuilder {
       ...(scenarioData.data || {})
     };
     
+    // ИСПРАВЛЕНИЕ: Добавляем telegram контекст
+    if (baseContext.telegram) {
+      flattenedData.telegram = baseContext.telegram;
+    }
+    
     builder.setData(flattenedData);
 
     // Set parameters

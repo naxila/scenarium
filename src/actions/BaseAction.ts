@@ -25,7 +25,7 @@ export abstract class BaseActionProcessor {
    * Interpolate value using new system
    */
   protected interpolate(value: any, interpolationContext: any): any {
-    return InterpolationSystem.interpolate(value, interpolationContext);
+    return InterpolationSystem.interpolateAndClean(value, interpolationContext);
   }
   
   
@@ -91,13 +91,20 @@ export abstract class BaseActionProcessor {
         return result;
       } catch (e) {
         console.error(`❌ ${this.constructor.name}: Failed to evaluate function:`, e);
-        return obj; // Return original if evaluation fails
+        throw e; // Re-throw the error instead of returning original
       }
     } else if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
       // This is a regular object, process its properties
       const processed: any = {};
       for (const [key, value] of Object.entries(obj)) {
-        processed[key] = await this.processFunctionsInObject(value, context, interpolationContext);
+        console.log(`🔍 ${this.constructor.name} DEBUG - Processing object property: ${key} =`, value);
+        try {
+          processed[key] = await this.processFunctionsInObject(value, context, interpolationContext);
+          console.log(`🔍 ${this.constructor.name} DEBUG - Processed property ${key}:`, processed[key]);
+        } catch (e) {
+          console.error(`❌ ${this.constructor.name}: Failed to process property ${key}:`, e);
+          throw e;
+        }
       }
       return processed;
     } else if (Array.isArray(obj)) {
@@ -109,6 +116,7 @@ export abstract class BaseActionProcessor {
       return processed;
     } else {
       // Primitive value, return as is
+      console.log(`🔍 ${this.constructor.name} DEBUG - Returning primitive value:`, obj);
       return obj;
     }
   }

@@ -19,4 +19,5 @@ export interface ProcessingContext {
   chatId?: string; // Add chatId for sending messages
   botInstance?: any; // Add botInstance for accessing bot methods
   interpolationContext?: any; // Add interpolation context for nested actions
+  telegram?: any; // Add telegram context for global access
 }

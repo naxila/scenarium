@@ -1,5 +1,7 @@
 import { InterpolationContext } from './InterpolationContext';
 
+declare const console: any;
+
 export class InterpolationSystem {
   /**
    * Interpolate a value using the new context system
@@ -37,6 +39,7 @@ export class InterpolationSystem {
       
       // Function calls are not supported in string interpolation
       if (this.isFunctionCall(variable)) {
+        // eslint-disable-next-line no-console
         console.warn(`Function call ${variable} not supported in string interpolation. Use object syntax instead.`);
         return `{{${variable}}}`;
       }
@@ -77,6 +80,7 @@ export class InterpolationSystem {
       
       // Function calls are not supported in string interpolation
       if (this.isFunctionCall(trimmedVar)) {
+        // eslint-disable-next-line no-console
         console.warn(`Function call ${trimmedVar} not supported in string interpolation. Use object syntax instead.`);
         return `{{${trimmedVar}}}`;
       }
@@ -146,6 +150,7 @@ export class InterpolationSystem {
   private static findVariableByPriority(context: InterpolationContext, varName: string): string {
     // Debug log for response.* variables
     if (varName.startsWith('response.')) {
+      // eslint-disable-next-line no-console
       console.log(`🔍 Looking for ${varName}:`, {
         localScopes: context.local.getAllScopes(),
         hasParams: !!context.params,
@@ -157,7 +162,10 @@ export class InterpolationSystem {
     // 1. Search in local scope
     let value = context.local.findVariable(varName);
     if (value !== undefined) {
-      if (varName.startsWith('response.')) console.log(`✅ Found ${varName} in local:`, value);
+      if (varName.startsWith('response.')) {
+        // eslint-disable-next-line no-console
+        console.log(`✅ Found ${varName} in local:`, value);
+      }
       return this.formatValue(value);
     }
     
@@ -180,7 +188,10 @@ export class InterpolationSystem {
     }
     
     // Variable not found - return original variable syntax
-    if (varName.startsWith('response.')) console.log(`❌ Variable ${varName} not found`);
+    if (varName.startsWith('response.')) {
+      // eslint-disable-next-line no-console
+      console.log(`❌ Variable ${varName} not found`);
+    }
     return `{{${varName}}}`;
   }
 
@@ -259,5 +270,20 @@ export class InterpolationSystem {
     return variable.includes(':') && !variable.startsWith('local.') && !variable.startsWith('data.') && !variable.startsWith('env.') && !variable.startsWith('params.');
   }
 
+      /**
+       * Interpolate and clean up remaining {{}} variables
+       */
+      static interpolateAndClean(value: any, context: InterpolationContext): any {
+        const result = this.interpolate(value, context);
+        
+        // В самом конце заменяем оставшиеся {{}} на пустую строку только в строках
+        if (typeof result === 'string' && result.includes('{{') && result.includes('}}')) {
+          const cleaned = result.replace(/\{\{[^}]+\}\}/g, '');
+          console.log(`🧹 InterpolationSystem.interpolateAndClean: cleaned "${result}" -> "${cleaned}"`);
+          return cleaned;
+        }
+        
+        return result;
+      }
 
 }

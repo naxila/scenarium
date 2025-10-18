@@ -54,7 +54,7 @@ export class FunctionProcessor {
       
       // Interpolate the value if we have interpolation context
       if (interpolationContext && typeof value === 'string') {
-        value = InterpolationSystem.interpolate(value, interpolationContext);
+        value = InterpolationSystem.interpolateAndClean(value, interpolationContext);
       }
       
       resolved[key] = value;
@@ -104,13 +104,25 @@ export class FunctionProcessor {
         const functionName = result.function as string;
 
         // Выполнение зарегистрированных (встроенных) функций
+        console.log(`🔍 FunctionProcessor: Checking function ${functionName} in registry`);
+        console.log(`🔍 FunctionProcessor: FunctionRegistry.has(${functionName}):`, FunctionRegistry.has(functionName));
+        
         if (FunctionRegistry.has(functionName)) {
+          console.log(`🔍 FunctionProcessor: Found function ${functionName} in registry, executing...`);
           const func = FunctionRegistry.get(functionName)!;
           const combinedParams = { ...result, ...params };
+          console.log(`🔍 FunctionProcessor: Combined params for ${functionName}:`, combinedParams);
+          
           // Интерполируем параметры перед передачей в встроенную функцию
-          const interpolatedParams = InterpolationSystem.interpolate(combinedParams, interpolationContext);
+          const interpolatedParams = InterpolationSystem.interpolateAndClean(combinedParams, interpolationContext);
+          console.log(`🔍 FunctionProcessor: Interpolated params for ${functionName}:`, interpolatedParams);
+          
           // ПРИНЦИП: Передаем согласованный контекст с валидным interpolationContext
-          return await func(interpolatedParams, contextWithInterpolation);
+          const functionResult = await func(interpolatedParams, contextWithInterpolation);
+          console.log(`🔍 FunctionProcessor: Function ${functionName} result:`, functionResult);
+          return functionResult;
+        } else {
+          console.log(`❌ FunctionProcessor: Function ${functionName} not found in registry`);
         }
 
         // Выполнение пользовательских функций, описанных в сценарии
@@ -118,14 +130,22 @@ export class FunctionProcessor {
         const scenario = actionProcessor?.getScenario();
         if (scenario?.functions && scenario.functions[functionName]) {
           // Интерполируем параметры перед передачей в функцию
-          const interpolatedParams = InterpolationSystem.interpolate(result, interpolationContext);
+          const interpolatedParams = InterpolationSystem.interpolateAndClean(result, interpolationContext);
           return await this.executeUserFunction(functionName, interpolatedParams, contextWithInterpolation, interpolationContext);
         }
       }
       
-      const interpolated = InterpolationSystem.interpolate(result, interpolationContext);
+      // Проверяем, нужно ли интерполировать результат
+      let interpolated = result;
       
-      if (interpolated.action) {
+      // Интерполируем только если результат - строка с {{}} или объект
+      if (typeof result === 'string' && result.includes('{{') && result.includes('}}')) {
+        interpolated = InterpolationSystem.interpolateAndClean(result, interpolationContext);
+      } else if (typeof result === 'object' && result !== null) {
+        interpolated = InterpolationSystem.interpolateAndClean(result, interpolationContext);
+      }
+      
+      if (interpolated && typeof interpolated === 'object' && interpolated.action) {
         const actionProcessor = contextWithInterpolation.actionProcessor;
         if (actionProcessor) {
           await actionProcessor.processActions(interpolated, contextWithInterpolation);
@@ -136,7 +156,7 @@ export class FunctionProcessor {
       return interpolated;
     }
     
-    return InterpolationSystem.interpolate(result, interpolationContext);
+    return InterpolationSystem.interpolateAndClean(result, interpolationContext);
   }
 
 }

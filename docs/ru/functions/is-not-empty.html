@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IsNotEmpty - Scenarium</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="../index.html">Главная</a></li>
+                <li><a href="../actions/index.html">Действия</a></li>
+                <li><a href="../functions/index.html">Функции</a></li>
+                <li><a href="../interpolation/index.html">Интерполяция</a></li>
+            </ul>
+            <ul class="functions-list">
+                <li><a href="equals.html">Equals</a></li>
+                <li><a href="join-to-string.html">JoinToString</a></li>
+                <li><a href="read-storage.html">ReadStorage</a></li>
+                <li><a href="plus.html">Plus</a></li>
+                <li><a href="minus.html">Minus</a></li>
+                <li><a href="multiply.html">Multiply</a></li>
+                <li><a href="divide.html">Divide</a></li>
+                <li><a href="mod.html">Mod</a></li>
+                <li><a href="map.html">Map</a></li>
+                <li><a href="dump.html">Dump</a></li>
+                <li><a href="is-not-empty.html">IsNotEmpty</a></li>
+            </ul>
+        </nav>
+        
+        <main class="content">
+            <h1>IsNotEmpty</h1>
+            
+            <p>Функция <code>IsNotEmpty</code> проверяет, что значение не является пустой строкой, null или undefined.</p>
+            
+            <h2>Синтаксис</h2>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": "значение для проверки"
+}</code></pre>
+            
+            <h2>Параметры</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Тип</th>
+                        <th>Обязательный</th>
+                        <th>Описание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>value</td>
+                        <td>any</td>
+                        <td>Да</td>
+                        <td>Значение для проверки (может быть интерполируемым полем)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Возвращаемое значение</h2>
+            <ul>
+                <li><code>true</code> - если значение не пустое, не null и не undefined</li>
+                <li><code>false</code> - если значение является пустой строкой, null или undefined</li>
+            </ul>
+            
+            <h2>Примеры использования</h2>
+            
+            <h3>Пример 1: Проверка строки</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": "Hello World"
+}
+// Возвращает: true</code></pre>
+            
+            <h3>Пример 2: Проверка пустой строки</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": ""
+}
+// Возвращает: false</code></pre>
+            
+            <h3>Пример 3: Проверка null</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": null
+}
+// Возвращает: false</code></pre>
+            
+            <h3>Пример 4: Проверка интерполируемого поля</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": "{{response.body.phone}}"
+}
+// Возвращает: true если поле существует и не пустое, false в противном случае</code></pre>
+            
+            <h3>Пример 5: Проверка строки с пробелами</h3>
+            <pre><code>{
+  "function": "IsNotEmpty",
+  "value": "   "
+}
+// Возвращает: false (пробелы считаются пустой строкой)</code></pre>
+            
+            <h2>Примечания</h2>
+            <ul>
+                <li>Функция автоматически обрезает пробелы в начале и конце строки перед проверкой</li>
+                <li>Числа, объекты и массивы считаются непустыми значениями</li>
+                <li>Полезно для проверки наличия данных перед их использованием</li>
+                <li>Может использоваться в условиях для условной логики</li>
+            </ul>
+        </main>
+    </div>
+</body>
+</html>

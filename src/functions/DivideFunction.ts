@@ -21,7 +21,7 @@ export class DivideFunction {
       // Process first value
       let firstValue = values[0];
       if (typeof firstValue === 'string') {
-        firstValue = InterpolationSystem.interpolate(firstValue, interpolationContext);
+        firstValue = InterpolationSystem.interpolateAndClean(firstValue, interpolationContext);
       }
       
       if (values.length === 1) {
@@ -46,7 +46,7 @@ export class DivideFunction {
       for (let i = 1; i < values.length; i++) {
         let processedValue = values[i];
         if (typeof processedValue === 'string') {
-          processedValue = InterpolationSystem.interpolate(processedValue, interpolationContext);
+          processedValue = InterpolationSystem.interpolateAndClean(processedValue, interpolationContext);
         }
         
         const num = DivideFunction.parseNumber(processedValue);

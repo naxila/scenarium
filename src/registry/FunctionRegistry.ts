@@ -8,6 +8,7 @@ import { DivideFunction } from '../functions/DivideFunction';
 import { ModFunction } from '../functions/ModFunction';
 import { MapFunction } from '../functions/MapFunction';
 import { DumpFunction } from '../functions/DumpFunction';
+import { IsNotEmptyFunction } from '../functions/IsNotEmptyFunction';
 import { ProcessingContext } from '../types';
 import { ICustomFunction, RegistrationConfig } from '../types/PluginInterfaces';
 
@@ -34,6 +35,7 @@ export class FunctionRegistry {
     this.register('Mod', ModFunction.execute);
     this.register('Map', MapFunction.execute);
     this.register('Dump', DumpFunction.execute);
+    this.register('IsNotEmpty', IsNotEmptyFunction.execute);
     
     this.isInitialized = true;
     console.log('FunctionRegistry initialized with standard functions');
