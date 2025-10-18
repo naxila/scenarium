@@ -6,8 +6,6 @@ export class ActionStateManager implements IActionStateManager {
   setWaiting(actionId: string, userId: string, botName: string, inputType: string, onInput: Function, onComplete: Function, options: any = {}): void {
     const key = `${botName}:${userId}`;
     
-    console.log('🔧 ActionStateManager.setWaiting called:', { actionId, userId, botName, inputType, key });
-    
     // Clear previous state for this user in this bot
     this.clear(userId, botName);
     
@@ -26,7 +24,6 @@ export class ActionStateManager implements IActionStateManager {
     };
     
     this.states.set(key, state);
-    console.log('✅ ActionStateManager.setWaiting completed, state saved:', { key, stateCount: this.states.size });
     
     // Set timeout if needed
     if (options.timeout) {
@@ -46,10 +43,7 @@ export class ActionStateManager implements IActionStateManager {
     const key = `${botName}:${userId}`;
     const state = this.states.get(key);
     
-    console.log('🔍 ActionStateManager.processInput called:', { userId, botName, key, hasState: !!state, inputType: input?.type });
-    
     if (!state || !state.isWaitingForInput) {
-      console.log('❌ No waiting state found for user');
       return false; // Not waiting for input from this user
     }
     

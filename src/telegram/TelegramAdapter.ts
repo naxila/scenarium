@@ -108,6 +108,18 @@ export class TelegramAdapter {
       }
     });
 
+    // Обработчик контактов
+    this.bot.on('contact', async (msg) => {
+      const userId = msg.chat.id.toString();
+      
+      try {
+        await this.handleContact(userId, msg);
+      } catch (error) {
+        console.error('Error handling contact:', error);
+        this.sendSafeMessage(msg.chat.id, '❌ Произошла ошибка при обработке контакта');
+      }
+    });
+
     // Обработчик callback query (для inline кнопок)
     this.bot.on('callback_query', async (query) => {
       if (!query.message) {
@@ -258,6 +270,29 @@ export class TelegramAdapter {
       console.error('Error processing document:', error);
       this.sendSafeMessage(msg.chat.id, `❌ Ошибка при обработке файла: ${error}`);
     }
+  }
+
+  private async handleContact(userId: string, msg: any): Promise<void> {
+    const contact = msg.contact;
+    if (!contact) {
+      return;
+    }
+
+    // Проверяем, ждет ли какое-то действие ввода контакта
+    const inputData = {
+      type: 'contact',
+      contact: contact,
+      data: msg
+    };
+    
+    const handled = await ActionRegistry.processInput(userId, this.botName, inputData);
+    
+    if (handled) {
+      return; // Обработано ожидающим действием
+    }
+
+    // Если никто не ждет контакт, отправляем сообщение
+    this.sendSafeMessage(msg.chat.id, '❌ Нет обработчика для контактов в текущем меню.');
   }
 
   private async handleUserMessage(userId: string, text: string, msg: any): Promise<void> {
