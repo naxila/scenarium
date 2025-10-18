@@ -10,3 +10,4 @@ export { RequestApiAction } from './RequestApiAction';
 export { StoreAction } from './StoreAction';
 export { DeleteMessageAction } from './DeleteMessageAction';
 export { UpdateMessageAction } from './UpdateMessageAction';
+export { RequestContactAction } from './RequestContactAction';

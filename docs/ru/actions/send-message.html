@@ -55,6 +55,12 @@
                                     <td>Массив inline-кнопок</td>
                                 </tr>
                                 <tr>
+                                    <td><code>markdown</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>Включить Markdown парсинг (по умолчанию: false)</td>
+                                </tr>
+                                <tr>
                                     <td><code>onSuccess</code></td>
                                     <td>action</td>
                                     <td>❌</td>
@@ -147,6 +153,15 @@
                     </div>
 
                     <div class="example-card">
+                        <h3>Сообщение с Markdown форматированием</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "*Жирный текст* и _курсив_\n\n`код` и [ссылка](https://example.com)",
+  "markdown": true
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
                         <h3>Сообщение с обработкой успеха</h3>
                         <pre><code class="language-json">{
   "action": "SendMessage",
@@ -202,6 +217,7 @@
                             <li><strong>Размер сообщения:</strong> Максимум 4096 символов для одного сообщения</li>
                             <li><strong>Интерполяция:</strong> Все переменные интерполируются перед отправкой</li>
                             <li><strong>Функции в тексте:</strong> Поддерживаются вложенные функции для сложной логики</li>
+                            <li><strong>Markdown парсинг:</strong> При включенном Markdown (<code>markdown: true</code>) сообщение может не отправиться из-за неэкранированных специальных символов (*, _, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., !). По умолчанию Markdown отключен для избежания таких проблем.</li>
                         </ul>
                     </div>
 

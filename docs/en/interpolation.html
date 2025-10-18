@@ -23,7 +23,6 @@
                     <li><code>{{startParams.start}}</code> - Parameter from Telegram link (?start=value)</li>
                     <li><code>{{startParams.param1}}</code> - Any URL parameters (param1=value1)</li>
                     <li><code>{{startPayload}}</code> - Raw parameter string</li>
-                    <li><code>{{startTime}}</code> - Bot start time</li>
                 </ul>
                 
                 <h3>telegram (Telegram Information)</h3>
@@ -44,18 +43,10 @@
                 <h3>userContext</h3>
                 <p>Contains information about the current user:</p>
                 <ul>
-                    <li><code>{{userId}}</code> - User's Telegram ID</li>
-                    <li><code>{{name}}</code> - User's name</li>
                     <li><code>{{currentMenu}}</code> - Current menu name</li>
                     <li><code>{{lastMessageId}}</code> - Last message ID</li>
                 </ul>
-                
-                <h3>scenarioContext</h3>
-                <p>Contains scenario configuration data:</p>
-                <ul>
-                    <li><code>{{apiUrl}}</code> - API URL</li>
-                    <li><code>{{version}}</code> - Scenario version</li>
-                </ul>
+
                 
                 <h3>localContext</h3>
                 <p>Contains local execution data:</p>
@@ -63,13 +54,6 @@
                     <li><code>{{messageId}}</code> - Current message ID</li>
                     <li><code>{{response}}</code> - API response</li>
                     <li><code>{{error}}</code> - Error message</li>
-                </ul>
-                
-                <h3>input</h3>
-                <p>Contains user input data:</p>
-                <ul>
-                    <li><code>{{userName}}</code> - Entered name</li>
-                    <li><code>{{email}}</code> - Entered email</li>
                 </ul>
                 
                 <h2>Using Functions</h2>

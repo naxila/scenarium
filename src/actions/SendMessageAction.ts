@@ -58,8 +58,8 @@ export class SendMessageAction extends BaseActionProcessor {
         }
         
         // Check that text is not empty
-        if (!text || text.trim() === '') {
-          console.warn('⚠️ Empty text detected, skipping message send');
+        if (!text || typeof text !== 'string' || text.trim() === '') {
+          console.warn('⚠️ Empty or invalid text detected, skipping message send');
           return;
         }
         
@@ -89,9 +89,14 @@ export class SendMessageAction extends BaseActionProcessor {
             );
           }
           
-          // Устанавливаем режим разметки по умолчанию, если не задан
-          if (!options.parse_mode) {
+          // Устанавливаем режим разметки в зависимости от параметра markdown
+          if (interpolatedAction.markdown === true) {
             options.parse_mode = 'Markdown';
+          } else if (interpolatedAction.markdown === false) {
+            options.parse_mode = undefined; // Отключаем парсинг
+          } else {
+            // По умолчанию отключаем Markdown парсинг
+            options.parse_mode = undefined;
           }
 
           // Отправляем или обновляем сообщение
@@ -244,6 +249,7 @@ export class SendMessageAction extends BaseActionProcessor {
     return hash;
   }
   
+
   private fallbackMessage(text: string, inlineActions?: any[]): void {
     console.log('📨 Fallback message (would send in production):');
     console.log('Text:', text);

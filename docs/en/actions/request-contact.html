@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RequestContact - Scenarium Documentation</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>RequestContact</h1>
+        
+        <p><strong>Action Type:</strong> <code>RequestContact</code></p>
+        <p><strong>Description:</strong> Requests user's phone number through Telegram's "Share Contact" button.</p>
+
+        <h2>Parameters</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Required</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>message</code></td>
+                    <td>string</td>
+                    <td>Yes</td>
+                    <td>Message that will be sent to the user with the contact request button</td>
+                </tr>
+                <tr>
+                    <td><code>onSuccess</code></td>
+                    <td>Action | Action[]</td>
+                    <td>No</td>
+                    <td>Action or array of actions to execute when contact is successfully received</td>
+                </tr>
+                <tr>
+                    <td><code>onFailure</code></td>
+                    <td>Action | Action[]</td>
+                    <td>No</td>
+                    <td>Action or array of actions to execute when user refuses to share contact</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Context</h2>
+        <p>In <code>onSuccess</code> and <code>onFailure</code> callbacks, the following variables are available:</p>
+        
+        <h3>onSuccess Context</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Variable</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>contact</code></td>
+                    <td>object</td>
+                    <td>Contact data object</td>
+                </tr>
+                <tr>
+                    <td><code>contact.phone_number</code></td>
+                    <td>string</td>
+                    <td>User's phone number</td>
+                </tr>
+                <tr>
+                    <td><code>contact.first_name</code></td>
+                    <td>string</td>
+                    <td>User's first name (if provided)</td>
+                </tr>
+                <tr>
+                    <td><code>contact.last_name</code></td>
+                    <td>string</td>
+                    <td>User's last name (if provided)</td>
+                </tr>
+                <tr>
+                    <td><code>contact.user_id</code></td>
+                    <td>number</td>
+                    <td>User's Telegram ID</td>
+                </tr>
+                <tr>
+                    <td><code>phone_number</code></td>
+                    <td>string</td>
+                    <td>Direct access to phone number</td>
+                </tr>
+                <tr>
+                    <td><code>first_name</code></td>
+                    <td>string</td>
+                    <td>Direct access to first name</td>
+                </tr>
+                <tr>
+                    <td><code>last_name</code></td>
+                    <td>string</td>
+                    <td>Direct access to last name</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Usage Examples</h2>
+
+        <h3>Simple Contact Request</h3>
+        <pre><code>{
+  "action": "RequestContact",
+  "message": "Please share your phone number to complete registration"
+}</code></pre>
+
+        <h3>Contact Request with Success Handling</h3>
+        <pre><code>{
+  "action": "RequestContact",
+  "message": "Please share your contact for verification",
+  "onSuccess": {
+    "action": "SendMessage",
+    "message": "Thank you! Your number {{phone_number}} has been saved successfully."
+  }
+}</code></pre>
+
+        <h3>Contact Request with Failure Handling</h3>
+        <pre><code>{
+  "action": "RequestContact",
+  "message": "Phone number is required to participate in the contest",
+  "onSuccess": [
+    {
+      "action": "SendMessage",
+      "message": "Great! Number {{phone_number}} saved."
+    },
+    {
+      "action": "RequestApi",
+      "url": "https://api.example.com/update-phone",
+      "method": "POST",
+      "body": {
+        "tg_chat_id": "{{user.tg_chat_id}}",
+        "phone": "{{phone_number}}",
+        "key": "{{env.ADMIN_KEY}}"
+      }
+    }
+  ],
+  "onFailure": {
+    "action": "SendMessage",
+    "message": "Without phone number, participation in the contest is not possible. Contact support."
+  }
+}</code></pre>
+
+        <h3>Using Contact Data in API Request</h3>
+        <pre><code>{
+  "action": "RequestContact",
+  "message": "Confirm your phone number for account security",
+  "onSuccess": {
+    "action": "RequestApi",
+    "url": "{{env.API_URL}}/users/updatePhone",
+    "method": "PUT",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "tg_chat_id": "{{user.tg_chat_id}}",
+      "phone": "{{contact.phone_number}}",
+      "key": "{{env.ADMIN_APP_KEY_1}}"
+    },
+    "onSuccess": {
+      "action": "SendMessage",
+      "message": "Number {{contact.phone_number}} successfully linked to your account!"
+    },
+    "onFailure": {
+      "action": "SendMessage",
+      "message": "Error saving phone number. Please try again."
+    }
+  }
+}</code></pre>
+
+        <h2>Features</h2>
+        <ul>
+            <li>Automatically creates "📱 Share Contact" button in Telegram</li>
+            <li>Button is automatically hidden after contact is received</li>
+            <li>Contact data is saved in user context and available in subsequent actions</li>
+            <li>Supports message interpolation through functions and variables</li>
+            <li>Can use single action or array of actions in callbacks</li>
+        </ul>
+
+        <h2>Security</h2>
+        <ul>
+            <li>Phone number is only transmitted with user consent</li>
+            <li>Contact data is only available within the current scenario</li>
+            <li>Always use HTTPS for API requests with phone numbers</li>
+        </ul>
+
+        <h2>Related Actions</h2>
+        <ul>
+            <li><a href="send-message.html">SendMessage</a> - for sending messages</li>
+            <li><a href="request-api.html">RequestApi</a> - for API requests</li>
+            <li><a href="request-input.html">RequestInput</a> - for text input requests</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -54,6 +54,12 @@
                                 <td>Array of inline buttons</td>
                             </tr>
                             <tr>
+                                <td><code>markdown</code></td>
+                                <td>boolean</td>
+                                <td>❌</td>
+                                <td>Enable Markdown parsing (default: false)</td>
+                            </tr>
+                            <tr>
                                 <td><code>onSuccess</code></td>
                                 <td>action</td>
                                 <td>❌</td>
@@ -134,6 +140,15 @@
 }</code></pre>
                 </div>
 
+                <div class="example-card">
+                    <h3>Message with Markdown Formatting</h3>
+                    <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "*Bold text* and _italic_\n\n`code` and [link](https://example.com)",
+  "markdown": true
+}</code></pre>
+                </div>
+
                 <h2>🔗 Available Variables</h2>
                 <div class="variables-grid">
                     <div class="variable-card">
@@ -177,6 +192,7 @@
                         <li><strong>Message size:</strong> Maximum 4096 characters for one message</li>
                         <li><strong>Interpolation:</strong> All variables are interpolated before sending</li>
                         <li><strong>Functions in text:</strong> Nested functions are supported for complex logic</li>
+                        <li><strong>Markdown parsing:</strong> When Markdown is enabled (<code>markdown: true</code>), the message may fail to send due to unescaped special characters (*, _, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., !). Markdown is disabled by default to avoid such issues.</li>
                     </ul>
                 </div>
             </section>

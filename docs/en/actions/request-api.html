@@ -196,6 +196,37 @@
 }</code></pre>
                     </div>
 
+                    <div class="example-card">
+                        <h3>Debugging requests with debugDescription</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestApi",
+  "method": "POST",
+  "baseUrl": "https://api.example.com",
+  "path": "/users",
+  "body": {
+    "name": "{{name}}",
+    "email": "{{email}}"
+  },
+  "onSuccess": {
+    "action": "SendMessage",
+    "text": "User created: {{response.body.id}}"
+  },
+  "onFailure": {
+    "action": "SendMessage",
+    "text": {
+      "function": "JoinToString",
+      "values": [
+        "API Error: {{error.message}}",
+        "\n\nDebug information:",
+        "{{error.debugDescription}}"
+      ],
+      "separator": ""
+    }
+  }
+}</code></pre>
+                        <p><strong>debugDescription result:</strong> Detailed information about the final HTTP request after all interpolations, including final URL, headers, request body, response status and response content.</p>
+                    </div>
+
                     <h2>🔧 How it works</h2>
                     <div class="info-card">
                         <h3>Request execution</h3>
@@ -229,6 +260,7 @@
                                 <li><code>{{response.headers}}</code> - Response headers</li>
                                 <li><code>{{response.status}}</code> - HTTP status</li>
                                 <li><code>{{response.url}}</code> - Full request URL</li>
+                                <li><code>{{response.debugDescription}}</code> - Detailed debug information about request and response</li>
                             </ul>
                         </div>
                         <div class="variable-card">
@@ -237,6 +269,8 @@
                                 <li><code>{{error.message}}</code> - Error message</li>
                                 <li><code>{{error.code}}</code> - Error code</li>
                                 <li><code>{{error.name}}</code> - Error type</li>
+                                <li><code>{{error.stack}}</code> - Stack trace (if available)</li>
+                                <li><code>{{error.debugDescription}}</code> - Detailed debug information about request and response</li>
                             </ul>
                         </div>
                     </div>

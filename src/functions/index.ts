@@ -7,3 +7,4 @@ export { MultiplyFunction } from './MultiplyFunction';
 export { DivideFunction } from './DivideFunction';
 export { ModFunction } from './ModFunction';
 export { MapFunction } from './MapFunction';
+export { DumpFunction } from './DumpFunction';

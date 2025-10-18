@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dump - Telegram Bot Constructor</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+
+                <section class="section">
+                    <h1>🔍 Dump</h1>
+                    <p class="lead">Function for debugging and outputting objects in various formats with console logging.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Description</h3>
+                            <p>Dump is a debugging function that takes any object and returns its string representation in the selected format. Always outputs information to the console for debugging.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Purpose</h3>
+                            <ul>
+                                <li>Debugging variables and objects</li>
+                                <li>Logging data to console</li>
+                                <li>Formatted output of complex structures</li>
+                                <li>Data type analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Parameters</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td>any</td>
+                                    <td>✅</td>
+                                    <td>-</td>
+                                    <td>Object to debug (can be variable, function, or string with interpolation)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>format</code></td>
+                                    <td>string</td>
+                                    <td>❌</td>
+                                    <td>'json'</td>
+                                    <td>Output format: 'json', 'compact', 'table', 'inspect', 'type'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>depth</code></td>
+                                    <td>number</td>
+                                    <td>❌</td>
+                                    <td>2</td>
+                                    <td>Nesting depth for 'inspect' format</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>📊 Output Formats</h2>
+                    <div class="info-card">
+                        <h3>Available formats</h3>
+                        <ul>
+                            <li><strong>json</strong> - Pretty JSON formatting with indentation</li>
+                            <li><strong>compact</strong> - Compressed JSON without indentation</li>
+                            <li><strong>table</strong> - Tabular representation for object arrays</li>
+                            <li><strong>inspect</strong> - Detailed inspection with limited depth</li>
+                            <li><strong>type</strong> - Data type information</li>
+                        </ul>
+                    </div>
+
+                    <h2>💡 Usage Examples</h2>
+                    
+                    <div class="example-card">
+                        <h3>Debug variable</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "Dump",
+    "value": "{{user}}",
+    "format": "json"
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> JSON representation of user object + console output</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Compact format</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "Dump",
+    "value": "{{startParams}}",
+    "format": "compact"
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> Compressed JSON + console output</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Table format for array</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "Dump",
+    "value": "{{menuItems}}",
+    "format": "table"
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> Tabular representation of array + console output</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Object inspection</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "Dump",
+    "value": "{{telegram}}",
+    "format": "inspect",
+    "depth": 3
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> Detailed inspection with depth 3 + console output</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Data type analysis</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "Dump",
+    "value": "{{someVariable}}",
+    "format": "type"
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> Data type information + console output</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Debug function result</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "Dump",
+    "value": {
+      "function": "ReadStorage",
+      "key": "userData"
+    },
+    "format": "json"
+  }
+}</code></pre>
+                        <p><strong>Result:</strong> JSON representation of storage data + console output</p>
+                    </div>
+
+                    <h2>🔧 Value Processing</h2>
+                    <div class="info-card">
+                        <h3>Value types</h3>
+                        <p>The function processes various value types:</p>
+                        <ul>
+                            <li><strong>Strings with interpolation:</strong> Interpolated before debugging</li>
+                            <li><strong>Functions:</strong> Executed and result is debugged</li>
+                            <li><strong>Objects:</strong> Serialized in selected format</li>
+                            <li><strong>Arrays:</strong> Processed as objects or tables</li>
+                            <li><strong>Primitives:</strong> Converted to strings</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Console logging</h3>
+                        <p>The function always outputs to console:</p>
+                        <ul>
+                            <li>Original value</li>
+                            <li>Data type</li>
+                            <li>Additional information (array length, object keys)</li>
+                            <li>Formatting result</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Usage in Actions</h2>
+                    <div class="example-card">
+                        <h3>In SendMessage for debugging</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "Dump",
+    "value": "{{user}}",
+    "format": "json"
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>In Store for saving debug information</h3>
+                        <pre><code class="language-json">{
+  "action": "Store",
+  "key": "debugInfo",
+  "value": {
+    "function": "Dump",
+    "value": "{{startParams}}",
+    "format": "compact"
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>⚠️ Important Notes</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Debugging:</strong> Function is intended for debugging, don't use in production</li>
+                            <li><strong>Console:</strong> Always outputs information to server console</li>
+                            <li><strong>Performance:</strong> May slow down execution with large objects</li>
+                            <li><strong>Security:</strong> Don't output sensitive data to console</li>
+                            <li><strong>Circular references:</strong> JSON.stringify may not work with circular references</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Related Functions</h2>
+                    <div class="related-actions">
+                        <a href="#" class="nav-link" data-path="functions/read-storage.html">
+                            <h4>ReadStorage</h4>
+                            <p>Reading data from storage</p>
+                        </a>
+                        <a href="#" class="nav-link" data-path="functions/join-to-string.html">
+                            <h4>JoinToString</h4>
+                            <p>Combining values into string</p>
+                        </a>
+                    </div>
+
+                </section>
+            
+        </div>
+    </div>
+</body>
+</html>

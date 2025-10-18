@@ -23,7 +23,6 @@
                     <li><code>{{startParams.start}}</code> - Параметр из Telegram ссылки (?start=value)</li>
                     <li><code>{{startParams.param1}}</code> - Любые URL параметры (param1=value1)</li>
                     <li><code>{{startPayload}}</code> - Исходная строка параметров</li>
-                    <li><code>{{startTime}}</code> - Время запуска бота</li>
                 </ul>
                 
                 <h3>telegram (Информация о Telegram)</h3>
@@ -44,18 +43,10 @@
                 <h3>userContext</h3>
                 <p>Содержит информацию о текущем пользователе:</p>
                 <ul>
-                    <li><code>{{userId}}</code> - ID пользователя в Telegram</li>
-                    <li><code>{{name}}</code> - Имя пользователя</li>
                     <li><code>{{currentMenu}}</code> - Текущее меню</li>
                     <li><code>{{lastMessageId}}</code> - ID последнего сообщения</li>
                 </ul>
                 
-                <h3>scenarioContext</h3>
-                <p>Содержит данные конфигурации сценария:</p>
-                <ul>
-                    <li><code>{{apiUrl}}</code> - URL API</li>
-                    <li><code>{{version}}</code> - Версия сценария</li>
-                </ul>
                 
                 <h3>localContext</h3>
                 <p>Содержит локальные данные выполнения:</p>
@@ -65,12 +56,6 @@
                     <li><code>{{error}}</code> - Сообщение об ошибке</li>
                 </ul>
                 
-                <h3>input</h3>
-                <p>Содержит данные ввода пользователя:</p>
-                <ul>
-                    <li><code>{{userName}}</code> - Введенное имя</li>
-                    <li><code>{{email}}</code> - Введенный email</li>
-                </ul>
                 
                 <h2>Использование функций</h2>
                 <p>Функции используются в объектном синтаксисе, а не в интерполяции переменных:</p>
