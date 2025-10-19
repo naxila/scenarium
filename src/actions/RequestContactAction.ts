@@ -131,7 +131,22 @@ export class RequestContactAction extends BaseActionProcessor {
     // Очищаем состояние ожидания контакта
     delete context.userContext.data.awaitingContact;
     
-    // Клавиатура автоматически скроется благодаря one_time_keyboard: true
-    // Дополнительная отправка сообщения для скрытия клавиатуры не нужна
+    // Убираем клавиатуру после получения контакта
+    const chatId = context.userContext.data.telegramData?.chatId || context.userContext.userId;
+    try {
+      const actionProcessor = context.actionProcessor;
+      const botConstructor = actionProcessor?.getBotConstructor();
+      const adapter = botConstructor?.getAdapter();
+      
+      if (adapter) {
+        await adapter.sendMessage(chatId, '✅ Контакт получен', {
+          reply_markup: {
+            remove_keyboard: true
+          }
+        });
+      }
+    } catch (error) {
+      console.error('RequestContact: Failed to remove keyboard:', error);
+    }
   }
 }
