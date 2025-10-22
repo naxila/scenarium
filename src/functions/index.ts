@@ -9,3 +9,8 @@ export { ModFunction } from './ModFunction';
 export { MapFunction } from './MapFunction';
 export { DumpFunction } from './DumpFunction';
 export { IsNotEmptyFunction } from './IsNotEmptyFunction';
+export { SwitchFunction } from './SwitchFunction';
+export { CombineArraysFunction } from './CombineArraysFunction';
+export { ArraySizeFunction } from './ArraySizeFunction';
+export { DateFormatFunction } from './DateFormatFunction';
+export { CompareFunction } from './CompareFunction';

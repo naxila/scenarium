@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Функция Compare - Документация Scenarium</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Функция Compare</h1>
+        
+        <div class="function-info">
+            <h2>Описание</h2>
+            <p>Функция <code>Compare</code> сравнивает два числовых значения с использованием указанного оператора и возвращает логический результат.</p>
+            
+            <h2>Параметры</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Тип</th>
+                        <th>Обязательный</th>
+                        <th>Описание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value1</code></td>
+                        <td>Число</td>
+                        <td>Да</td>
+                        <td>Первое значение для сравнения</td>
+                    </tr>
+                    <tr>
+                        <td><code>value2</code></td>
+                        <td>Число</td>
+                        <td>Да</td>
+                        <td>Второе значение для сравнения</td>
+                    </tr>
+                    <tr>
+                        <td><code>operator</code></td>
+                        <td>Строка</td>
+                        <td>Да</td>
+                        <td>Оператор сравнения для использования</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Поддерживаемые операторы</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Оператор</th>
+                        <th>Альтернатива</th>
+                        <th>Описание</th>
+                        <th>Пример</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>more</code></td>
+                        <td><code>&gt;</code></td>
+                        <td>Больше чем</td>
+                        <td>5 &gt; 3 = true</td>
+                    </tr>
+                    <tr>
+                        <td><code>moreThanOrEquals</code></td>
+                        <td><code>&gt;=</code></td>
+                        <td>Больше или равно</td>
+                        <td>5 &gt;= 5 = true</td>
+                    </tr>
+                    <tr>
+                        <td><code>equals</code></td>
+                        <td><code>==</code> или <code>===</code></td>
+                        <td>Равно</td>
+                        <td>5 == 5 = true</td>
+                    </tr>
+                    <tr>
+                        <td><code>less</code></td>
+                        <td><code>&lt;</code></td>
+                        <td>Меньше чем</td>
+                        <td>3 &lt; 5 = true</td>
+                    </tr>
+                    <tr>
+                        <td><code>lessThanOrEquals</code></td>
+                        <td><code>&lt;=</code></td>
+                        <td>Меньше или равно</td>
+                        <td>3 &lt;= 5 = true</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Возвращаемое значение</h2>
+            <p>Возвращает <code>true</code> или <code>false</code> на основе результата сравнения.</p>
+            
+            <h2>Примеры</h2>
+            
+            <h3>Базовое использование</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 10,
+  "value2": 5,
+  "operator": "more"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>true</code></p>
+            
+            <h3>Сравнение на равенство</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 10,
+  "value2": 10,
+  "operator": "equals"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>true</code></p>
+            
+            <h3>Сравнение "меньше чем"</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 3,
+  "value2": 7,
+  "operator": "less"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>true</code></p>
+            
+            <h3>С параметрами функций</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": "{{response.body.balance}}",
+  "value2": 1000,
+  "operator": "moreThanOrEquals"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>true</code> (если balance равен 1500)</p>
+            
+            <h3>Альтернативный синтаксис оператора</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 5,
+  "value2": 3,
+  "operator": ">"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>true</code></p>
+            
+            <h3>Условная логика</h3>
+            <pre><code>{
+  "function": "Switch",
+  "value": {
+    "function": "Compare",
+    "value1": "{{response.body.score}}",
+    "value2": 80,
+    "operator": "more"
+  },
+  "cases": [
+    {
+      "match": true,
+      "result": "Отличный результат!"
+    },
+    {
+      "match": false,
+      "result": "Хороший результат, но можно улучшить"
+    }
+  ]
+}</code></pre>
+            <p><strong>Результат:</strong> <code>"Отличный результат!"</code> (если score > 80)</p>
+            
+            <h2>Обработка ошибок</h2>
+            <p>Если какой-либо параметр не является действительным числом, функция выбросит ошибку:</p>
+            <pre><code>{
+  "function": "Compare",
+  "value1": "не число",
+  "value2": 5,
+  "operator": "more"
+}</code></pre>
+            <p><strong>Ошибка:</strong> <code>Compare function: value1 "не число" is not a valid number</code></p>
+            
+            <p>Если используется неподдерживаемый оператор:</p>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 5,
+  "value2": 3,
+  "operator": "неверный"
+}</code></pre>
+            <p><strong>Ошибка:</strong> <code>Compare function: unsupported operator "неверный"</code></p>
+            
+            <h2>Случаи использования</h2>
+            <ul>
+                <li>Валидация числовых условий</li>
+                <li>Реализация бизнес-логики</li>
+                <li>Создание условных рабочих процессов</li>
+                <li>Сравнение пользовательского ввода с пороговыми значениями</li>
+                <li>Построение систем оценки и рейтинга</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Функция ArraySize - Документация Scenarium</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Функция ArraySize</h1>
+        
+        <div class="function-info">
+            <h2>Описание</h2>
+            <p>Функция <code>ArraySize</code> возвращает количество элементов в массиве.</p>
+            
+            <h2>Параметры</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Тип</th>
+                        <th>Обязательный</th>
+                        <th>Описание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>Массив</td>
+                        <td>Да</td>
+                        <td>Массив, размер которого нужно получить</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Возвращаемое значение</h2>
+            <p>Возвращает число, представляющее количество элементов в массиве.</p>
+            
+            <h2>Примеры</h2>
+            
+            <h3>Базовое использование</h3>
+            <pre><code>{
+  "function": "ArraySize",
+  "value": ["яблоко", "банан", "вишня"]
+}</code></pre>
+            <p><strong>Результат:</strong> <code>3</code></p>
+            
+            <h3>С результатом функции</h3>
+            <pre><code>{
+  "function": "ArraySize",
+  "value": {
+    "function": "CombineArrays",
+    "arrays": [
+      [1, 2, 3],
+      [4, 5, 6]
+    ]
+  }
+}</code></pre>
+            <p><strong>Результат:</strong> <code>6</code></p>
+            
+            <h3>Пустой массив</h3>
+            <pre><code>{
+  "function": "ArraySize",
+  "value": []
+}</code></pre>
+            <p><strong>Результат:</strong> <code>0</code></p>
+            
+            <h3>Условная логика</h3>
+            <pre><code>{
+  "function": "Equals",
+  "value1": {
+    "function": "ArraySize",
+    "value": ["элемент1", "элемент2", "элемент3"]
+  },
+  "value2": 3,
+  "trueResult": "Массив содержит ровно 3 элемента",
+  "falseResult": "Размер массива не равен 3"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>"Массив содержит ровно 3 элемента"</code></p>
+            
+            <h2>Обработка ошибок</h2>
+            <p>Если параметр <code>value</code> не является массивом, функция выбросит ошибку:</p>
+            <pre><code>{
+  "function": "ArraySize",
+  "value": "не массив"
+}</code></pre>
+            <p><strong>Ошибка:</strong> <code>ArraySize function: value parameter must be an array, got string</code></p>
+            
+            <h2>Случаи использования</h2>
+            <ul>
+                <li>Проверка, пуст ли массив или содержит определенное количество элементов</li>
+                <li>Условная логика на основе размера массива</li>
+                <li>Валидация и обработка ошибок</li>
+                <li>Динамическая генерация UI на основе размера данных</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

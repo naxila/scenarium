@@ -15,28 +15,67 @@ export class SendMessageAction extends BaseActionProcessor {
       async (interpolationContext) => {
         // Process inlineActions functions before interpolation
         let processedAction = { ...action };
-        if (action.inlineActions && typeof action.inlineActions === 'object' && action.inlineActions.function) {
-          try {
-            console.log('🗺️ Processing inlineActions function before interpolation:', action.inlineActions.function);
-            console.log('🔍 Interpolation context debug:', {
-              hasLocal: !!interpolationContext.local,
-              hasUser: !!interpolationContext.user,
-              hasData: !!interpolationContext.data,
-              localMethods: interpolationContext.local ? Object.getOwnPropertyNames(interpolationContext.local) : 'undefined'
-            });
-            
-            // ПРИНЦИП: Делегируем ответственность за контекст FunctionProcessor
-            const processedInlineActions = await FunctionProcessor.evaluateResult(
-              action.inlineActions, 
-              {}, 
-              context, 
-              interpolationContext
-            );
-            console.log('🗺️ Processed inlineActions result:', processedInlineActions);
-            processedAction.inlineActions = processedInlineActions;
-          } catch (e) {
-            console.error('❌ Failed to evaluate inlineActions function:', e);
-            processedAction.inlineActions = [];
+        if (action.inlineActions) {
+          // Case 1: inlineActions is a function object
+          if (typeof action.inlineActions === 'object' && action.inlineActions.function) {
+            try {
+              console.log('🗺️ Processing inlineActions function before interpolation:', action.inlineActions.function);
+              console.log('🔍 Interpolation context debug:', {
+                hasLocal: !!interpolationContext.local,
+                hasUser: !!interpolationContext.user,
+                hasData: !!interpolationContext.data,
+                localMethods: interpolationContext.local ? Object.getOwnPropertyNames(interpolationContext.local) : 'undefined'
+              });
+              
+              // ПРИНЦИП: Делегируем ответственность за контекст FunctionProcessor
+              const processedInlineActions = await FunctionProcessor.evaluateResult(
+                action.inlineActions, 
+                {}, 
+                context, 
+                interpolationContext
+              );
+              console.log('🗺️ Processed inlineActions result:', processedInlineActions);
+              processedAction.inlineActions = processedInlineActions;
+            } catch (e) {
+              console.error('❌ Failed to evaluate inlineActions function:', e);
+              processedAction.inlineActions = [];
+            }
+          }
+          // Case 2: inlineActions is an array - process functions inside array elements
+          else if (Array.isArray(action.inlineActions)) {
+            console.log('🗺️ Processing inlineActions array with functions inside elements');
+            const processedArray = [];
+            for (let i = 0; i < action.inlineActions.length; i++) {
+              const element = action.inlineActions[i];
+              if (element && typeof element === 'object' && element.function) {
+                try {
+                  console.log(`🗺️ Processing function in inlineActions[${i}]:`, element.function);
+                  const result = await FunctionProcessor.evaluateResult(element, {}, context, interpolationContext);
+                  console.log(`🗺️ Function result for inlineActions[${i}]:`, result);
+                  
+                  // If function returns null/undefined, skip this element
+                  if (result == null) {
+                    console.log(`🗺️ Skipping null result for inlineActions[${i}]`);
+                    continue;
+                  }
+                  
+                  // If function returns an array, add all elements
+                  if (Array.isArray(result)) {
+                    processedArray.push(...result);
+                  } else {
+                    processedArray.push(result);
+                  }
+                } catch (e) {
+                  console.error(`❌ Failed to evaluate function in inlineActions[${i}]:`, e);
+                  // Skip this element on error
+                  continue;
+                }
+              } else {
+                // Regular element, add as is
+                processedArray.push(element);
+              }
+            }
+            processedAction.inlineActions = processedArray;
           }
         }
         

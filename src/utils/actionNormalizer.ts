@@ -1,8 +1,12 @@
 import { Action } from '../types/Actions';
 
 export function normalizeActions(actions: Action | Action[]): Action[] {
+  if (!actions) {
+    return [];
+  }
   if (Array.isArray(actions)) {
-    return actions;
+    // Filter out null/undefined values from array
+    return actions.filter(action => action != null);
   }
   return [actions];
 }

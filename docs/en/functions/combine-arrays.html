@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CombineArrays - Scenarium - Telegram Bot Constructor</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+
+                <section class="section">
+                    <h1>🔗 CombineArrays</h1>
+                    <p class="lead">Combine multiple arrays into a single array with all elements.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Description</h3>
+                            <p>CombineArrays is a function that takes an array of arrays and combines all their elements into a single flat array. Supports function evaluation and variable interpolation for input arrays.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Purpose</h3>
+                            <ul>
+                                <li>Merge multiple data sources</li>
+                                <li>Combine user lists from different sources</li>
+                                <li>Aggregate results from multiple functions</li>
+                                <li>Flatten nested array structures</li>
+                                <li>Collect data from various endpoints</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Parameters</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>arrays</code></td>
+                                    <td>array</td>
+                                    <td>✅</td>
+                                    <td>Array of arrays to combine</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Usage Examples</h2>
+                    
+                    <div class="example-card">
+                        <h3>Simple array combination</h3>
+                        <pre><code class="language-json">{
+  "function": "CombineArrays",
+  "arrays": [
+    ["apple", "banana"],
+    ["orange", "grape"],
+    ["kiwi", "mango"]
+  ]
+}</code></pre>
+                        <p><strong>Result:</strong> <code>["apple", "banana", "orange", "grape", "kiwi", "mango"]</code></p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Combining user lists</h3>
+                        <pre><code class="language-json">{
+  "function": "CombineArrays",
+  "arrays": [
+    ["{{adminUsers}}"],
+    ["{{moderatorUsers}}"],
+    ["{{vipUsers}}"]
+  ]
+}</code></pre>
+                        <p><strong>Result:</strong> Combined list of all user types</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>With function evaluation</h3>
+                        <pre><code class="language-json">{
+  "function": "CombineArrays",
+  "arrays": [
+    {
+      "function": "ReadStorage",
+      "key": "activeUsers"
+    },
+    {
+      "function": "ReadStorage", 
+      "key": "inactiveUsers"
+    },
+    ["{{newUsers}}"]
+  ]
+}</code></pre>
+                        <p><strong>Result:</strong> Combined array from storage and variables</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Mixed data types</h3>
+                        <pre><code class="language-json">{
+  "function": "CombineArrays",
+  "arrays": [
+    [1, 2, 3],
+    ["a", "b", "c"],
+    [true, false],
+    [{"name": "John"}, {"name": "Jane"}]
+  ]
+}</code></pre>
+                        <p><strong>Result:</strong> <code>[1, 2, 3, "a", "b", "c", true, false, {"name": "John"}, {"name": "Jane"}]</code></p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Empty arrays handling</h3>
+                        <pre><code class="language-json">{
+  "function": "CombineArrays",
+  "arrays": [
+    ["item1", "item2"],
+    [],
+    ["item3", "item4"],
+    null
+  ]
+}</code></pre>
+                        <p><strong>Result:</strong> <code>["item1", "item2", "item3", "item4"]</code></p>
+                        <p><em>Note: Empty arrays and null values are skipped</em></p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Dynamic array sources</h3>
+                        <pre><code class="language-json">{
+  "function": "CombineArrays",
+  "arrays": [
+    "{{userPreferences}}",
+    "{{systemDefaults}}",
+    {
+      "function": "Map",
+      "array": "{{categories}}",
+      "item": "{{item}}",
+      "result": "{{item.name}}"
+    }
+  ]
+}</code></pre>
+                        <p><strong>Result:</strong> Combined preferences, defaults, and processed categories</p>
+                    </div>
+
+                    <h2>🔧 How it works</h2>
+                    <div class="info-card">
+                        <h3>Array evaluation</h3>
+                        <p>For each array in the arrays parameter:</p>
+                        <ul>
+                            <li>If array is a function - executes it first</li>
+                            <li>If array is a string - interpolates variables</li>
+                            <li>Validates that result is an array</li>
+                            <li>Skips non-array values with warning</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Combination process</h3>
+                        <p>The function combines arrays by:</p>
+                        <ul>
+                            <li>Iterating through each array in order</li>
+                            <li>Adding all elements from each array</li>
+                            <li>Preserving the order of arrays</li>
+                            <li>Maintaining element order within each array</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Error handling</h3>
+                        <p>The function handles errors gracefully:</p>
+                        <ul>
+                            <li>Skips non-array values after evaluation</li>
+                            <li>Continues processing remaining arrays</li>
+                            <li>Logs warnings for skipped values</li>
+                            <li>Returns partial results if some arrays fail</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Usage in actions</h2>
+                    <div class="example-card">
+                        <h3>Combining notification recipients</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "recipients": {
+    "function": "CombineArrays",
+    "arrays": [
+      "{{adminList}}",
+      "{{moderatorList}}",
+      "{{vipUserList}}"
+    ]
+  },
+  "text": "System maintenance scheduled"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Aggregating data for processing</h3>
+                        <pre><code class="language-json">{
+  "action": "Store",
+  "key": "allTasks",
+  "value": {
+    "function": "CombineArrays",
+    "arrays": [
+      {
+        "function": "ReadStorage",
+        "key": "pendingTasks"
+      },
+      {
+        "function": "ReadStorage",
+        "key": "completedTasks"
+      },
+      "{{newTasks}}"
+    ]
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Creating comprehensive lists</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "JoinToString",
+    "values": {
+      "function": "CombineArrays",
+      "arrays": [
+        ["Available commands:"],
+        "{{userCommands}}",
+        "{{adminCommands}}",
+        ["Type /help for more info"]
+      ]
+    },
+    "separator": "\n"
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Dynamic menu creation</h3>
+                        <pre><code class="language-json">{
+  "action": "CreateMenu",
+  "items": {
+    "function": "CombineArrays",
+    "arrays": [
+      "{{basicMenuItems}}",
+      {
+        "function": "Switch",
+        "value": "{{userRole}}",
+        "cases": [
+          {
+            "match": "admin",
+            "result": "{{adminMenuItems}}"
+          },
+          {
+            "match": "moderator", 
+            "result": "{{moderatorMenuItems}}"
+          }
+        ],
+        "defaultResult": []
+      }
+    ]
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>⚠️ Important notes</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Array validation:</strong> Only processes values that evaluate to arrays</li>
+                            <li><strong>Order preservation:</strong> Maintains order of arrays and their elements</li>
+                            <li><strong>Error tolerance:</strong> Skips invalid arrays and continues processing</li>
+                            <li><strong>Memory usage:</strong> Creates new array, doesn't modify originals</li>
+                            <li><strong>Nested arrays:</strong> Does not flatten nested arrays (only combines top level)</li>
+                            <li><strong>Performance:</strong> Evaluates all arrays before combining</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Related functions</h2>
+                    <div class="related-actions">
+                        <a href="#" class="nav-link" data-path="functions/map.html">
+                            <h4>Map</h4>
+                            <p>Transform array elements</p>
+                        </a>
+                        <a href="#" class="nav-link" data-path="functions/join-to-string.html">
+                            <h4>JoinToString</h4>
+                            <p>Join array elements into string</p>
+                        </a>
+                    </div>
+
+                </section>
+            
+        </div>
+    </div>
+</body>
+</html>

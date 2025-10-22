@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Функция DateFormat - Документация Scenarium</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Функция DateFormat</h1>
+        
+        <div class="function-info">
+            <h2>Описание</h2>
+            <p>Функция <code>DateFormat</code> форматирует строку даты согласно указанному шаблону форматирования.</p>
+            
+            <h2>Параметры</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Тип</th>
+                        <th>Обязательный</th>
+                        <th>Описание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>date</code></td>
+                        <td>Строка</td>
+                        <td>Да</td>
+                        <td>Строка даты для форматирования (рекомендуется ISO 8601 формат)</td>
+                    </tr>
+                    <tr>
+                        <td><code>format</code></td>
+                        <td>Строка</td>
+                        <td>Да</td>
+                        <td>Шаблон форматирования для применения</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Шаблоны форматирования</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Шаблон</th>
+                        <th>Описание</th>
+                        <th>Пример</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>YYYY</code></td>
+                        <td>4-значный год</td>
+                        <td>2025</td>
+                    </tr>
+                    <tr>
+                        <td><code>YY</code></td>
+                        <td>2-значный год</td>
+                        <td>25</td>
+                    </tr>
+                    <tr>
+                        <td><code>MM</code></td>
+                        <td>2-значный месяц</td>
+                        <td>01-12</td>
+                    </tr>
+                    <tr>
+                        <td><code>M</code></td>
+                        <td>Месяц без ведущего нуля</td>
+                        <td>1-12</td>
+                    </tr>
+                    <tr>
+                        <td><code>DD</code></td>
+                        <td>2-значный день</td>
+                        <td>01-31</td>
+                    </tr>
+                    <tr>
+                        <td><code>D</code></td>
+                        <td>День без ведущего нуля</td>
+                        <td>1-31</td>
+                    </tr>
+                    <tr>
+                        <td><code>HH</code></td>
+                        <td>2-значный час (24-часовой)</td>
+                        <td>00-23</td>
+                    </tr>
+                    <tr>
+                        <td><code>H</code></td>
+                        <td>Час без ведущего нуля (24-часовой)</td>
+                        <td>0-23</td>
+                    </tr>
+                    <tr>
+                        <td><code>mm</code></td>
+                        <td>2-значная минута</td>
+                        <td>00-59</td>
+                    </tr>
+                    <tr>
+                        <td><code>m</code></td>
+                        <td>Минута без ведущего нуля</td>
+                        <td>0-59</td>
+                    </tr>
+                    <tr>
+                        <td><code>ss</code></td>
+                        <td>2-значная секунда</td>
+                        <td>00-59</td>
+                    </tr>
+                    <tr>
+                        <td><code>s</code></td>
+                        <td>Секунда без ведущего нуля</td>
+                        <td>0-59</td>
+                    </tr>
+                    <tr>
+                        <td><code>SSS</code></td>
+                        <td>3-значные миллисекунды</td>
+                        <td>000-999</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Возвращаемое значение</h2>
+            <p>Возвращает отформатированную строку даты согласно указанному шаблону форматирования.</p>
+            
+            <h2>Примеры</h2>
+            
+            <h3>Базовое использование</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "2025-10-22T15:30:45.123Z",
+  "format": "YYYY-MM-DD HH:mm:ss"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>"2025-10-22 15:30:45"</code></p>
+            
+            <h3>Российский формат даты</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "2025-10-22T15:30:45.123Z",
+  "format": "DD.MM.YYYY"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>"22.10.2025"</code></p>
+            
+            <h3>Только время</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "2025-10-22T15:30:45.123Z",
+  "format": "HH:mm"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>"15:30"</code></p>
+            
+            <h3>С параметрами функций</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "{{response.body.createdAt}}",
+  "format": "YYYY-MM-DD"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>"2025-10-22"</code> (если createdAt равен "2025-10-22T15:30:45.123Z")</p>
+            
+            <h3>Сложный формат</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "2025-10-22T15:30:45.123Z",
+  "format": "DD/MM/YY HH:mm:ss.SSS"
+}</code></pre>
+            <p><strong>Результат:</strong> <code>"22/10/25 15:30:45.123"</code></p>
+            
+            <h2>Обработка ошибок</h2>
+            <p>Если строка даты недействительна, функция выбросит ошибку:</p>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "недействительная-дата",
+  "format": "YYYY-MM-DD"
+}</code></pre>
+            <p><strong>Ошибка:</strong> <code>DateFormat function: invalid date format "недействительная-дата"</code></p>
+            
+            <h2>Случаи использования</h2>
+            <ul>
+                <li>Форматирование временных меток для отображения</li>
+                <li>Преобразование дат между различными форматами</li>
+                <li>Создание удобных для пользователя отображений дат</li>
+                <li>Генерация отформатированных дат для сообщений и уведомлений</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

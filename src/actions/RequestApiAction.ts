@@ -283,7 +283,30 @@ export class RequestApiAction extends BaseActionProcessor {
       const interpolatedOnFailure = this.interpolate(onFailure, interpolationContext);
       console.log('🔍 Interpolated onFailure:', JSON.stringify(interpolatedOnFailure, null, 2));
       console.log('🔍 Calling onFailure...');
-      await this.processNestedActions(interpolatedOnFailure, nextContext);
+      
+      // Если onFailure содержит функцию, выполняем её через FunctionProcessor
+      // FunctionProcessor.evaluateResult может обработать результат, если он содержит action напрямую
+      if (interpolatedOnFailure && typeof interpolatedOnFailure === 'object' && interpolatedOnFailure.function) {
+        const { FunctionProcessor } = await import('../core/FunctionProcessor');
+        const functionResult = await FunctionProcessor.evaluateResult(interpolatedOnFailure, {}, nextContext, interpolationContext);
+        
+        // Проверяем, обработал ли FunctionProcessor результат
+        // Если результат содержит action напрямую, то FunctionProcessor его уже обработал
+        if (functionResult && typeof functionResult === 'object' && functionResult.action) {
+          // FunctionProcessor уже обработал результат, ничего дополнительно делать не нужно
+        } else {
+          // FunctionProcessor не обработал результат, обрабатываем его сами
+          if (Array.isArray(functionResult)) {
+            await this.processNestedActions(functionResult, nextContext);
+          } else if (functionResult && typeof functionResult === 'object') {
+            await this.processNestedActions(functionResult, nextContext);
+          } else {
+            await this.processNestedActions(interpolatedOnFailure, nextContext);
+          }
+        }
+      } else {
+        await this.processNestedActions(interpolatedOnFailure, nextContext);
+      }
     } else {
       console.log('🔍 No callback called - ok:', ok, 'onSuccess:', !!onSuccess, 'onFailure:', !!onFailure);
     }
@@ -324,7 +347,31 @@ export class RequestApiAction extends BaseActionProcessor {
       if (action.onFailure) {
         console.log('🔍 Calling onFailure for pre-request error...');
         console.log('🔍 onFailure content:', JSON.stringify(action.onFailure, null, 2));
-        await this.processNestedActions(action.onFailure, nextContext);
+        
+        // Интерполируем onFailure
+        const interpolatedOnFailure = this.interpolate(action.onFailure, interpolationContext);
+        
+        // Если onFailure содержит функцию, выполняем её через FunctionProcessor
+        if (interpolatedOnFailure && typeof interpolatedOnFailure === 'object' && interpolatedOnFailure.function) {
+          const { FunctionProcessor } = await import('../core/FunctionProcessor');
+          const functionResult = await FunctionProcessor.evaluateResult(interpolatedOnFailure, {}, nextContext, interpolationContext);
+          
+          // Проверяем, обработал ли FunctionProcessor результат
+          if (functionResult && typeof functionResult === 'object' && functionResult.action) {
+            // FunctionProcessor уже обработал результат
+          } else {
+            // FunctionProcessor не обработал результат, обрабатываем его сами
+            if (Array.isArray(functionResult)) {
+              await this.processNestedActions(functionResult, nextContext);
+            } else if (functionResult && typeof functionResult === 'object') {
+              await this.processNestedActions(functionResult, nextContext);
+            } else {
+              await this.processNestedActions(interpolatedOnFailure, nextContext);
+            }
+          }
+        } else {
+          await this.processNestedActions(interpolatedOnFailure, nextContext);
+        }
       } else {
         console.log('🔍 No onFailure defined for pre-request error');
       }
@@ -332,6 +379,27 @@ export class RequestApiAction extends BaseActionProcessor {
     } finally {
       // Clean up local scope when action completes
       interpolationContext.local.clearScope();
+    }
+  }
+
+  protected async processNestedActions(actions: any, context: ProcessingContext): Promise<void> {
+    if (!actions) {
+      return;
+    }
+
+    // Handle arrays of actions
+    if (Array.isArray(actions)) {
+      // Filter out null/undefined values
+      const validActions = actions.filter(action => action != null);
+      for (const action of validActions) {
+        if (action && typeof action === 'object' && action.action) {
+          await context.actionProcessor?.processActions(action, context);
+        }
+      }
+    }
+    // Handle single action
+    else if (actions && typeof actions === 'object' && actions.action) {
+      await context.actionProcessor?.processActions(actions, context);
     }
   }
   

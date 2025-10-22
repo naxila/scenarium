@@ -5,40 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.2-alpha] - 2024-12-19
+## [0.1.3-alpha] - 2024-10-23
 
 ### Added
-- **AnalyticsInterface** - новый класс для интеграции аналитики с callback'ами событий
-- **AnalyticsCallbacks** - интерфейс для обработки событий аналитики:
-  - `onMessageReceived` - входящие сообщения
-  - `onMessageSent` - исходящие сообщения  
-  - `onUserStarted` - начало работы пользователя
-  - `onUserAction` - действия пользователя
-  - `onError` - обработка ошибок
-- **SimpleBotInterface** - упрощенный интерфейс для быстрого создания ботов
-- Интеграция аналитики в `TelegramAdapter` с минимальными изменениями архитектуры
-- Поддержка callback'ов в `BotFactory` и `TelegramBotConstructor`
-- Примеры использования в `examples/analytics-example.js`
-- Документация по `AnalyticsInterface` в `ANALYTICS_INTERFACE.md`
-
-### Changed
-- `TelegramAdapter` теперь поддерживает опциональные `analyticsCallbacks`
-- `BotFactory.createBot()` принимает параметр `analyticsCallbacks`
-- `TelegramBotConstructor` передает callback'и в `TelegramAdapter`
+- **Switch Function**: New multi-way conditional logic function with `value` parameter and array of `cases` (each with `match` and `result`). `result` can be any type (primitive, function, action, or array).
+- **CombineArrays Function**: New function that takes an `arrays` parameter (array of arrays) and returns a single array containing all items from input arrays. Ignores `null` values.
+- **ArraySize Function**: New function that takes a `value` (array) and returns an integer representing the number of elements.
+- **DateFormat Function**: New function that takes a `date` (string like "2025-10-22T00:15:51.163Z") and a `format` string, returning a formatted date string.
+- **Compare Function**: New function that takes `value1`, `value2` (numbers), and an `operator` (more, moreThanOrEquals, equals, less, lessThanOrEquals), returning `true` or `false`.
+- Documentation for all new functions in both English and Russian
+- Links to new function documentation in the sidebar
 
 ### Fixed
-- Улучшена обработка ошибок в callback'ах аналитики
-- Оптимизирована производительность при работе с аналитикой
+- Fixed processing of action arrays in `onSuccess` and `onFailure` callbacks in `RequestApiAction.ts`
+- Fixed `null` value handling in action arrays to prevent breaking
+- Fixed function evaluation within `inlineActions` to work correctly
+- Fixed array processing in `CombineArrays` and other functions to ignore `null` values
 
-### Security
-- Callback'и аналитики выполняются в безопасном контексте без доступа к внутренним данным бота
+### Improved
+- Enhanced error handling for function evaluation
+- Better support for nested action processing
+- Improved documentation structure and navigation
 
-## [0.1.1-alpha] - 2024-12-18
+## [0.1.2-alpha] - 2024-10-22
 
 ### Added
-- Базовая функциональность библиотеки
-- Поддержка JSON сценариев для Telegram ботов
-- TypeScript типизация
-- Система меню и навигации
-- Обработка команд и сообщений
-- Система сессий пользователей
+- Analytics interface improvements
+- Enhanced bot wrapper functionality
+
+## [0.1.1-alpha] - 2024-10-22
+
+### Added
+- Initial analytics support
+- Bot service enhancements
+
+## [0.1.0-alpha] - 2024-10-22
+
+### Added
+- Initial release
+- Core bot functionality
+- Scenario processing
+- Basic actions and functions

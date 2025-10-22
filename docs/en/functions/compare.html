@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Function - Scenarium Documentation</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Compare Function</h1>
+        
+        <div class="function-info">
+            <h2>Description</h2>
+            <p>The <code>Compare</code> function compares two numeric values using a specified operator and returns a boolean result.</p>
+            
+            <h2>Parameters</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value1</code></td>
+                        <td>Number</td>
+                        <td>Yes</td>
+                        <td>The first value to compare</td>
+                    </tr>
+                    <tr>
+                        <td><code>value2</code></td>
+                        <td>Number</td>
+                        <td>Yes</td>
+                        <td>The second value to compare</td>
+                    </tr>
+                    <tr>
+                        <td><code>operator</code></td>
+                        <td>String</td>
+                        <td>Yes</td>
+                        <td>The comparison operator to use</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Supported Operators</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Operator</th>
+                        <th>Alternative</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>more</code></td>
+                        <td><code>&gt;</code></td>
+                        <td>Greater than</td>
+                        <td>5 &gt; 3 = true</td>
+                    </tr>
+                    <tr>
+                        <td><code>moreThanOrEquals</code></td>
+                        <td><code>&gt;=</code></td>
+                        <td>Greater than or equal</td>
+                        <td>5 &gt;= 5 = true</td>
+                    </tr>
+                    <tr>
+                        <td><code>equals</code></td>
+                        <td><code>==</code> or <code>===</code></td>
+                        <td>Equal to</td>
+                        <td>5 == 5 = true</td>
+                    </tr>
+                    <tr>
+                        <td><code>less</code></td>
+                        <td><code>&lt;</code></td>
+                        <td>Less than</td>
+                        <td>3 &lt; 5 = true</td>
+                    </tr>
+                    <tr>
+                        <td><code>lessThanOrEquals</code></td>
+                        <td><code>&lt;=</code></td>
+                        <td>Less than or equal</td>
+                        <td>3 &lt;= 5 = true</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Return Value</h2>
+            <p>Returns <code>true</code> or <code>false</code> based on the comparison result.</p>
+            
+            <h2>Examples</h2>
+            
+            <h3>Basic Usage</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 10,
+  "value2": 5,
+  "operator": "more"
+}</code></pre>
+            <p><strong>Result:</strong> <code>true</code></p>
+            
+            <h3>Equal Comparison</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 10,
+  "value2": 10,
+  "operator": "equals"
+}</code></pre>
+            <p><strong>Result:</strong> <code>true</code></p>
+            
+            <h3>Less Than Comparison</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 3,
+  "value2": 7,
+  "operator": "less"
+}</code></pre>
+            <p><strong>Result:</strong> <code>true</code></p>
+            
+            <h3>With Function Parameters</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": "{{response.body.balance}}",
+  "value2": 1000,
+  "operator": "moreThanOrEquals"
+}</code></pre>
+            <p><strong>Result:</strong> <code>true</code> (if balance is 1500)</p>
+            
+            <h3>Alternative Operator Syntax</h3>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 5,
+  "value2": 3,
+  "operator": ">"
+}</code></pre>
+            <p><strong>Result:</strong> <code>true</code></p>
+            
+            <h3>Conditional Logic</h3>
+            <pre><code>{
+  "function": "Switch",
+  "value": {
+    "function": "Compare",
+    "value1": "{{response.body.score}}",
+    "value2": 80,
+    "operator": "more"
+  },
+  "cases": [
+    {
+      "match": true,
+      "result": "Excellent score!"
+    },
+    {
+      "match": false,
+      "result": "Good score, but can be improved"
+    }
+  ]
+}</code></pre>
+            <p><strong>Result:</strong> <code>"Excellent score!"</code> (if score > 80)</p>
+            
+            <h2>Error Handling</h2>
+            <p>If any parameter is not a valid number, the function will throw an error:</p>
+            <pre><code>{
+  "function": "Compare",
+  "value1": "not a number",
+  "value2": 5,
+  "operator": "more"
+}</code></pre>
+            <p><strong>Error:</strong> <code>Compare function: value1 "not a number" is not a valid number</code></p>
+            
+            <p>If an unsupported operator is used:</p>
+            <pre><code>{
+  "function": "Compare",
+  "value1": 5,
+  "value2": 3,
+  "operator": "invalid"
+}</code></pre>
+            <p><strong>Error:</strong> <code>Compare function: unsupported operator "invalid"</code></p>
+            
+            <h2>Use Cases</h2>
+            <ul>
+                <li>Validating numeric conditions</li>
+                <li>Implementing business logic rules</li>
+                <li>Creating conditional workflows</li>
+                <li>Comparing user input with thresholds</li>
+                <li>Building scoring and rating systems</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

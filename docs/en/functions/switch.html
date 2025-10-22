@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch - Scenarium - Telegram Bot Constructor</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+
+                <section class="section">
+                    <h1>🔄 Switch</h1>
+                    <p class="lead">Conditional logic with multiple cases and default result support.</p>
+                    
+                    <div class="action-info">
+                        <div class="info-card">
+                            <h3>📋 Description</h3>
+                            <p>Switch is a function for conditional logic with multiple cases. It compares a value against multiple match conditions and returns the corresponding result. Supports default case for unmatched values.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>🎯 Purpose</h3>
+                            <ul>
+                                <li>Multi-way conditional logic</li>
+                                <li>Status-based routing</li>
+                                <li>Language localization</li>
+                                <li>User role handling</li>
+                                <li>Error code processing</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>⚙️ Parameters</h2>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td>any</td>
+                                    <td>✅</td>
+                                    <td>Value to compare against cases</td>
+                                </tr>
+                                <tr>
+                                    <td><code>cases</code></td>
+                                    <td>array</td>
+                                    <td>✅</td>
+                                    <td>Array of case objects with match and result</td>
+                                </tr>
+                                <tr>
+                                    <td><code>defaultResult</code></td>
+                                    <td>any</td>
+                                    <td>❌</td>
+                                    <td>Default result when no case matches</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>📋 Case Object Structure</h3>
+                    <div class="params-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>match</code></td>
+                                    <td>any</td>
+                                    <td>✅</td>
+                                    <td>Value to match against the input value</td>
+                                </tr>
+                                <tr>
+                                    <td><code>result</code></td>
+                                    <td>any</td>
+                                    <td>✅</td>
+                                    <td>Result to return when match is found</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>💡 Usage Examples</h2>
+                    
+                    <div class="example-card">
+                        <h3>Simple status handling</h3>
+                        <pre><code class="language-json">{
+  "function": "Switch",
+  "value": "{{status}}",
+  "cases": [
+    {
+      "match": "pending",
+      "result": "⏳ Your request is pending"
+    },
+    {
+      "match": "approved",
+      "result": "✅ Your request has been approved"
+    },
+    {
+      "match": "rejected",
+      "result": "❌ Your request has been rejected"
+    }
+  ],
+  "defaultResult": "❓ Unknown status"
+}</code></pre>
+                        <p><strong>Result:</strong> Status message based on request status</p>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Language localization</h3>
+                        <pre><code class="language-json">{
+  "function": "Switch",
+  "value": "{{language}}",
+  "cases": [
+    {
+      "match": "en",
+      "result": "Welcome to our service!"
+    },
+    {
+      "match": "ru",
+      "result": "Добро пожаловать в наш сервис!"
+    },
+    {
+      "match": "es",
+      "result": "¡Bienvenido a nuestro servicio!"
+    }
+  ],
+  "defaultResult": "Welcome to our service!"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>User role handling</h3>
+                        <pre><code class="language-json">{
+  "function": "Switch",
+  "value": "{{userRole}}",
+  "cases": [
+    {
+      "match": "admin",
+      "result": {
+        "action": "Navigate",
+        "menuItem": "AdminPanel"
+      }
+    },
+    {
+      "match": "moderator",
+      "result": {
+        "action": "Navigate",
+        "menuItem": "ModeratorPanel"
+      }
+    },
+    {
+      "match": "user",
+      "result": {
+        "action": "Navigate",
+        "menuItem": "UserPanel"
+      }
+    }
+  ],
+  "defaultResult": {
+    "action": "SendMessage",
+    "text": "Access denied"
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Error code processing</h3>
+                        <pre><code class="language-json">{
+  "function": "Switch",
+  "value": "{{errorCode}}",
+  "cases": [
+    {
+      "match": "404",
+      "result": "Page not found"
+    },
+    {
+      "match": "500",
+      "result": "Internal server error"
+    },
+    {
+      "match": "403",
+      "result": "Access forbidden"
+    }
+  ],
+  "defaultResult": "Unknown error occurred"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>With nested functions in results</h3>
+                        <pre><code class="language-json">{
+  "function": "Switch",
+  "value": "{{notificationType}}",
+  "cases": [
+    {
+      "match": "email",
+      "result": {
+        "function": "JoinToString",
+        "values": ["Email sent to: ", "{{email}}"]
+      }
+    },
+    {
+      "match": "sms",
+      "result": {
+        "function": "JoinToString",
+        "values": ["SMS sent to: ", "{{phone}}"]
+      }
+    }
+  ],
+  "defaultResult": "Notification method not supported"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Numerical values</h3>
+                        <pre><code class="language-json">{
+  "function": "Switch",
+  "value": "{{score}}",
+  "cases": [
+    {
+      "match": "90",
+      "result": "Excellent!"
+    },
+    {
+      "match": "80",
+      "result": "Good job!"
+    },
+    {
+      "match": "70",
+      "result": "Not bad"
+    },
+    {
+      "match": "60",
+      "result": "Pass"
+    }
+  ],
+  "defaultResult": "Failed"
+}</code></pre>
+                    </div>
+
+                    <h2>🔧 How it works</h2>
+                    <div class="info-card">
+                        <h3>Value evaluation</h3>
+                        <p>The function evaluates the input value:</p>
+                        <ul>
+                            <li>If value is a function - executes it first</li>
+                            <li>If value is a string - interpolates variables</li>
+                            <li>Otherwise uses the value as-is</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Case matching</h3>
+                        <p>For each case in the cases array:</p>
+                        <ul>
+                            <li>Evaluates the match value (same as value evaluation)</li>
+                            <li>Compares with the input value using strict equality (===)</li>
+                            <li>If match found - evaluates and returns the result</li>
+                            <li>Continues to next case if no match</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Result processing</h3>
+                        <p>When a match is found:</p>
+                        <ul>
+                            <li>If result is a function - executes it</li>
+                            <li>If result is a string - interpolates variables</li>
+                            <li>Otherwise returns the result as-is</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Default case</h3>
+                        <p>If no cases match:</p>
+                        <ul>
+                            <li>Returns defaultResult if provided</li>
+                            <li>Returns null if no defaultResult</li>
+                            <li>Default result is evaluated the same way as case results</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Usage in actions</h2>
+                    <div class="example-card">
+                        <h3>Conditional navigation</h3>
+                        <pre><code class="language-json">{
+  "action": "Navigate",
+  "menuItem": {
+    "function": "Switch",
+    "value": "{{userLevel}}",
+    "cases": [
+      {
+        "match": "premium",
+        "result": "PremiumMenu"
+      },
+      {
+        "match": "standard",
+        "result": "StandardMenu"
+      }
+    ],
+    "defaultResult": "BasicMenu"
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Dynamic message content</h3>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": {
+    "function": "Switch",
+    "value": "{{timeOfDay}}",
+    "cases": [
+      {
+        "match": "morning",
+        "result": "Good morning, {{name}}!"
+      },
+      {
+        "match": "afternoon",
+        "result": "Good afternoon, {{name}}!"
+      },
+      {
+        "match": "evening",
+        "result": "Good evening, {{name}}!"
+      }
+    ],
+    "defaultResult": "Hello, {{name}}!"
+  }
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Conditional data storage</h3>
+                        <pre><code class="language-json">{
+  "action": "Store",
+  "key": "userCategory",
+  "value": {
+    "function": "Switch",
+    "value": "{{userScore}}",
+    "cases": [
+      {
+        "match": "high",
+        "result": "VIP"
+      },
+      {
+        "match": "medium",
+        "result": "Standard"
+      },
+      {
+        "match": "low",
+        "result": "Basic"
+      }
+    ],
+    "defaultResult": "New"
+  }
+}</code></pre>
+                    </div>
+
+                    <h2>⚠️ Important notes</h2>
+                    <div class="warning-card">
+                        <ul>
+                            <li><strong>Strict comparison:</strong> Uses strict equality (===) for matching</li>
+                            <li><strong>Case order:</strong> Cases are processed in order, first match wins</li>
+                            <li><strong>Data types:</strong> "1" and 1 are considered different values</li>
+                            <li><strong>Empty values:</strong> null, undefined and "" are considered different</li>
+                            <li><strong>Performance:</strong> Stops at first match, doesn't evaluate remaining cases</li>
+                            <li><strong>Default case:</strong> Always evaluated last if no matches found</li>
+                        </ul>
+                    </div>
+
+                    <h2>🔗 Related functions</h2>
+                    <div class="related-actions">
+                        <a href="#" class="nav-link" data-path="functions/equals.html">
+                            <h4>Equals</h4>
+                            <p>Simple value comparison</p>
+                        </a>
+                        <a href="#" class="nav-link" data-path="functions/is-not-empty.html">
+                            <h4>IsNotEmpty</h4>
+                            <p>Check if value is not empty</p>
+                        </a>
+                    </div>
+
+                </section>
+            
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DateFormat Function - Scenarium Documentation</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>DateFormat Function</h1>
+        
+        <div class="function-info">
+            <h2>Description</h2>
+            <p>The <code>DateFormat</code> function formats a date string according to a specified format pattern.</p>
+            
+            <h2>Parameters</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>date</code></td>
+                        <td>String</td>
+                        <td>Yes</td>
+                        <td>The date string to format (ISO 8601 format recommended)</td>
+                    </tr>
+                    <tr>
+                        <td><code>format</code></td>
+                        <td>String</td>
+                        <td>Yes</td>
+                        <td>The format pattern to apply</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Format Patterns</h2>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Pattern</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>YYYY</code></td>
+                        <td>4-digit year</td>
+                        <td>2025</td>
+                    </tr>
+                    <tr>
+                        <td><code>YY</code></td>
+                        <td>2-digit year</td>
+                        <td>25</td>
+                    </tr>
+                    <tr>
+                        <td><code>MM</code></td>
+                        <td>2-digit month</td>
+                        <td>01-12</td>
+                    </tr>
+                    <tr>
+                        <td><code>M</code></td>
+                        <td>Month without leading zero</td>
+                        <td>1-12</td>
+                    </tr>
+                    <tr>
+                        <td><code>DD</code></td>
+                        <td>2-digit day</td>
+                        <td>01-31</td>
+                    </tr>
+                    <tr>
+                        <td><code>D</code></td>
+                        <td>Day without leading zero</td>
+                        <td>1-31</td>
+                    </tr>
+                    <tr>
+                        <td><code>HH</code></td>
+                        <td>2-digit hour (24-hour)</td>
+                        <td>00-23</td>
+                    </tr>
+                    <tr>
+                        <td><code>H</code></td>
+                        <td>Hour without leading zero (24-hour)</td>
+                        <td>0-23</td>
+                    </tr>
+                    <tr>
+                        <td><code>mm</code></td>
+                        <td>2-digit minute</td>
+                        <td>00-59</td>
+                    </tr>
+                    <tr>
+                        <td><code>m</code></td>
+                        <td>Minute without leading zero</td>
+                        <td>0-59</td>
+                    </tr>
+                    <tr>
+                        <td><code>ss</code></td>
+                        <td>2-digit second</td>
+                        <td>00-59</td>
+                    </tr>
+                    <tr>
+                        <td><code>s</code></td>
+                        <td>Second without leading zero</td>
+                        <td>0-59</td>
+                    </tr>
+                    <tr>
+                        <td><code>SSS</code></td>
+                        <td>3-digit milliseconds</td>
+                        <td>000-999</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Return Value</h2>
+            <p>Returns a formatted date string according to the specified format pattern.</p>
+            
+            <h2>Examples</h2>
+            
+            <h3>Basic Usage</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "2025-10-22T15:30:45.123Z",
+  "format": "YYYY-MM-DD HH:mm:ss"
+}</code></pre>
+            <p><strong>Result:</strong> <code>"2025-10-22 15:30:45"</code></p>
+            
+            <h3>Russian Date Format</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "2025-10-22T15:30:45.123Z",
+  "format": "DD.MM.YYYY"
+}</code></pre>
+            <p><strong>Result:</strong> <code>"22.10.2025"</code></p>
+            
+            <h3>Time Only</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "2025-10-22T15:30:45.123Z",
+  "format": "HH:mm"
+}</code></pre>
+            <p><strong>Result:</strong> <code>"15:30"</code></p>
+            
+            <h3>With Function Parameters</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "{{response.body.createdAt}}",
+  "format": "YYYY-MM-DD"
+}</code></pre>
+            <p><strong>Result:</strong> <code>"2025-10-22"</code> (if createdAt is "2025-10-22T15:30:45.123Z")</p>
+            
+            <h3>Complex Format</h3>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "2025-10-22T15:30:45.123Z",
+  "format": "DD/MM/YY HH:mm:ss.SSS"
+}</code></pre>
+            <p><strong>Result:</strong> <code>"22/10/25 15:30:45.123"</code></p>
+            
+            <h2>Error Handling</h2>
+            <p>If the date string is invalid, the function will throw an error:</p>
+            <pre><code>{
+  "function": "DateFormat",
+  "date": "invalid-date",
+  "format": "YYYY-MM-DD"
+}</code></pre>
+            <p><strong>Error:</strong> <code>DateFormat function: invalid date format "invalid-date"</code></p>
+            
+            <h2>Use Cases</h2>
+            <ul>
+                <li>Formatting timestamps for display</li>
+                <li>Converting dates between different formats</li>
+                <li>Creating user-friendly date displays</li>
+                <li>Generating formatted dates for messages and notifications</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

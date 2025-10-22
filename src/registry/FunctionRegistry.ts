@@ -9,6 +9,11 @@ import { ModFunction } from '../functions/ModFunction';
 import { MapFunction } from '../functions/MapFunction';
 import { DumpFunction } from '../functions/DumpFunction';
 import { IsNotEmptyFunction } from '../functions/IsNotEmptyFunction';
+import { SwitchFunction } from '../functions/SwitchFunction';
+import { CombineArraysFunction } from '../functions/CombineArraysFunction';
+import { ArraySizeFunction } from '../functions/ArraySizeFunction';
+import { DateFormatFunction } from '../functions/DateFormatFunction';
+import { CompareFunction } from '../functions/CompareFunction';
 import { ProcessingContext } from '../types';
 import { ICustomFunction, RegistrationConfig } from '../types/PluginInterfaces';
 
@@ -36,6 +41,11 @@ export class FunctionRegistry {
     this.register('Map', MapFunction.execute);
     this.register('Dump', DumpFunction.execute);
     this.register('IsNotEmpty', IsNotEmptyFunction.execute);
+    this.register('Switch', SwitchFunction.execute);
+    this.register('CombineArrays', CombineArraysFunction.execute);
+    this.register('ArraySize', ArraySizeFunction.execute);
+    this.register('DateFormat', DateFormatFunction.execute);
+    this.register('Compare', CompareFunction.execute);
     
     this.isInitialized = true;
     console.log('FunctionRegistry initialized with standard functions');

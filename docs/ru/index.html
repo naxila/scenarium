@@ -14,8 +14,17 @@
         <!-- Sidebar Menu -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h1><a href="index.html" style="text-decoration: none; color: inherit;">🤖 Scenarium</a></h1>
-                <p class="version"><a href="https://github.com/naxila/scenarium" target="_blank" style="text-decoration: none; color: inherit;">v0.1.0-alpha</a></p>
+                <h1><a href="index.html" style="text-decoration: none; color: inherit;">
+                    <svg style="display: inline-block; vertical-align: middle; margin-right: 8px; width: 24px; height: 24px;" viewBox="0 0 64 105" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.837648 93.2223C-1.12894 91.3723 6.19125 74.8646 8.48113 71.7873C9.01277 71.0728 13.9073 65.4526 14.4559 65.0065C15.0045 64.5603 17.2607 67.306 21.0455 74.2303C24.8302 81.1545 24.5483 84.1414 24.4971 84.6387C24.4458 85.1361 23.1248 86.4406 21.6165 87.3242C20.1083 88.2078 2.80424 95.0722 0.837648 93.2223Z" fill="currentColor"/>
+                        <path d="M49.6328 30.9317C53.0557 31.7662 60.072 39.8513 60.8373 44.1494C61.2244 46.3235 45.7026 64.2041 44.6567 64.599C43.6107 64.9939 41.9799 61.3074 38.1696 54.3805C34.3594 47.4536 34.718 43.972 35.3178 43.0285C35.9177 42.085 48.1496 30.5701 49.6328 30.9317Z" fill="currentColor"/>
+                        <path d="M0.837648 93.2223C-1.12894 91.3723 6.19125 74.8646 8.48113 71.7873C9.01277 71.0728 13.9073 65.4526 14.4559 65.0065C15.0045 64.5603 17.2607 67.306 21.0455 74.2303C24.8302 81.1545 24.5483 84.1414 24.4971 84.6387C24.4458 85.1361 23.1248 86.4406 21.6165 87.3242C20.1083 88.2078 2.80424 95.0722 0.837648 93.2223Z" stroke="currentColor"/>
+                        <path d="M49.6328 30.9317C53.0557 31.7662 60.072 39.8513 60.8373 44.1494C61.2244 46.3235 45.7026 64.2041 44.6567 64.599C43.6107 64.9939 41.9799 61.3074 38.1696 54.3805C34.3594 47.4536 34.718 43.972 35.3178 43.0285C35.9177 42.085 48.1496 30.5701 49.6328 30.9317Z" stroke="currentColor"/>
+                        <path d="M42 16.5661C42 15.5624 27.8806 1.51122 27.0338 2.01306C26.1871 2.51489 13.7612 16.6318 13.7612 39.1221C13.7612 61.6124 26.1911 66.4415 28.9137 83.3092C30.7288 94.5544 1.46687 99.3677 2.5 99.8695C3.53313 100.371 21.3374 100.194 25.1256 99.8695C28.9137 99.5448 38.5563 92.3421 40.9872 81.2914C44.2264 66.566 29.9468 55.5931 29.9468 42.6611C29.9468 28.6047 42 17.5697 42 16.5661Z" stroke="currentColor" stroke-width="4"/>
+                    </svg>
+                    Scenarium
+                </a></h1>
+                <p class="version"><a href="https://github.com/naxila/scenarium" target="_blank" style="text-decoration: none; color: inherit;">v0.1.3-alpha</a></p>
             </div>
             
             <div class="sidebar-content">
@@ -74,6 +83,11 @@
                             <li><a href="functions/map.html" class="nav-link">Map</a></li>
                             <li><a href="functions/dump.html" class="nav-link">Dump</a></li>
                             <li><a href="functions/is-not-empty.html" class="nav-link">IsNotEmpty</a></li>
+                            <li><a href="functions/switch.html" class="nav-link">Switch</a></li>
+                            <li><a href="functions/combine-arrays.html" class="nav-link">CombineArrays</a></li>
+                            <li><a href="functions/array-size.html" class="nav-link">ArraySize</a></li>
+                            <li><a href="functions/date-format.html" class="nav-link">DateFormat</a></li>
+                            <li><a href="functions/compare.html" class="nav-link">Compare</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -867,6 +881,7 @@ const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKE
                             <h3>🔍 Логические функции</h3>
                             <ul>
                                 <li><a href="functions/equals.html">Equals</a> - Сравнение значений с условным результатом</li>
+                                <li><a href="functions/switch.html">Switch</a> - Многовариантная условная логика с случаями</li>
                             </ul>
                         </div>
                         
@@ -874,6 +889,8 @@ const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKE
                             <h3>🗺️ Функции массивов</h3>
                             <ul>
                                 <li><a href="functions/map.html">Map</a> - Преобразование элементов массива</li>
+                                <li><a href="functions/combine-arrays.html">CombineArrays</a> - Объединение нескольких массивов в один</li>
+                                <li><a href="functions/array-size.html">ArraySize</a> - Получение количества элементов в массиве</li>
                             </ul>
                         </div>
                         
@@ -881,6 +898,20 @@ const bot = await BotFactory.createBotFromFile('./scenario.json', 'YOUR_BOT_TOKE
                             <h3>💾 Функции хранилища</h3>
                             <ul>
                                 <li><a href="functions/read-storage.html">ReadStorage</a> - Чтение данных из хранилища</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="function-category">
+                            <h3>📅 Функции дат</h3>
+                            <ul>
+                                <li><a href="functions/date-format.html">DateFormat</a> - Форматирование строк дат с пользовательскими шаблонами</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="function-category">
+                            <h3>🔍 Функции сравнения</h3>
+                            <ul>
+                                <li><a href="functions/compare.html">Compare</a> - Сравнение двух чисел с различными операторами</li>
                             </ul>
                         </div>
                         
