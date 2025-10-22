@@ -29,7 +29,7 @@ export class RequestContactAction extends BaseActionProcessor {
         
         // Интерполируем обработанное действие с текущим контекстом
         const interpolatedAction = this.interpolate(processedAction, interpolationContext);
-        const { message = 'Пожалуйста, поделитесь своим контактом:', onSuccess, onFailure } = interpolatedAction;
+        const { message = 'Пожалуйста, поделитесь своим контактом:', onSuccess, onFailure, successMessage = '✅' } = interpolatedAction;
 
         // Устанавливаем локальные переменные действия
         interpolationContext.local.setVariable('message', message);
@@ -43,6 +43,7 @@ export class RequestContactAction extends BaseActionProcessor {
           message: message,
           onSuccess: onSuccess,
           onFailure: onFailure,
+          successMessage: successMessage,
           timestamp: Date.now()
         };
 
@@ -110,8 +111,28 @@ export class RequestContactAction extends BaseActionProcessor {
     // Сохраняем номер телефона в контексте пользователя
     context.userContext.data.phone_number = contact.phone_number;
 
-    // Выполняем коллбек onSuccess
+    // Отправляем сообщение об успехе до выполнения onSuccess
     const awaitingContact = context.userContext.data.awaitingContact;
+    const successMessage = awaitingContact?.successMessage || '✅';
+    
+    const chatId = context.userContext.data.telegramData?.chatId || context.userContext.userId;
+    try {
+      const actionProcessor = context.actionProcessor;
+      const botConstructor = actionProcessor?.getBotConstructor();
+      const adapter = botConstructor?.getAdapter();
+      
+      if (adapter) {
+        await adapter.sendMessage(chatId, successMessage, {
+          reply_markup: {
+            remove_keyboard: true
+          }
+        });
+      }
+    } catch (error) {
+      console.error('RequestContact: Failed to send success message:', error);
+    }
+
+    // Выполняем коллбек onSuccess
     if (awaitingContact && awaitingContact.onSuccess) {
       const onSuccessActions = Array.isArray(awaitingContact.onSuccess) 
         ? awaitingContact.onSuccess 
@@ -130,23 +151,5 @@ export class RequestContactAction extends BaseActionProcessor {
   private async handleContactComplete(context: ProcessingContext, input: any, state: any): Promise<void> {
     // Очищаем состояние ожидания контакта
     delete context.userContext.data.awaitingContact;
-    
-    // Убираем клавиатуру после получения контакта
-    const chatId = context.userContext.data.telegramData?.chatId || context.userContext.userId;
-    try {
-      const actionProcessor = context.actionProcessor;
-      const botConstructor = actionProcessor?.getBotConstructor();
-      const adapter = botConstructor?.getAdapter();
-      
-      if (adapter) {
-        await adapter.sendMessage(chatId, '✅ Контакт получен', {
-          reply_markup: {
-            remove_keyboard: true
-          }
-        });
-      }
-    } catch (error) {
-      console.error('RequestContact: Failed to remove keyboard:', error);
-    }
   }
 }

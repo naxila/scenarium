@@ -197,6 +197,37 @@
                     </div>
 
                     <div class="example-card">
+                        <h3>Error handling with server response body</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestApi",
+  "method": "POST",
+  "baseUrl": "https://api.example.com",
+  "path": "/users",
+  "body": {
+    "name": "{{name}}",
+    "email": "{{email}}"
+  },
+  "onSuccess": {
+    "action": "SendMessage",
+    "text": "User created: {{response.body.id}}"
+  },
+  "onFailure": {
+    "action": "SendMessage",
+    "text": {
+      "function": "JoinToString",
+      "values": [
+        "Error: {{error.message}}",
+        "\nServer response: {{error.body.message}}",
+        "\nStatus: {{error.status}}"
+      ],
+      "separator": ""
+    }
+  }
+}</code></pre>
+                        <p><strong>Note:</strong> The <code>{{error.body}}</code> variable contains the response body from the server, which often includes detailed error messages from the API.</p>
+                    </div>
+
+                    <div class="example-card">
                         <h3>Debugging requests with debugDescription</h3>
                         <pre><code class="language-json">{
   "action": "RequestApi",
@@ -269,6 +300,7 @@
                                 <li><code>{{error.message}}</code> - Error message</li>
                                 <li><code>{{error.code}}</code> - Error code</li>
                                 <li><code>{{error.name}}</code> - Error type</li>
+                                <li><code>{{error.body}}</code> - Response body from server (for HTTP errors)</li>
                                 <li><code>{{error.stack}}</code> - Stack trace (if available)</li>
                                 <li><code>{{error.debugDescription}}</code> - Detailed debug information about request and response</li>
                             </ul>

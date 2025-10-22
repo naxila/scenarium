@@ -168,6 +168,7 @@ export class RequestApiAction extends BaseActionProcessor {
           name: 'HttpError',
           status: res.status,
           statusText: res.statusText,
+          body: responseContext.body, // Добавляем тело ответа сервера
           debugDescription: this.createDebugDescription(requestDebug, {
             status: res.status,
             headers: hdrs,
@@ -208,6 +209,7 @@ export class RequestApiAction extends BaseActionProcessor {
         code: errorCode,
         name: error?.name || 'Error',
         stack: error?.stack,
+        body: null, // Для сетевых ошибок body всегда null
         debugDescription: this.createDebugDescription(requestDebug, {
           error: errorMessage,
           status: null,
@@ -252,7 +254,30 @@ export class RequestApiAction extends BaseActionProcessor {
       const interpolatedOnSuccess = this.interpolate(onSuccess, interpolationContext);
       console.log('🔍 Interpolated onSuccess:', JSON.stringify(interpolatedOnSuccess, null, 2));
       console.log('🔍 Calling onSuccess...');
-      await this.processNestedActions(interpolatedOnSuccess, nextContext);
+      
+      // Если onSuccess содержит функцию, выполняем её через FunctionProcessor
+      // FunctionProcessor.evaluateResult может обработать результат, если он содержит action напрямую
+      if (interpolatedOnSuccess && typeof interpolatedOnSuccess === 'object' && interpolatedOnSuccess.function) {
+        const { FunctionProcessor } = await import('../core/FunctionProcessor');
+        const functionResult = await FunctionProcessor.evaluateResult(interpolatedOnSuccess, {}, nextContext, interpolationContext);
+        
+        // Проверяем, обработал ли FunctionProcessor результат
+        // Если результат содержит action напрямую, то FunctionProcessor его уже обработал
+        if (functionResult && typeof functionResult === 'object' && functionResult.action) {
+          // FunctionProcessor уже обработал результат, ничего дополнительно делать не нужно
+        } else {
+          // FunctionProcessor не обработал результат, обрабатываем его сами
+          if (Array.isArray(functionResult)) {
+            await this.processNestedActions(functionResult, nextContext);
+          } else if (functionResult && typeof functionResult === 'object') {
+            await this.processNestedActions(functionResult, nextContext);
+          } else {
+            await this.processNestedActions(interpolatedOnSuccess, nextContext);
+          }
+        }
+      } else {
+        await this.processNestedActions(interpolatedOnSuccess, nextContext);
+      }
     } else if (!ok && onFailure) {
       console.log('🔍 Interpolating onFailure...');
       const interpolatedOnFailure = this.interpolate(onFailure, interpolationContext);
@@ -271,6 +296,7 @@ export class RequestApiAction extends BaseActionProcessor {
         code: error?.code || 'PRE_REQUEST_ERROR',
         name: error?.name || 'Error',
         stack: error?.stack,
+        body: null, // Для ошибок до запроса body всегда null
         debugDescription: `=== PRE-REQUEST ERROR ===\nError: ${error?.message || String(error)}\nStack: ${error?.stack || 'No stack trace'}\n\nThis error occurred before the HTTP request was made, likely during interpolation or validation.`
       };
       

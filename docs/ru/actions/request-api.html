@@ -197,6 +197,37 @@
                     </div>
 
                     <div class="example-card">
+                        <h3>Обработка ошибок с телом ответа сервера</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestApi",
+  "method": "POST",
+  "baseUrl": "https://api.example.com",
+  "path": "/users",
+  "body": {
+    "name": "{{name}}",
+    "email": "{{email}}"
+  },
+  "onSuccess": {
+    "action": "SendMessage",
+    "text": "Пользователь создан: {{response.body.id}}"
+  },
+  "onFailure": {
+    "action": "SendMessage",
+    "text": {
+      "function": "JoinToString",
+      "values": [
+        "Ошибка: {{error.message}}",
+        "\nОтвет сервера: {{error.body.message}}",
+        "\nСтатус: {{error.status}}"
+      ],
+      "separator": ""
+    }
+  }
+}</code></pre>
+                        <p><strong>Примечание:</strong> Переменная <code>{{error.body}}</code> содержит тело ответа сервера, которое часто включает подробные сообщения об ошибках от API.</p>
+                    </div>
+
+                    <div class="example-card">
                         <h3>Отладка запросов с debugDescription</h3>
                         <pre><code class="language-json">{
   "action": "RequestApi",
@@ -269,6 +300,7 @@
                                 <li><code>{{error.message}}</code> - Сообщение об ошибке</li>
                                 <li><code>{{error.code}}</code> - Код ошибки</li>
                                 <li><code>{{error.name}}</code> - Тип ошибки</li>
+                                <li><code>{{error.body}}</code> - Тело ответа сервера (для HTTP ошибок)</li>
                                 <li><code>{{error.stack}}</code> - Стек вызовов (если доступен)</li>
                                 <li><code>{{error.debugDescription}}</code> - Подробная отладочная информация о запросе и ответе</li>
                             </ul>
