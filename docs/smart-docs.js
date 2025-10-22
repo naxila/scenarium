@@ -116,7 +116,14 @@ class SmartDocs {
                     { href: '#functions/multiply', text: 'Multiply' },
                     { href: '#functions/divide', text: 'Divide' },
                     { href: '#functions/mod', text: 'Mod' },
-                    { href: '#functions/map', text: 'Map' }
+                    { href: '#functions/map', text: 'Map' },
+                    { href: '#functions/dump', text: 'Dump' },
+                    { href: '#functions/is-not-empty', text: 'IsNotEmpty' },
+                    { href: '#functions/switch', text: 'Switch' },
+                    { href: '#functions/combine-arrays', text: 'CombineArrays' },
+                    { href: '#functions/array-size', text: 'ArraySize' },
+                    { href: '#functions/date-format', text: 'DateFormat' },
+                    { href: '#functions/compare', text: 'Compare' }
                 ]}
             ],
             ru: [
@@ -150,7 +157,14 @@ class SmartDocs {
                     { href: '#functions/multiply', text: 'Multiply' },
                     { href: '#functions/divide', text: 'Divide' },
                     { href: '#functions/mod', text: 'Mod' },
-                    { href: '#functions/map', text: 'Map' }
+                    { href: '#functions/map', text: 'Map' },
+                    { href: '#functions/dump', text: 'Dump' },
+                    { href: '#functions/is-not-empty', text: 'IsNotEmpty' },
+                    { href: '#functions/switch', text: 'Switch' },
+                    { href: '#functions/combine-arrays', text: 'CombineArrays' },
+                    { href: '#functions/array-size', text: 'ArraySize' },
+                    { href: '#functions/date-format', text: 'DateFormat' },
+                    { href: '#functions/compare', text: 'Compare' }
                 ]}
             ]
         };
