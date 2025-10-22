@@ -50,6 +50,33 @@ body {
     display: inline-block;
 }
 
+.language-switcher {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.lang-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.lang-btn.active {
+    background: rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.5);
+}
+
 .sidebar-content {
     padding: 1rem 0;
 }
@@ -897,4 +924,101 @@ a:hover {
         padding: 1rem;
         font-size: 0.8rem;
     }
+}
+
+/* Function info styles for new function pages */
+.function-info {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.function-info h1 {
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 0.5rem;
+}
+
+.function-info h2 {
+    color: #555;
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.function-info h3 {
+    color: #666;
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.function-info p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.function-info code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.function-info pre {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.function-info pre code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+.params-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.params-table th,
+.params-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.params-table th {
+    background: #667eea;
+    color: white;
+    font-weight: 600;
+}
+
+.params-table tr:hover {
+    background: #f8f9fa;
+}
+
+.example {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.example h4 {
+    margin-bottom: 0.5rem;
+    color: #667eea;
 }

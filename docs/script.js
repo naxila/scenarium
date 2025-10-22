@@ -61,7 +61,19 @@ class SmartDocs {
                 
                 // If not found, try alternative structure for function/action pages
                 if (!mainContent) {
-                    mainContent = doc.querySelector('main.content') || doc.querySelector('.content');
+                    // Try different selectors based on page structure
+                    mainContent = doc.querySelector('main.content') || 
+                                 doc.querySelector('.content') ||
+                                 doc.querySelector('.function-info') ||
+                                 doc.querySelector('.container');
+                    
+                    // If we found .container, try to get the content inside it
+                    if (mainContent && mainContent.classList.contains('container')) {
+                        const functionInfo = mainContent.querySelector('.function-info');
+                        if (functionInfo) {
+                            mainContent = functionInfo;
+                        }
+                    }
                 }
                 
                 if (mainContent) {
