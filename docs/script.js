@@ -43,7 +43,13 @@ class SmartDocs {
     }
 
     loadContent(lang, page) {
-        const contentPath = `${lang}/${page}.html`;
+        // Handle function and action pages
+        let contentPath;
+        if (page.startsWith('functions/') || page.startsWith('actions/')) {
+            contentPath = `${lang}/${page}.html`;
+        } else {
+            contentPath = `${lang}/${page}.html`;
+        }
         
         fetch(contentPath)
             .then(response => response.text())
@@ -51,7 +57,12 @@ class SmartDocs {
                 // Extract main content from the HTML
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                const mainContent = doc.querySelector('.main-content .content');
+                let mainContent = doc.querySelector('.main-content .content');
+                
+                // If not found, try alternative structure for function/action pages
+                if (!mainContent) {
+                    mainContent = doc.querySelector('main.content') || doc.querySelector('.content');
+                }
                 
                 if (mainContent) {
                     document.getElementById('main-content').innerHTML = mainContent.innerHTML;
@@ -74,6 +85,8 @@ class SmartDocs {
             })
             .catch(error => {
                 console.error('Error loading content:', error);
+                console.error('Failed to load:', contentPath);
+                console.error('Page:', page, 'Language:', lang);
                 // Fallback to English if language not found
                 if (lang !== 'en') {
                     this.switchLanguage('en');
