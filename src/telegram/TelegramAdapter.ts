@@ -351,12 +351,39 @@ export class TelegramAdapter {
     // Проверка: ожидается ли ввод от пользователя
     const userContext = this.botConstructor.getUserContext(userId);
     const awaiting = userContext?.awaitingInput;
-    if (awaiting && text.trim()) {
+    
+    // Проверяем есть ли вложения в сообщении
+    const hasAttachments = msg.photo || msg.document || msg.video || msg.audio || 
+                          msg.voice || msg.video_note || msg.sticker || msg.animation;
+    
+    if (awaiting && (text.trim() || (awaiting.allowAttachments && hasAttachments))) {
       try {
-        const handled = await InputManager.handleUserText(this.botConstructor, userId, text);
+        // Передаем msg для извлечения вложений
+        const handled = await InputManager.handleUserText(this.botConstructor, userId, text, msg);
         if (handled) return;
       } catch (error) {
         console.error('Error processing awaited input:', error);
+      }
+    }
+
+    // Проверка: ожидается ли ответ от Reply Keyboard
+    const awaitingReplyKb = userContext?.awaitingReplyKeyboard;
+    console.log('🔍 DEBUG handleUserMessage - checking awaitingReplyKeyboard:', {
+      userId,
+      text,
+      hasAwaitingReplyKb: !!awaitingReplyKb,
+      awaitingReplyKb: awaitingReplyKb ? JSON.stringify(awaitingReplyKb).substring(0, 200) : null,
+      userContextKeys: userContext ? Object.keys(userContext) : []
+    });
+    
+    if (awaitingReplyKb && text.trim()) {
+      try {
+        console.log('🔍 DEBUG - Processing reply keyboard response for text:', text);
+        const handled = await this.handleReplyKeyboardResponse(userId, text, awaitingReplyKb);
+        console.log('🔍 DEBUG - Reply keyboard handled:', handled);
+        if (handled) return;
+      } catch (error) {
+        console.error('Error processing reply keyboard response:', error);
       }
     }
 
@@ -468,6 +495,91 @@ export class TelegramAdapter {
     };
   }
 
+  /**
+   * Handle response from Reply Keyboard
+   */
+  private async handleReplyKeyboardResponse(userId: string, text: string, awaitingReplyKb: any): Promise<boolean> {
+    console.log('🔍 DEBUG handleReplyKeyboardResponse - START:', {
+      userId,
+      text,
+      awaitingReplyKb: JSON.stringify(awaitingReplyKb).substring(0, 300)
+    });
+    
+    const { buttons, onSent } = awaitingReplyKb;
+    
+    // Ищем кнопку по тексту
+    let matchedButton: any = null;
+    let matchedValue: string | null = null;
+    
+    for (const row of buttons) {
+      const rowButtons = Array.isArray(row) ? row : [row];
+      for (const btn of rowButtons) {
+        const btnText = typeof btn === 'string' ? btn : btn.text;
+        if (btnText === text) {
+          matchedButton = btn;
+          // Если у кнопки есть value - используем его, иначе текст кнопки
+          matchedValue = (typeof btn === 'object' && btn.value) ? btn.value : text;
+          break;
+        }
+      }
+      if (matchedButton) break;
+    }
+    
+    console.log('🔍 DEBUG handleReplyKeyboardResponse - Button search result:', {
+      matchedButton: matchedButton ? JSON.stringify(matchedButton) : null,
+      matchedValue
+    });
+    
+    // Если кнопка найдена
+    if (matchedButton) {
+      console.log(`🔘 Reply keyboard button pressed: "${text}", value: "${matchedValue}"`);
+      
+      // Очищаем состояние ожидания ПЕРЕД выполнением действия
+      console.log('🔍 DEBUG - Clearing awaitingReplyKeyboard BEFORE action');
+      this.botConstructor.updateUserContext(userId, { awaitingReplyKeyboard: undefined });
+      
+      // Проверим что очистилось
+      const contextAfterClear = this.botConstructor.getUserContext(userId);
+      console.log('🔍 DEBUG - Context after clear:', {
+        awaitingReplyKb: !!contextAfterClear?.awaitingReplyKeyboard
+      });
+      
+      // Если у кнопки есть свой onClick - выполняем его
+      if (typeof matchedButton === 'object' && matchedButton.onClick) {
+        console.log('🔍 DEBUG - Executing button onClick');
+        await this.botConstructor.processUserAction(userId, matchedButton.onClick);
+        return true;
+      }
+      
+      // Иначе выполняем общий onSent с переданным value
+      if (onSent) {
+        console.log('🔍 DEBUG - Executing onSent');
+        // Сохраняем value в контекст перед выполнением onSent
+        this.botConstructor.updateUserContext(userId, { 
+          replyKeyboardValue: matchedValue,
+          replyKeyboardText: text
+        });
+        await this.botConstructor.processUserAction(userId, onSent);
+        return true;
+      }
+    }
+    
+    // Кнопка не найдена - но все равно обрабатываем onSent если есть
+    if (onSent) {
+      console.log(`🔘 Reply keyboard custom text (not matched): "${text}"`);
+      this.botConstructor.updateUserContext(userId, { 
+        awaitingReplyKeyboard: undefined,
+        replyKeyboardValue: text,
+        replyKeyboardText: text
+      });
+      await this.botConstructor.processUserAction(userId, onSent);
+      return true;
+    }
+    
+    console.log('🔍 DEBUG handleReplyKeyboardResponse - No handler, returning false');
+    return false;
+  }
+
   private async sendSafeMessage(chatId: number | string, text: string, options?: any): Promise<void> {
     try {
       await this.bot.sendMessage(chatId.toString(), text, options);
@@ -490,6 +602,39 @@ export class TelegramAdapter {
     }
     
     return result;
+  }
+
+  // Методы для отправки файлов
+  async sendPhoto(chatId: string | number, photo: string, options?: any): Promise<any> {
+    return this.bot.sendPhoto(chatId, photo, options);
+  }
+
+  async sendDocument(chatId: string | number, document: string, options?: any): Promise<any> {
+    return this.bot.sendDocument(chatId, document, options);
+  }
+
+  async sendVideo(chatId: string | number, video: string, options?: any): Promise<any> {
+    return this.bot.sendVideo(chatId, video, options);
+  }
+
+  async sendAudio(chatId: string | number, audio: string, options?: any): Promise<any> {
+    return this.bot.sendAudio(chatId, audio, options);
+  }
+
+  async sendVoice(chatId: string | number, voice: string, options?: any): Promise<any> {
+    return this.bot.sendVoice(chatId, voice, options);
+  }
+
+  async sendAnimation(chatId: string | number, animation: string, options?: any): Promise<any> {
+    return this.bot.sendAnimation(chatId, animation, options);
+  }
+
+  async sendSticker(chatId: string | number, sticker: string, options?: any): Promise<any> {
+    return this.bot.sendSticker(chatId, sticker, options);
+  }
+
+  async sendMediaGroup(chatId: string | number, media: any[], options?: any): Promise<any> {
+    return this.bot.sendMediaGroup(chatId, media, options);
   }
 
   async editMessageText(chatId: string, messageId: number, text: string, options?: any): Promise<void> {

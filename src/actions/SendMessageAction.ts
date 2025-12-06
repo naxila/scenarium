@@ -44,38 +44,7 @@ export class SendMessageAction extends BaseActionProcessor {
           // Case 2: inlineActions is an array - process functions inside array elements
           else if (Array.isArray(action.inlineActions)) {
             console.log('🗺️ Processing inlineActions array with functions inside elements');
-            const processedArray = [];
-            for (let i = 0; i < action.inlineActions.length; i++) {
-              const element = action.inlineActions[i];
-              if (element && typeof element === 'object' && element.function) {
-                try {
-                  console.log(`🗺️ Processing function in inlineActions[${i}]:`, element.function);
-                  const result = await FunctionProcessor.evaluateResult(element, {}, context, interpolationContext);
-                  console.log(`🗺️ Function result for inlineActions[${i}]:`, result);
-                  
-                  // If function returns null/undefined, skip this element
-                  if (result == null) {
-                    console.log(`🗺️ Skipping null result for inlineActions[${i}]`);
-                    continue;
-                  }
-                  
-                  // If function returns an array, add all elements
-                  if (Array.isArray(result)) {
-                    processedArray.push(...result);
-                  } else {
-                    processedArray.push(result);
-                  }
-                } catch (e) {
-                  console.error(`❌ Failed to evaluate function in inlineActions[${i}]:`, e);
-                  // Skip this element on error
-                  continue;
-                }
-              } else {
-                // Regular element, add as is
-                processedArray.push(element);
-              }
-            }
-            processedAction.inlineActions = processedArray;
+            processedAction.inlineActions = await this.processInlineActionsArray(action.inlineActions, context, interpolationContext);
           }
         }
         
@@ -96,9 +65,13 @@ export class SendMessageAction extends BaseActionProcessor {
           }
         }
         
-        // Check that text is not empty
-        if (!text || typeof text !== 'string' || text.trim() === '') {
-          console.warn('⚠️ Empty or invalid text detected, skipping message send');
+        // Check that text is not empty (unless we have attachments)
+        const hasAttachments = interpolatedAction.attachments && 
+          Array.isArray(interpolatedAction.attachments) && 
+          interpolatedAction.attachments.length > 0;
+        
+        if (!hasAttachments && (!text || typeof text !== 'string' || text.trim() === '')) {
+          console.warn('⚠️ Empty or invalid text detected and no attachments, skipping message send');
           return;
         }
         
@@ -120,13 +93,86 @@ export class SendMessageAction extends BaseActionProcessor {
           const options: any = {};
           const messageActionIds: string[] = []; // Для отслеживания действий этого сообщения
           
+          // Флаг для определения есть ли новая replyKeyboard с onSent
+          let hasNewReplyKeyboardWithOnSent = false;
+          
+          const currentUserId = context.userContext.userId;
+          console.log('🔍 DEBUG SendMessage - START keyboard logic:', {
+            userId: currentUserId,
+            hasInlineActions: !!(interpolatedAction.inlineActions?.length),
+            hasReplyKeyboard: !!(interpolatedAction.replyKeyboard?.buttons),
+            clearKeyboard: interpolatedAction.clearKeyboard,
+            currentAwaitingReplyKb: !!context.userContext.data.awaitingReplyKeyboard
+          });
+          
           // Добавляем inline клавиатуру если есть inlineActions
           if (interpolatedAction.inlineActions && Array.isArray(interpolatedAction.inlineActions) && interpolatedAction.inlineActions.length > 0) {
             options.reply_markup = this.createCompactInlineKeyboard(
               interpolatedAction.inlineActions,
               messageActionIds // Передаем массив для сохранения ID действий
             );
+            console.log('🔍 DEBUG SendMessage - Using inline keyboard');
           }
+          // Добавляем Reply клавиатуру если есть replyKeyboard (объект с buttons внутри)
+          else if (interpolatedAction.replyKeyboard && interpolatedAction.replyKeyboard.buttons) {
+            const replyKb = interpolatedAction.replyKeyboard;
+            const buttons = Array.isArray(replyKb.buttons) ? replyKb.buttons : [];
+            if (buttons.length > 0) {
+              options.reply_markup = this.createReplyKeyboard(
+                buttons,
+                replyKb.resizeKeyboard !== false, // по умолчанию true
+                replyKb.oneTimeKeyboard === true // по умолчанию false
+              );
+              
+              // Если есть onSent - сохраняем для обработки ответа через updateUserContext
+              // ВАЖНО: Делаем ГЛУБОКУЮ КОПИЮ onSent и buttons, потому что это ссылки
+              // на объекты в сценарии, и интерполяция их модифицирует навсегда!
+              const originalOnSent = action.replyKeyboard?.onSent;
+              const originalButtons = action.replyKeyboard?.buttons;
+              if (originalOnSent) {
+                hasNewReplyKeyboardWithOnSent = true;
+                // Глубокая копия чтобы не модифицировать исходный сценарий
+                const onSentCopy = JSON.parse(JSON.stringify(originalOnSent));
+                const buttonsCopy = JSON.parse(JSON.stringify(originalButtons));
+                // Используем updateUserContext для правильного сохранения в SessionManager
+                botConstructor.updateUserContext(currentUserId, {
+                  awaitingReplyKeyboard: {
+                    buttons: buttonsCopy,  // копия кнопок
+                    onSent: onSentCopy     // копия onSent
+                  }
+                });
+                console.log('🔍 DEBUG SendMessage - SET awaitingReplyKeyboard with DEEP COPY of onSent');
+              }
+            }
+          }
+          // По умолчанию очищаем клавиатуру (если clearKeyboard !== false)
+          else if (interpolatedAction.clearKeyboard !== false) {
+            options.reply_markup = { remove_keyboard: true };
+            console.log('🔍 DEBUG SendMessage - Setting remove_keyboard: true');
+          }
+          
+          // Очищаем старое состояние awaitingReplyKeyboard если не устанавливаем новое
+          // Используем updateUserContext для правильной синхронизации с SessionManager
+          if (!hasNewReplyKeyboardWithOnSent) {
+            console.log('🧹 DEBUG SendMessage - Clearing awaitingReplyKeyboard via updateUserContext');
+            botConstructor.updateUserContext(currentUserId, {
+              awaitingReplyKeyboard: undefined
+            });
+          }
+          
+          // Проверяем результат очистки
+          const contextAfterUpdate = botConstructor.getUserContext(currentUserId);
+          console.log('🔍 DEBUG SendMessage - END keyboard logic:', {
+            hasNewReplyKeyboardWithOnSent,
+            replyMarkup: options.reply_markup ? Object.keys(options.reply_markup) : null,
+            awaitingReplyKbAfter: !!contextAfterUpdate?.awaitingReplyKeyboard
+          });
+          
+          // ОГРАНИЧЕНИЕ TELEGRAM API:
+          // reply_markup может быть только одним из: InlineKeyboardMarkup, ReplyKeyboardMarkup, 
+          // ReplyKeyboardRemove или ForceReply. Поэтому clearKeyboard работает только когда 
+          // нет inline_keyboard и нет replyKeyboard.
+          // Для автоматического скрытия reply keyboard после нажатия используйте oneTimeKeyboard: true
           
           // Устанавливаем режим разметки в зависимости от параметра markdown
           if (interpolatedAction.markdown === true) {
@@ -146,11 +192,15 @@ export class SendMessageAction extends BaseActionProcessor {
             hasUpdateTarget: !!updateTarget,
             updateTargetMessageId: updateTarget?.messageId,
             chatId: chatId,
-            text: text.substring(0, 50) + '...',
-            isUpdate: !!(updateTarget && updateTarget.messageId)
+            text: text ? text.substring(0, 50) + '...' : '(no text)',
+            isUpdate: !!(updateTarget && updateTarget.messageId),
+            hasAttachments: hasAttachments
           });
           
-          if (updateTarget && updateTarget.messageId) {
+          // Отправка вложений если есть
+          if (hasAttachments) {
+            message = await this.sendAttachments(adapter, chatId, interpolatedAction.attachments, options, text);
+          } else if (updateTarget && updateTarget.messageId) {
             console.log('🔍 SendMessage DEBUG - Updating existing message');
             const result = await adapter.editMessageText(chatId, Number(updateTarget.messageId), text, options);
             console.log('✅ SendMessage DEBUG - Update result:', result);
@@ -222,28 +272,280 @@ export class SendMessageAction extends BaseActionProcessor {
     );
   }
   
+  /**
+   * Process inlineActions array, supporting both flat arrays and 2D arrays (for row grouping)
+   */
+  private async processInlineActionsArray(inlineActions: any[], context: ProcessingContext, interpolationContext: any): Promise<any[]> {
+    const processedArray = [];
+    
+    for (let i = 0; i < inlineActions.length; i++) {
+      const element = inlineActions[i];
+      
+      // Check if element is a row (array of buttons)
+      if (Array.isArray(element)) {
+        const processedRow = [];
+        for (let j = 0; j < element.length; j++) {
+          const rowElement = element[j];
+          if (rowElement && typeof rowElement === 'object' && rowElement.function) {
+            try {
+              const result = await FunctionProcessor.evaluateResult(rowElement, {}, context, interpolationContext);
+              if (result != null) {
+                if (Array.isArray(result)) {
+                  processedRow.push(...result);
+                } else {
+                  processedRow.push(result);
+                }
+              }
+            } catch (e) {
+              console.error(`❌ Failed to evaluate function in inlineActions[${i}][${j}]:`, e);
+            }
+          } else {
+            processedRow.push(rowElement);
+          }
+        }
+        if (processedRow.length > 0) {
+          processedArray.push(processedRow);
+        }
+      }
+      // Process function objects
+      else if (element && typeof element === 'object' && element.function) {
+        try {
+          console.log(`🗺️ Processing function in inlineActions[${i}]:`, element.function);
+          const result = await FunctionProcessor.evaluateResult(element, {}, context, interpolationContext);
+          console.log(`🗺️ Function result for inlineActions[${i}]:`, result);
+          
+          if (result == null) {
+            console.log(`🗺️ Skipping null result for inlineActions[${i}]`);
+            continue;
+          }
+          
+          if (Array.isArray(result)) {
+            processedArray.push(...result);
+          } else {
+            processedArray.push(result);
+          }
+        } catch (e) {
+          console.error(`❌ Failed to evaluate function in inlineActions[${i}]:`, e);
+        }
+      } else {
+        // Regular element, add as is
+        processedArray.push(element);
+      }
+    }
+    
+    return processedArray;
+  }
+  
+  /**
+   * Send attachments (supports single attachment or media group)
+   */
+  private async sendAttachments(adapter: any, chatId: string | number, attachments: any[], options: any, caption?: string): Promise<any> {
+    // Если одно вложение - отправляем обычным способом
+    if (attachments.length === 1) {
+      return this.sendSingleAttachment(adapter, chatId, attachments[0], options, caption);
+    }
+    
+    // Несколько вложений - используем sendMediaGroup
+    // Media group поддерживает только photo, video, document, audio
+    const mediaGroupTypes = ['photo', 'video', 'document', 'audio'];
+    const mediaItems: any[] = [];
+    
+    for (let i = 0; i < attachments.length; i++) {
+      const attachment = attachments[i];
+      const type = attachment.type || 'document';
+      const media = attachment.fileId || attachment.url;
+      
+      if (!media) {
+        console.warn(`⚠️ Attachment ${i} has no fileId or url, skipping`);
+        continue;
+      }
+      
+      // Проверяем что тип поддерживается в media group
+      if (!mediaGroupTypes.includes(type)) {
+        console.warn(`⚠️ Attachment type "${type}" is not supported in media group, skipping`);
+        continue;
+      }
+      
+      const mediaItem: any = {
+        type: type,
+        media: media
+      };
+      
+      // Caption только для первого элемента
+      if (i === 0 && caption && caption.trim()) {
+        mediaItem.caption = caption;
+        if (options.parse_mode) {
+          mediaItem.parse_mode = options.parse_mode;
+        }
+      }
+      
+      mediaItems.push(mediaItem);
+    }
+    
+    if (mediaItems.length === 0) {
+      throw new Error('No valid attachments for media group');
+    }
+    
+    if (mediaItems.length === 1) {
+      // Если остался только один элемент - отправляем обычным способом
+      return this.sendSingleAttachment(adapter, chatId, attachments[0], options, caption);
+    }
+    
+    console.log(`📎 Sending media group with ${mediaItems.length} items`);
+    
+    // Отправляем media group
+    const messages = await adapter.sendMediaGroup(chatId, mediaItems);
+    
+    // Возвращаем первое сообщение из группы
+    return Array.isArray(messages) && messages.length > 0 ? messages[0] : messages;
+  }
+  
+  /**
+   * Send single attachment
+   */
+  private async sendSingleAttachment(adapter: any, chatId: string | number, attachment: any, options: any, caption?: string): Promise<any> {
+    const attachmentType = attachment.type || 'document'; // photo, document, video, audio, voice, animation
+    
+    // Добавляем caption если есть текст
+    if (caption && caption.trim()) {
+      options.caption = caption;
+    }
+    
+    // Получаем file (либо fileId, либо url)
+    const file = attachment.fileId || attachment.url;
+    
+    if (!file) {
+      throw new Error('Attachment must have either fileId or url');
+    }
+    
+    console.log(`📎 Sending ${attachmentType}:`, { file: typeof file === 'string' ? file.substring(0, 50) : file, hasCaption: !!caption });
+    
+    // Вызываем соответствующий метод адаптера
+    switch (attachmentType) {
+      case 'photo':
+        return adapter.sendPhoto(chatId, file, options);
+      case 'document':
+        return adapter.sendDocument(chatId, file, options);
+      case 'video':
+        return adapter.sendVideo(chatId, file, options);
+      case 'audio':
+        return adapter.sendAudio(chatId, file, options);
+      case 'voice':
+        return adapter.sendVoice(chatId, file, options);
+      case 'animation':
+        return adapter.sendAnimation(chatId, file, options);
+      case 'sticker':
+        return adapter.sendSticker(chatId, file, options);
+      default:
+        return adapter.sendDocument(chatId, file, options);
+    }
+  }
+  
+  /**
+   * Create inline keyboard supporting 2D arrays for row grouping
+   * Supports onClick (callback) and url (external link)
+   */
   private createCompactInlineKeyboard(inlineActions: any[], actionIdsStorage: string[]): any {
     const keyboard = [];
     const actionMappingService = ActionMappingService.getInstance();
     
     for (const action of inlineActions) {
-      if (action.onClick) {
-        // Регистрируем действие и получаем короткий ID
-        const actionId = actionMappingService.registerAction(action.onClick);
-        actionIdsStorage.push(actionId); // Сохраняем ID для будущей очистки
-        
-        const button = {
-          text: action.title,
-          callback_data: actionId
-        };
-        
-        console.log(`🔗 Mapped action: ${actionId} for button "${action.title}"`);
-        keyboard.push([button]);
+      // Check if this is a row (array of buttons)
+      if (Array.isArray(action)) {
+        const row = [];
+        for (const buttonAction of action) {
+          const button = this.createInlineButton(buttonAction, actionMappingService, actionIdsStorage);
+          if (button) {
+            row.push(button);
+          }
+        }
+        if (row.length > 0) {
+          keyboard.push(row);
+        }
+      }
+      // Single button - each on its own row
+      else {
+        const button = this.createInlineButton(action, actionMappingService, actionIdsStorage);
+        if (button) {
+          keyboard.push([button]);
+        }
       }
     }
     
     return {
       inline_keyboard: keyboard
+    };
+  }
+  
+  /**
+   * Create a single inline button (callback or url)
+   */
+  private createInlineButton(buttonAction: any, actionMappingService: ActionMappingService, actionIdsStorage: string[]): any {
+    if (!buttonAction.title) return null;
+    
+    // If onClick is specified - create callback button
+    if (buttonAction.onClick) {
+      const actionId = actionMappingService.registerAction(buttonAction.onClick);
+      actionIdsStorage.push(actionId);
+      console.log(`🔗 Mapped action: ${actionId} for button "${buttonAction.title}"`);
+      return {
+        text: buttonAction.title,
+        callback_data: actionId
+      };
+    }
+    
+    // If url is specified - create URL button
+    if (buttonAction.url) {
+      console.log(`🔗 URL button: "${buttonAction.title}" -> ${buttonAction.url}`);
+      return {
+        text: buttonAction.title,
+        url: buttonAction.url
+      };
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Create Reply keyboard
+   * Button can be:
+   * - string: just text
+   * - object with text: display text (and optionally request_contact/request_location)
+   * - object with text and value: display text, but value is what gets sent (we map it)
+   * - object with text and onClick: display text, execute onClick action when pressed
+   */
+  private createReplyKeyboard(buttons: any[], resizeKeyboard: boolean, oneTimeKeyboard: boolean): any {
+    const keyboard = [];
+    
+    for (const row of buttons) {
+      // Each row can be a string, an array of strings, or an array of button objects
+      if (Array.isArray(row)) {
+        const keyboardRow = row.map(btn => {
+          if (typeof btn === 'string') {
+            return { text: btn };
+          }
+          // Button object - extract only Telegram-supported fields
+          const telegramBtn: any = { text: btn.text || btn };
+          if (btn.request_contact) telegramBtn.request_contact = true;
+          if (btn.request_location) telegramBtn.request_location = true;
+          return telegramBtn;
+        });
+        keyboard.push(keyboardRow);
+      } else if (typeof row === 'string') {
+        keyboard.push([{ text: row }]);
+      } else {
+        // Single button object
+        const telegramBtn: any = { text: row.text || row };
+        if (row.request_contact) telegramBtn.request_contact = true;
+        if (row.request_location) telegramBtn.request_location = true;
+        keyboard.push([telegramBtn]);
+      }
+    }
+    
+    return {
+      keyboard,
+      resize_keyboard: resizeKeyboard,
+      one_time_keyboard: oneTimeKeyboard
     };
   }
   

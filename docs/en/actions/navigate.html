@@ -51,6 +51,13 @@
                                     <td>Name of the menu item to navigate to</td>
                                 </tr>
                                 <tr>
+                                    <td><code>params</code></td>
+                                    <td>object</td>
+                                    <td>❌</td>
+                                    <td>{}</td>
+                                    <td>Parameters to pass to menu (accessible via <code>{{params.key}}</code>)</td>
+                                </tr>
+                                <tr>
                                     <td><code>addToBackStack</code></td>
                                     <td>boolean</td>
                                     <td>❌</td>
@@ -120,6 +127,36 @@
   "addToBackStack": true,
   "removePreviousMessage": true,
   "uniqueInStack": true
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Navigation with parameters</h3>
+                        <pre><code class="language-json">{
+  "action": "Navigate",
+  "menuItem": "ProductDetails",
+  "params": {
+    "productId": "12345",
+    "productName": "Product",
+    "price": 1000
+  }
+}</code></pre>
+                        <p>In ProductDetails menu, parameters are accessible via interpolation:</p>
+                        <pre><code class="language-json">{
+  "action": "SendMessage",
+  "text": "Product: {{params.productName}}, Price: ${{params.price}}"
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Passing dynamic parameters</h3>
+                        <pre><code class="language-json">{
+  "action": "Navigate",
+  "menuItem": "UserDetails",
+  "params": {
+    "userId": "{{selectedUserId}}",
+    "userName": "{{selectedUserName}}"
+  }
 }</code></pre>
                     </div>
 

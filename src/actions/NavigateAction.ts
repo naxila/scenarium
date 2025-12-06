@@ -17,6 +17,7 @@ export class NavigateAction extends BaseActionProcessor {
       // Interpolate only the action's own fields, not nested actions
       const { 
         menuItem, 
+        params = {},
         addToBackStack = true,
         removePreviousMessage = false,
         uniqueInStack = true 
@@ -26,6 +27,9 @@ export class NavigateAction extends BaseActionProcessor {
       const interpolatedMenuItem = typeof menuItem === 'string' 
         ? this.interpolate(menuItem, interpolationContext)
         : menuItem;
+      
+      // Interpolate params object
+      const interpolatedParams = this.interpolate(params, interpolationContext);
     
 
     // Clear previous message actions
@@ -53,8 +57,17 @@ export class NavigateAction extends BaseActionProcessor {
       return;
     }
     
-    // Recursive call to process menu actions
-    await this.processNestedActions(menu.onNavigation, context);
+    // Create new context with params available for menu item
+    const menuContext: ProcessingContext = {
+      ...context,
+      localContext: {
+        ...context.localContext,
+        params: interpolatedParams
+      }
+    };
+    
+    // Recursive call to process menu actions with params in context
+    await this.processNestedActions(menu.onNavigation, menuContext);
     
     } finally {
       // Clean up local scope when action completes
@@ -76,7 +89,7 @@ export class NavigateAction extends BaseActionProcessor {
       const adapter = botConstructor?.getAdapter();
       
       if (adapter) {
-        await adapter.sendMessage(chatId.toString(), '🗑️ Предыдущее сообщение удалено', {});
+        await adapter.sendMessage(chatId.toString(), '🗑️ Предыдущее сообщение удалено', { reply_markup: { remove_keyboard: true } });
         delete context.userContext.data.lastMessageId;
       }
     } catch (error) {

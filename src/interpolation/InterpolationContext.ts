@@ -87,8 +87,12 @@ export class InterpolationContextBuilder {
     
     builder.setData(flattenedData);
 
-    // Set parameters
-    builder.setParams(params);
+    // Set parameters - merge with params from localContext (Navigate action params)
+    const mergedParams = {
+      ...params,
+      ...(baseContext.localContext?.params || {})
+    };
+    builder.setParams(mergedParams);
 
     const context = builder.build();
 

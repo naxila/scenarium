@@ -58,6 +58,13 @@
                                     <td>Подсказка для пользователя</td>
                                 </tr>
                                 <tr>
+                                    <td><code>allowAttachments</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>false</td>
+                                    <td>Разрешить отправку вложений. ID вложений будут доступны по ключу <code>key_attachments</code></td>
+                                </tr>
+                                <tr>
                                     <td><code>onDone</code></td>
                                     <td>action</td>
                                     <td>❌</td>
@@ -90,7 +97,7 @@
                                     <td>boolean</td>
                                     <td>❌</td>
                                     <td>false</td>
-                                    <td>Очистить ввод после обработки</td>
+                                    <td>Очистить ввод после обработки (включая вложения)</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -179,6 +186,61 @@
 }</code></pre>
                     </div>
 
+                    <div class="example-card">
+                        <h3>Запрос с вложениями</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "userPhoto",
+  "hint": "Отправьте фото или документ:",
+  "allowAttachments": true,
+  "onDone": {
+    "action": "SendMessage",
+    "text": "Получено! Текст: {{userPhoto}}, Тип файла: {{userPhoto_attachments.0.type}}"
+  }
+}</code></pre>
+                        <p>При <code>allowAttachments: true</code>:</p>
+                        <ul>
+                            <li>Текст/caption сообщения сохраняется в <code>{{key}}</code></li>
+                            <li>Массив объектов вложений сохраняется в <code>{{key_attachments}}</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Структура объекта вложения</h3>
+                        <pre><code class="language-json">{
+  "type": "photo",       // тип: photo, document, video, audio, voice, video_note, sticker, animation
+  "fileId": "AgACAgIA...", // Telegram file_id для переотправки
+  "fileUniqueId": "AQADx...", // уникальный ID файла
+  "fileName": "doc.pdf",  // имя файла (для document, video, audio)
+  "mimeType": "image/jpeg", // MIME-тип (для document, video, audio, voice, animation)
+  "fileSize": 12345,      // размер в байтах
+  "width": 1280,          // ширина (для photo, video, animation, sticker)
+  "height": 720,          // высота (для photo, video, animation, sticker)
+  "duration": 30          // длительность в секундах (для video, audio, voice, animation, video_note)
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Переотправка полученного вложения (эхо)</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "media",
+  "hint": "Отправьте фото или видео:",
+  "allowAttachments": true,
+  "onDone": {
+    "action": "SendMessage",
+    "text": "Вот ваш файл ({{media_attachments.0.type}}):",
+    "attachments": [
+      {
+        "type": "{{media_attachments.0.type}}",
+        "fileId": "{{media_attachments.0.fileId}}"
+      }
+    ]
+  }
+}</code></pre>
+                        <p>Тип файла берётся из <code>{{media_attachments.0.type}}</code>, что позволяет корректно переотправить файл любого типа.</p>
+                    </div>
+
                     <h2>🔄 Логика работы</h2>
                     <div class="info-card">
                         <h3>Состояние ожидания ввода</h3>
@@ -193,12 +255,29 @@
 
                     <div class="info-card">
                         <h3>Обработка ввода</h3>
-                        <p>При получении текста от пользователя:</p>
+                        <p>При получении сообщения от пользователя:</p>
                         <ul>
-                            <li>Сохраняется в <code>{{key}}</code> где key - указанный ключ</li>
+                            <li>Текст (или caption для медиа) сохраняется в <code>{{key}}</code></li>
+                            <li>Если <code>allowAttachments: true</code> и есть вложения, массив объектов сохраняется в <code>{{key_attachments}}</code></li>
+                            <li>Каждый объект вложения содержит: type, fileId, fileUniqueId, а также метаданные (fileName, mimeType, fileSize, width, height, duration)</li>
                             <li>Выполняется действие <code>onDone</code> если настроено</li>
                             <li>Очищается состояние ожидания ввода</li>
-                            <li>При <code>clearInputOnDone: true</code> ввод удаляется из сессии</li>
+                            <li>При <code>clearInputOnDone: true</code> ввод и вложения удаляются из сессии</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Поддерживаемые типы вложений</h3>
+                        <p>При включенном <code>allowAttachments</code> обрабатываются следующие типы:</p>
+                        <ul>
+                            <li>Фото (photo)</li>
+                            <li>Документы (document)</li>
+                            <li>Видео (video)</li>
+                            <li>Аудио (audio)</li>
+                            <li>Голосовые сообщения (voice)</li>
+                            <li>Видео-заметки (video_note)</li>
+                            <li>Стикеры (sticker)</li>
+                            <li>Анимации (animation)</li>
                         </ul>
                     </div>
 

@@ -58,6 +58,13 @@
                                     <td>Hint for the user</td>
                                 </tr>
                                 <tr>
+                                    <td><code>allowAttachments</code></td>
+                                    <td>boolean</td>
+                                    <td>❌</td>
+                                    <td>false</td>
+                                    <td>Allow sending attachments. Attachment IDs will be available at <code>key_attachments</code></td>
+                                </tr>
+                                <tr>
                                     <td><code>onDone</code></td>
                                     <td>action</td>
                                     <td>❌</td>
@@ -90,7 +97,7 @@
                                     <td>boolean</td>
                                     <td>❌</td>
                                     <td>false</td>
-                                    <td>Clear input after processing</td>
+                                    <td>Clear input after processing (including attachments)</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -179,6 +186,61 @@
 }</code></pre>
                     </div>
 
+                    <div class="example-card">
+                        <h3>Request with Attachments</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "userPhoto",
+  "hint": "Send a photo or document:",
+  "allowAttachments": true,
+  "onDone": {
+    "action": "SendMessage",
+    "text": "Received! Text: {{userPhoto}}, File type: {{userPhoto_attachments.0.type}}"
+  }
+}</code></pre>
+                        <p>With <code>allowAttachments: true</code>:</p>
+                        <ul>
+                            <li>Message text/caption is saved in <code>{{key}}</code></li>
+                            <li>Array of attachment objects is saved in <code>{{key_attachments}}</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Attachment Object Structure</h3>
+                        <pre><code class="language-json">{
+  "type": "photo",       // type: photo, document, video, audio, voice, video_note, sticker, animation
+  "fileId": "AgACAgIA...", // Telegram file_id for re-sending
+  "fileUniqueId": "AQADx...", // unique file ID
+  "fileName": "doc.pdf",  // file name (for document, video, audio)
+  "mimeType": "image/jpeg", // MIME type (for document, video, audio, voice, animation)
+  "fileSize": 12345,      // size in bytes
+  "width": 1280,          // width (for photo, video, animation, sticker)
+  "height": 720,          // height (for photo, video, animation, sticker)
+  "duration": 30          // duration in seconds (for video, audio, voice, animation, video_note)
+}</code></pre>
+                    </div>
+
+                    <div class="example-card">
+                        <h3>Re-sending Received Attachment (Echo)</h3>
+                        <pre><code class="language-json">{
+  "action": "RequestInput",
+  "key": "media",
+  "hint": "Send a photo or video:",
+  "allowAttachments": true,
+  "onDone": {
+    "action": "SendMessage",
+    "text": "Here's your file ({{media_attachments.0.type}}):",
+    "attachments": [
+      {
+        "type": "{{media_attachments.0.type}}",
+        "fileId": "{{media_attachments.0.fileId}}"
+      }
+    ]
+  }
+}</code></pre>
+                        <p>File type is taken from <code>{{media_attachments.0.type}}</code>, allowing correct re-sending of any file type.</p>
+                    </div>
+
                     <h2>🔄 How it works</h2>
                     <div class="info-card">
                         <h3>Input waiting state</h3>
@@ -193,12 +255,29 @@
 
                     <div class="info-card">
                         <h3>Input processing</h3>
-                        <p>When receiving text from user:</p>
+                        <p>When receiving message from user:</p>
                         <ul>
-                            <li>Saved in <code>{{key}}</code> where key is the specified key</li>
+                            <li>Text (or caption for media) is saved in <code>{{key}}</code></li>
+                            <li>If <code>allowAttachments: true</code> and attachments are present, array of objects is saved in <code>{{key_attachments}}</code></li>
+                            <li>Each attachment object contains: type, fileId, fileUniqueId, and metadata (fileName, mimeType, fileSize, width, height, duration)</li>
                             <li>Executes <code>onDone</code> action if configured</li>
                             <li>Clears input waiting state</li>
-                            <li>When <code>clearInputOnDone: true</code> input is removed from session</li>
+                            <li>When <code>clearInputOnDone: true</code> input and attachments are removed from session</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Supported Attachment Types</h3>
+                        <p>When <code>allowAttachments</code> is enabled, the following types are processed:</p>
+                        <ul>
+                            <li>Photos (photo)</li>
+                            <li>Documents (document)</li>
+                            <li>Videos (video)</li>
+                            <li>Audio files (audio)</li>
+                            <li>Voice messages (voice)</li>
+                            <li>Video notes (video_note)</li>
+                            <li>Stickers (sticker)</li>
+                            <li>Animations (animation)</li>
                         </ul>
                     </div>
 

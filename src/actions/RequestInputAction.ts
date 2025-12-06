@@ -31,7 +31,16 @@ export class RequestInputAction extends BaseActionProcessor {
         
         // Interpolate the processed action with current context
         const interpolatedAction = this.interpolate(processedAction, interpolationContext);
-        const { hint = 'Enter value:', key, onDone, onCancel, cancelText = 'Cancel', removeHintOnCancel = false, clearInputOnDone = false } = interpolatedAction;
+        const { 
+          hint = 'Enter value:', 
+          key, 
+          onDone, 
+          onCancel, 
+          cancelText = 'Cancel', 
+          removeHintOnCancel = false, 
+          clearInputOnDone = false,
+          allowAttachments = false  // Новый параметр для разрешения вложений
+        } = interpolatedAction;
 
         if (!key || typeof key !== 'string') {
           console.warn('RequestInput: key is required and must be a string');
@@ -52,7 +61,8 @@ export class RequestInputAction extends BaseActionProcessor {
           onDone,
           onCancel,
           removeHintOnCancel,
-          clearInputOnDone
+          clearInputOnDone,
+          allowAttachments  // Сохраняем флаг для обработки вложений
         };
 
         try {
@@ -78,6 +88,11 @@ export class RequestInputAction extends BaseActionProcessor {
                 { text: String(cancelText), callback_data: actionId }
               ]]
             };
+            // Примечание: reply_keyboard не очищается при наличии inline_keyboard
+            // из-за ограничения Telegram API (reply_markup может быть только одного типа)
+          } else {
+            // Нет inline кнопки - очищаем reply keyboard
+            options.reply_markup = { remove_keyboard: true };
           }
 
           const message = await adapter.sendMessage(chatId, hint, options);
