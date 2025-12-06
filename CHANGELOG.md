@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4-alpha] - 2024-12-07
+
+### Added
+- **Navigate Action**: Added `params` parameter (object) that passes data to menu item context, accessible via `{{params.key}}` interpolation
+- **SendMessage Action**:
+  - `attachments` array support (replaces single `attachment`) - supports media groups for multiple files
+  - `replyKeyboard` as structured object with `buttons`, `resizeKeyboard`, `oneTimeKeyboard`, and `onSent` callback
+  - `onSent` callback for reply keyboard buttons - actions executed when button is pressed, with `value` accessible via `{{replyKeyboardValue}}`
+  - `url` support for inline buttons (opens external pages when `onClick` is not defined)
+  - `clearKeyboard` parameter (defaults to `true`) - clears reply keyboard when no other keyboard is specified
+- **RequestInput Action**:
+  - `allowAttachments` parameter - enables attachment support, stored in `key_attachments` array
+  - Enhanced attachment metadata - returns rich objects with `type`, `fileId`, `fileUniqueId`, `fileName`, `mimeType`, `fileSize`, `width`, `height`, `duration` (where applicable)
+  - Improved text extraction from `caption` when sending attachments with text
+- Documentation updates for all new features in both English and Russian
+
+### Fixed
+- Fixed text not being saved when sending attachments with text in `RequestInput`
+- Fixed reply keyboard not clearing when `SendMessage` is called from menu items
+- Fixed caching bug with reply keyboard actions (deep copy of `onSent` to prevent mutation)
+- Fixed keyboard clearing logic to respect Telegram API limitations (cannot send `inline_keyboard` and `remove_keyboard` simultaneously)
+
+### Improved
+- Better keyboard management - `clearKeyboard` defaults to `true` for cleaner UX
+- Enhanced attachment handling with full metadata support
+- Improved documentation with examples and API limitation notes
+
 ## [0.1.3-alpha] - 2024-10-23
 
 ### Added
