@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.5-alpha] - 2024-12-10
+
+### Added
+- **Full Context Object Interpolation**: Support for interpolating entire context objects (`{{params}}`, `{{data}}`, `{{env}}`, `{{local}}`) in addition to their properties
+  - When a string contains ONLY a single context object interpolation (e.g., `"{{params}}"`), the entire object is returned instead of being converted to a string
+  - Works in all scenarios: Navigate action params, Dump function, SendMessage attachments, etc.
+  - Makes it possible to pass all parameters at once: `"params": "{{params}}"` instead of listing each field individually
+
+### Fixed
+- **Interpolation System**: Fixed context object lookup to return the object itself when interpolating `{{params}}`, `{{data}}`, `{{env}}`, or `{{local}}` without properties
+- Previously, `{{params}}` would look for a variable named "params" inside `context.params` (resulting in undefined)
+- Now correctly returns the entire `context.params` object when appropriate
+
+### Improved
+- Better support for dynamic parameter passing between menu items
+- Simplified scenario syntax - no need to explicitly list all parameter fields when passing data
+- Enhanced debugging capabilities with Dump function now able to display entire context objects
+
 ## [0.1.4-alpha] - 2024-12-07
 
 ### Added
