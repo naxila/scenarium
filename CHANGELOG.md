@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6-alpha] - 2024-12-10
+
+### Fixed
+- **Media Group Handling**: Fixed video duplication issue in media groups by adding deduplication logic based on `message_id`
+  - Prevents the same video from being added twice when processing media groups
+  - Added logging to track video and document processing in media groups
+  - Same fix applied to all media types (photos, videos, documents)
+
 ## [0.1.5-alpha] - 2024-12-10
 
 ### Added

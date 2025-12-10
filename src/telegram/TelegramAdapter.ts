@@ -339,7 +339,7 @@ export class TelegramAdapter {
   private async handleMediaGroupMessage(userId: string, text: string, msg: any): Promise<void> {
     const mediaGroupId = msg.media_group_id;
     
-    console.log(`📎 Received media group message: ${mediaGroupId}, total buffered groups: ${this.mediaGroupBuffer.size}`);
+    console.log(`📎 Received media group message: ${mediaGroupId}, message_id: ${msg.message_id}, total buffered groups: ${this.mediaGroupBuffer.size}`);
     
     // Получаем или создаем буфер для этой группы
     let groupData = this.mediaGroupBuffer.get(mediaGroupId);
@@ -358,6 +358,13 @@ export class TelegramAdapter {
       groupData.timeout = setTimeout(() => {
         this.processMediaGroup(userId, mediaGroupId);
       }, 1000);
+    }
+    
+    // Проверяем, не добавлено ли уже это сообщение (дедупликация по message_id)
+    const isDuplicate = groupData.messages.some(m => m.message_id === msg.message_id);
+    if (isDuplicate) {
+      console.log(`⚠️ Skipping duplicate message_id ${msg.message_id} in media group ${mediaGroupId}`);
+      return;
     }
     
     // Добавляем сообщение в буфер
@@ -405,9 +412,11 @@ export class TelegramAdapter {
         allPhotos.push(largestPhoto);
       }
       if (msg.video) {
+        console.log(`📹 Processing video from message_id ${msg.message_id}:`, msg.video);
         allVideos.push(msg.video);
       }
       if (msg.document) {
+        console.log(`📄 Processing document from message_id ${msg.message_id}:`, msg.document);
         allDocuments.push(msg.document);
       }
     }
