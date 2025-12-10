@@ -1,6 +1,6 @@
 {
   "name": "scenarium",
-  "version": "0.1.6-alpha",
+  "version": "0.1.7-alpha",
   "description": "TypeScript library for creating Telegram bots from JSON scenarios",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

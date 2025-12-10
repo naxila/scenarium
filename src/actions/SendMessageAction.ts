@@ -44,7 +44,9 @@ export class SendMessageAction extends BaseActionProcessor {
           // Case 2: inlineActions is an array - process functions inside array elements
           else if (Array.isArray(action.inlineActions)) {
             console.log('🗺️ Processing inlineActions array with functions inside elements');
+            console.log('🗺️ Original inlineActions array:', JSON.stringify(action.inlineActions, null, 2));
             processedAction.inlineActions = await this.processInlineActionsArray(action.inlineActions, context, interpolationContext);
+            console.log('🗺️ Processed inlineActions array result:', JSON.stringify(processedAction.inlineActions, null, 2));
           }
         }
         
@@ -121,11 +123,12 @@ export class SendMessageAction extends BaseActionProcessor {
           
           // Добавляем inline клавиатуру если есть inlineActions
           if (interpolatedAction.inlineActions && Array.isArray(interpolatedAction.inlineActions) && interpolatedAction.inlineActions.length > 0) {
+            console.log('🔍 DEBUG SendMessage - Creating inline keyboard from actions:', JSON.stringify(interpolatedAction.inlineActions, null, 2));
             options.reply_markup = this.createCompactInlineKeyboard(
               interpolatedAction.inlineActions,
               messageActionIds // Передаем массив для сохранения ID действий
             );
-            console.log('🔍 DEBUG SendMessage - Using inline keyboard');
+            console.log('🔍 DEBUG SendMessage - Created inline keyboard:', JSON.stringify(options.reply_markup, null, 2));
           }
           // Добавляем Reply клавиатуру если есть replyKeyboard (объект с buttons внутри)
           else if (interpolatedAction.replyKeyboard && interpolatedAction.replyKeyboard.buttons) {
@@ -364,6 +367,9 @@ export class SendMessageAction extends BaseActionProcessor {
     const mediaGroupTypes = ['photo', 'video', 'document', 'audio'];
     const mediaItems: any[] = [];
     
+    // Определяем, есть ли inline клавиатура
+    const hasInlineKeyboard = options.reply_markup && options.reply_markup.inline_keyboard;
+    
     for (let i = 0; i < attachments.length; i++) {
       const attachment = attachments[i];
       const type = attachment.type || 'document';
@@ -385,8 +391,9 @@ export class SendMessageAction extends BaseActionProcessor {
         media: media
       };
       
-      // Caption только для первого элемента
-      if (i === 0 && caption && caption.trim()) {
+      // Caption только для первого элемента, НО:
+      // Если есть inline клавиатура, caption отправим отдельным сообщением с кнопками
+      if (i === 0 && caption && caption.trim() && !hasInlineKeyboard) {
         mediaItem.caption = caption;
         if (options.parse_mode) {
           mediaItem.parse_mode = options.parse_mode;
@@ -407,8 +414,17 @@ export class SendMessageAction extends BaseActionProcessor {
     
     console.log(`📎 Sending media group with ${mediaItems.length} items`);
     
-    // Отправляем media group
+    // Отправляем media group (NOTE: Telegram API не поддерживает reply_markup для media groups)
     const messages = await adapter.sendMediaGroup(chatId, mediaItems);
+    
+    // WORKAROUND: Если есть inline клавиатура, отправляем caption с кнопками отдельным сообщением
+    if (hasInlineKeyboard && caption && caption.trim()) {
+      console.log('📎 Media group sent. Sending caption with inline keyboard as separate message...');
+      await adapter.sendMessage(chatId, caption, { 
+        reply_markup: options.reply_markup,
+        parse_mode: options.parse_mode 
+      });
+    }
     
     // Возвращаем первое сообщение из группы
     return Array.isArray(messages) && messages.length > 0 ? messages[0] : messages;

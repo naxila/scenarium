@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.7-alpha] - 2024-12-11
+
+### Fixed
+- **Media Group with Inline Buttons**: Fixed inline keyboard not showing when sending media groups with `inlineActions`
+  - Telegram API doesn't support `reply_markup` parameter for `sendMediaGroup` method
+  - Workaround implemented: When sending media group (2+ attachments) with `inlineActions`, caption is now sent as a separate message with inline keyboard
+  - Media group is sent without caption, immediately followed by caption message with buttons
+  - Single attachment messages work as before with caption and buttons together
+  - This ensures inline buttons are always visible when using multiple attachments
+
+### Improved
+- **Detailed Logging**: Added comprehensive debug logging for `inlineActions` processing in `SendMessageAction`
+  - Logs original and processed `inlineActions` arrays with full JSON structure
+  - Logs created inline keyboard structure for debugging
+  - Helps troubleshooting button-related issues
+
 ## [0.1.6-alpha] - 2024-12-10
 
 ### Fixed
@@ -12,6 +28,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Prevents the same video from being added twice when processing media groups
   - Added logging to track video and document processing in media groups
   - Same fix applied to all media types (photos, videos, documents)
+- **Media Group with Inline Buttons**: Fixed inline keyboard not showing when sending media groups
+  - Telegram API doesn't support `reply_markup` for `sendMediaGroup` method
+  - Workaround: When sending media group with `inlineActions`, caption is now sent as a separate message with inline keyboard
+  - Media group is sent without caption, followed by caption message with buttons
+  - This ensures buttons are always visible when using multiple attachments
+
+### Improved
+- **Detailed Logging**: Added comprehensive debug logging for `inlineActions` processing in `SendMessageAction`
+  - Logs original and processed `inlineActions` arrays
+  - Logs created inline keyboard structure
+  - Helps debugging button-related issues
 
 ## [0.1.5-alpha] - 2024-12-10
 
