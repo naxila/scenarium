@@ -50,16 +50,25 @@ export class InterpolationSystem {
       // Handle explicit prefixes
       if (variable.startsWith('local.')) {
         const varName = variable.substring(6);
-        value = context.local.findVariable(varName);
+        // If no varName (just "local"), return all local scopes
+        if (!varName) {
+          const allScopes = context.local.getAllScopes();
+          value = allScopes.length > 0 ? Object.assign({}, ...allScopes.reverse()) : undefined;
+        } else {
+          value = context.local.findVariable(varName);
+        }
       } else if (variable.startsWith('data.')) {
         const varName = variable.substring(5);
-        value = this.getNestedValue(context.data, varName);
+        // If no varName (just "data"), return whole data object
+        value = varName ? this.getNestedValue(context.data, varName) : context.data;
       } else if (variable.startsWith('env.')) {
         const varName = variable.substring(4);
-        value = this.getNestedValue(context.env, varName);
+        // If no varName (just "env"), return whole env object
+        value = varName ? this.getNestedValue(context.env, varName) : context.env;
       } else if (variable.startsWith('params.')) {
         const varName = variable.substring(7);
-        value = this.getNestedValue(context.params, varName);
+        // If no varName (just "params"), return whole params object
+        value = varName ? this.getNestedValue(context.params, varName) : context.params;
       } else {
         // Search by priority: local -> params -> data -> env
         value = this.findVariableByPriorityRaw(context, variable);
@@ -88,21 +97,38 @@ export class InterpolationSystem {
       // Handle explicit prefixes
       if (trimmedVar.startsWith('local.')) {
         const varName = trimmedVar.substring(6);
+        // If no varName (just "local"), return stringified local scopes
+        if (!varName) {
+          const allScopes = context.local.getAllScopes();
+          return allScopes.length > 0 ? this.formatValue(Object.assign({}, ...allScopes.reverse())) : '{}';
+        }
         return this.getVariableValue(context, 'local', varName);
       }
       
       if (trimmedVar.startsWith('data.')) {
         const varName = trimmedVar.substring(5);
+        // If no varName (just "data"), return stringified data object
+        if (!varName) {
+          return context.data ? this.formatValue(context.data) : '{}';
+        }
         return this.getVariableValue(context, 'data', varName);
       }
       
       if (trimmedVar.startsWith('env.')) {
         const varName = trimmedVar.substring(4);
+        // If no varName (just "env"), return stringified env object
+        if (!varName) {
+          return context.env ? this.formatValue(context.env) : '{}';
+        }
         return this.getVariableValue(context, 'env', varName);
       }
       
       if (trimmedVar.startsWith('params.')) {
         const varName = trimmedVar.substring(7);
+        // If no varName (just "params"), return stringified params object
+        if (!varName) {
+          return context.params ? this.formatValue(context.params) : '{}';
+        }
         return this.getVariableValue(context, 'params', varName);
       }
       
@@ -148,6 +174,24 @@ export class InterpolationSystem {
    * Find variable by priority: local -> params -> data -> env
    */
   private static findVariableByPriority(context: InterpolationContext, varName: string): string {
+    // Special case: if varName is exactly 'params', 'data', 'env', or 'local' - return stringified object
+    if (varName === 'params' && context.params) {
+      return this.formatValue(context.params);
+    }
+    if (varName === 'data' && context.data) {
+      return this.formatValue(context.data);
+    }
+    if (varName === 'env' && context.env) {
+      return this.formatValue(context.env);
+    }
+    if (varName === 'local') {
+      const allScopes = context.local.getAllScopes();
+      if (allScopes.length > 0) {
+        return this.formatValue(Object.assign({}, ...allScopes.reverse()));
+      }
+      return '{}';
+    }
+    
     // Debug log for response.* variables
     if (varName.startsWith('response.')) {
       // eslint-disable-next-line no-console
@@ -199,6 +243,25 @@ export class InterpolationSystem {
    * Find variable by priority: local -> params -> data -> env (returns raw value)
    */
   private static findVariableByPriorityRaw(context: InterpolationContext, varName: string): any {
+    // Special case: if varName is exactly 'params', 'data', 'env', or 'local' - return the object itself
+    if (varName === 'params' && context.params) {
+      return context.params;
+    }
+    if (varName === 'data' && context.data) {
+      return context.data;
+    }
+    if (varName === 'env' && context.env) {
+      return context.env;
+    }
+    if (varName === 'local') {
+      // For local, return all scopes as a single object
+      const allScopes = context.local.getAllScopes();
+      if (allScopes.length > 0) {
+        return Object.assign({}, ...allScopes.reverse());
+      }
+      return undefined;
+    }
+    
     // 1. Search in local scope
     let value = context.local.findVariable(varName);
     if (value !== undefined) {

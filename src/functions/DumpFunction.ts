@@ -30,12 +30,9 @@ export class DumpFunction {
     
     // Если value - это строка с интерполяцией, интерполируем её
     if (typeof value === 'string' && (value.includes('{{') || value.includes('${'))) {
-      console.log('🔍 Dump: Interpolating string value');
       try {
         const interpolationContext = InterpolationContextBuilder.createContext(context, params);
-        console.log('🔍 Before interpolation, value:', value);
         value = await InterpolationSystem.interpolateAndClean(value, interpolationContext);
-        console.log('🔍 After interpolation, value:', value, 'type:', typeof value);
       } catch (e) {
         console.error('🔍 Dump: Failed to interpolate value:', e);
         return `[Error interpolating: ${e instanceof Error ? e.message : String(e)}]`;
