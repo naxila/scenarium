@@ -20,6 +20,7 @@ export class TelegramAdapter {
   private botConstructor: TelegramBotConstructor;
   private botName: string;
   private analyticsCallbacks?: AnalyticsCallbacks;
+  private mediaGroupBuffer: Map<string, { messages: any[], timeout: NodeJS.Timeout }> = new Map();
 
   constructor(token: string, botConstructor: TelegramBotConstructor, botName: string = 'default', analyticsCallbacks?: AnalyticsCallbacks) {
     this.bot = new TelegramBot(token, { polling: true });
@@ -89,7 +90,12 @@ export class TelegramAdapter {
       }
 
       try {
-        await this.handleUserMessage(userId, text, msg);
+        // Проверяем, является ли сообщение частью media group
+        if (msg.media_group_id) {
+          await this.handleMediaGroupMessage(userId, text, msg);
+        } else {
+          await this.handleUserMessage(userId, text, msg);
+        }
       } catch (error) {
         console.error('Error handling message:', error);
         this.sendSafeMessage(msg.chat.id, '❌ Произошла ошибка при обработке сообщения');
@@ -324,6 +330,101 @@ export class TelegramAdapter {
 
     // Если никто не ждет контакт, отправляем сообщение
     this.sendSafeMessage(msg.chat.id, '❌ Нет обработчика для контактов в текущем меню.');
+  }
+
+  /**
+   * Обработка сообщения из media group
+   * Буферизирует сообщения и обрабатывает их все вместе после паузы
+   */
+  private async handleMediaGroupMessage(userId: string, text: string, msg: any): Promise<void> {
+    const mediaGroupId = msg.media_group_id;
+    
+    console.log(`📎 Received media group message: ${mediaGroupId}, total buffered groups: ${this.mediaGroupBuffer.size}`);
+    
+    // Получаем или создаем буфер для этой группы
+    let groupData = this.mediaGroupBuffer.get(mediaGroupId);
+    
+    if (!groupData) {
+      groupData = {
+        messages: [],
+        timeout: setTimeout(() => {
+          this.processMediaGroup(userId, mediaGroupId);
+        }, 1000) // Ждем 1 секунду после последнего сообщения
+      };
+      this.mediaGroupBuffer.set(mediaGroupId, groupData);
+    } else {
+      // Сбрасываем таймер, так как пришло новое сообщение из группы
+      clearTimeout(groupData.timeout);
+      groupData.timeout = setTimeout(() => {
+        this.processMediaGroup(userId, mediaGroupId);
+      }, 1000);
+    }
+    
+    // Добавляем сообщение в буфер
+    groupData.messages.push(msg);
+    console.log(`📎 Added message to media group ${mediaGroupId}, total messages: ${groupData.messages.length}`);
+  }
+
+  /**
+   * Обработка собранной media group
+   */
+  private async processMediaGroup(userId: string, mediaGroupId: string): Promise<void> {
+    const groupData = this.mediaGroupBuffer.get(mediaGroupId);
+    
+    if (!groupData || groupData.messages.length === 0) {
+      console.warn(`⚠️ No messages found for media group ${mediaGroupId}`);
+      return;
+    }
+    
+    console.log(`📎 Processing media group ${mediaGroupId} with ${groupData.messages.length} messages`);
+    
+    // Удаляем из буфера
+    this.mediaGroupBuffer.delete(mediaGroupId);
+    
+    // НЕ сортируем - используем порядок прихода в буфер
+    // Это наиболее близко к реальному порядку отправки от пользователя
+    // message_id ненадежен, т.к. отражает порядок прихода на сервер, а не выбора
+    const messages = groupData.messages;
+    
+    // Берем caption из первого сообщения (если есть)
+    const firstMessage = messages[0];
+    const text = firstMessage.caption || firstMessage.text || '';
+    
+    // Создаем объединенное сообщение со всеми вложениями
+    const combinedMessage = { ...firstMessage };
+    
+    // Собираем все вложения в порядке прихода сообщений
+    const allPhotos: any[] = [];
+    const allVideos: any[] = [];
+    const allDocuments: any[] = [];
+    
+    for (const msg of messages) {
+      // msg.photo - это массив размеров одного фото, берем только самый большой (последний)
+      if (msg.photo && Array.isArray(msg.photo) && msg.photo.length > 0) {
+        const largestPhoto = msg.photo[msg.photo.length - 1];
+        allPhotos.push(largestPhoto);
+      }
+      if (msg.video) {
+        allVideos.push(msg.video);
+      }
+      if (msg.document) {
+        allDocuments.push(msg.document);
+      }
+    }
+    
+    console.log(`📎 Media group composition (order of arrival): ${allPhotos.length} photos, ${allVideos.length} videos, ${allDocuments.length} documents`);
+    
+    // Добавляем собранные вложения в combinedMessage
+    if (allPhotos.length > 0) combinedMessage.photo_group = allPhotos;
+    if (allVideos.length > 0) combinedMessage.video_group = allVideos;
+    if (allDocuments.length > 0) combinedMessage.document_group = allDocuments;
+    
+    // Устанавливаем флаг media group
+    combinedMessage.is_media_group = true;
+    combinedMessage.media_group_count = groupData.messages.length;
+    
+    // Обрабатываем как обычное сообщение
+    await this.handleUserMessage(userId, text, combinedMessage);
   }
 
   private async handleUserMessage(userId: string, text: string, msg: any): Promise<void> {

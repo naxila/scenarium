@@ -65,10 +65,24 @@ export class SendMessageAction extends BaseActionProcessor {
           }
         }
         
+        // Support for inline functions in attachments field
+        let attachments = interpolatedAction.attachments;
+        if (attachments && typeof attachments === 'object' && (attachments as any).function) {
+          try {
+            console.log('🔍 SendMessageAction - Evaluating attachments function:', attachments);
+            const evaluated = await FunctionProcessor.evaluateResult(attachments, {}, context, interpolationContext);
+            console.log('🔍 SendMessageAction - Attachments function result:', evaluated);
+            attachments = evaluated;
+          } catch (e) {
+            console.error('Failed to evaluate attachments function:', e);
+            attachments = [];
+          }
+        }
+        
         // Check that text is not empty (unless we have attachments)
-        const hasAttachments = interpolatedAction.attachments && 
-          Array.isArray(interpolatedAction.attachments) && 
-          interpolatedAction.attachments.length > 0;
+        const hasAttachments = attachments && 
+          Array.isArray(attachments) && 
+          attachments.length > 0;
         
         if (!hasAttachments && (!text || typeof text !== 'string' || text.trim() === '')) {
           console.warn('⚠️ Empty or invalid text detected and no attachments, skipping message send');
@@ -199,7 +213,7 @@ export class SendMessageAction extends BaseActionProcessor {
           
           // Отправка вложений если есть
           if (hasAttachments) {
-            message = await this.sendAttachments(adapter, chatId, interpolatedAction.attachments, options, text);
+            message = await this.sendAttachments(adapter, chatId, attachments, options, text);
           } else if (updateTarget && updateTarget.messageId) {
             console.log('🔍 SendMessage DEBUG - Updating existing message');
             const result = await adapter.editMessageText(chatId, Number(updateTarget.messageId), text, options);

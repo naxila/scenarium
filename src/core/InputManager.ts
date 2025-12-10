@@ -85,8 +85,25 @@ export class InputManager {
   }> {
     const attachments: Array<any> = [];
     
-    // Photo - array of sizes, take the largest
-    if (message.photo && Array.isArray(message.photo) && message.photo.length > 0) {
+    // Media Group: Photo group (multiple photos)
+    if (message.photo_group && Array.isArray(message.photo_group) && message.photo_group.length > 0) {
+      console.log(`📎 Extracting ${message.photo_group.length} photos from photo_group`);
+      // photo_group уже содержит только самые большие размеры каждого фото
+      for (const photo of message.photo_group) {
+        if (photo.file_id) {
+          attachments.push({
+            type: 'photo',
+            fileId: photo.file_id,
+            fileUniqueId: photo.file_unique_id,
+            fileSize: photo.file_size,
+            width: photo.width,
+            height: photo.height
+          });
+        }
+      }
+    }
+    // Single Photo - array of sizes, take the largest
+    else if (message.photo && Array.isArray(message.photo) && message.photo.length > 0) {
       const largestPhoto = message.photo[message.photo.length - 1];
       if (largestPhoto.file_id) {
         attachments.push({
@@ -97,6 +114,43 @@ export class InputManager {
           width: largestPhoto.width,
           height: largestPhoto.height
         });
+      }
+    }
+    
+    // Media Group: Video group
+    if (message.video_group && Array.isArray(message.video_group) && message.video_group.length > 0) {
+      console.log(`📎 Extracting ${message.video_group.length} videos from video_group`);
+      for (const video of message.video_group) {
+        if (video.file_id) {
+          attachments.push({
+            type: 'video',
+            fileId: video.file_id,
+            fileUniqueId: video.file_unique_id,
+            fileName: video.file_name,
+            mimeType: video.mime_type,
+            fileSize: video.file_size,
+            width: video.width,
+            height: video.height,
+            duration: video.duration
+          });
+        }
+      }
+    }
+    
+    // Media Group: Document group
+    if (message.document_group && Array.isArray(message.document_group) && message.document_group.length > 0) {
+      console.log(`📎 Extracting ${message.document_group.length} documents from document_group`);
+      for (const document of message.document_group) {
+        if (document.file_id) {
+          attachments.push({
+            type: 'document',
+            fileId: document.file_id,
+            fileUniqueId: document.file_unique_id,
+            fileName: document.file_name,
+            mimeType: document.mime_type,
+            fileSize: document.file_size
+          });
+        }
       }
     }
     
