@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10-alpha] - 2024-12-15
+
+### Fixed
+- **Media Group with Reply Keyboard**: Added support for reply keyboard in media groups
+  - Previously only inline keyboard was supported for media groups
+  - Now reply keyboard is also sent as a separate message with caption after media group
+  - Telegram API limitation: `sendMediaGroup` doesn't support `reply_markup`, so workaround sends caption with keyboard as separate message
+
 ## [0.1.9-alpha] - 2024-12-15
 
 ### Fixed

@@ -338,8 +338,11 @@ export class SendMessageAction extends BaseActionProcessor {
     const mediaGroupTypes = ['photo', 'video', 'document', 'audio'];
     const mediaItems: any[] = [];
     
-    // Определяем, есть ли inline клавиатура
+    // Определяем, есть ли inline клавиатура или reply клавиатура
+    // Telegram API не поддерживает reply_markup для media groups
     const hasInlineKeyboard = options.reply_markup && options.reply_markup.inline_keyboard;
+    const hasReplyKeyboard = options.reply_markup && options.reply_markup.keyboard;
+    const hasAnyKeyboard = hasInlineKeyboard || hasReplyKeyboard;
     
     for (let i = 0; i < attachments.length; i++) {
       const attachment = attachments[i];
@@ -363,8 +366,8 @@ export class SendMessageAction extends BaseActionProcessor {
       };
       
       // Caption только для первого элемента, НО:
-      // Если есть inline клавиатура, caption отправим отдельным сообщением с кнопками
-      if (i === 0 && caption && caption.trim() && !hasInlineKeyboard) {
+      // Если есть любая клавиатура (inline или reply), caption отправим отдельным сообщением с кнопками
+      if (i === 0 && caption && caption.trim() && !hasAnyKeyboard) {
         mediaItem.caption = caption;
         if (options.parse_mode) {
           mediaItem.parse_mode = options.parse_mode;
@@ -388,9 +391,10 @@ export class SendMessageAction extends BaseActionProcessor {
     // Отправляем media group (NOTE: Telegram API не поддерживает reply_markup для media groups)
     const messages = await adapter.sendMediaGroup(chatId, mediaItems);
     
-    // WORKAROUND: Если есть inline клавиатура, отправляем caption с кнопками отдельным сообщением
-    if (hasInlineKeyboard && caption && caption.trim()) {
-      console.log('📎 Media group sent. Sending caption with inline keyboard as separate message...');
+    // WORKAROUND: Если есть любая клавиатура (inline или reply), отправляем caption с кнопками отдельным сообщением
+    if (hasAnyKeyboard && caption && caption.trim()) {
+      const keyboardType = hasInlineKeyboard ? 'inline keyboard' : 'reply keyboard';
+      console.log(`📎 Media group sent. Sending caption with ${keyboardType} as separate message...`);
       await adapter.sendMessage(chatId, caption, { 
         reply_markup: options.reply_markup,
         parse_mode: options.parse_mode 
