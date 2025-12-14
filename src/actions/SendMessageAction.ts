@@ -135,8 +135,10 @@ export class SendMessageAction extends BaseActionProcessor {
             const replyKb = interpolatedAction.replyKeyboard;
             const buttons = Array.isArray(replyKb.buttons) ? replyKb.buttons : [];
             if (buttons.length > 0) {
+              // Обрабатываем функции в поле text кнопок перед созданием клавиатуры
+              const processedButtons = await this.processReplyKeyboardButtons(buttons, context, interpolationContext);
               options.reply_markup = this.createReplyKeyboard(
-                buttons,
+                processedButtons,
                 replyKb.resizeKeyboard !== false, // по умолчанию true
                 replyKb.oneTimeKeyboard === true // по умолчанию false
               );
@@ -575,6 +577,62 @@ export class SendMessageAction extends BaseActionProcessor {
    * - object with text and value: display text, but value is what gets sent (we map it)
    * - object with text and onClick: display text, execute onClick action when pressed
    */
+  /**
+   * Обрабатывает функции в поле text кнопок replyKeyboard
+   */
+  private async processReplyKeyboardButtons(buttons: any[], context: ProcessingContext, interpolationContext: any): Promise<any[]> {
+    const processedButtons = [];
+    
+    for (const row of buttons) {
+      if (Array.isArray(row)) {
+        // Ряд кнопок
+        const processedRow = [];
+        for (const btn of row) {
+          if (typeof btn === 'string') {
+            processedRow.push(btn);
+          } else if (typeof btn === 'object' && btn !== null) {
+            const processedBtn = { ...btn };
+            // Обрабатываем функцию в поле text
+            if (btn.text && typeof btn.text === 'object' && btn.text.function) {
+              try {
+                const evaluated = await FunctionProcessor.evaluateResult(btn.text, {}, context, interpolationContext);
+                processedBtn.text = String(evaluated ?? '');
+              } catch (e) {
+                console.error('❌ Failed to evaluate text function in replyKeyboard button:', e);
+                processedBtn.text = '❌ Error';
+              }
+            }
+            processedRow.push(processedBtn);
+          } else {
+            processedRow.push(btn);
+          }
+        }
+        processedButtons.push(processedRow);
+      } else if (typeof row === 'string') {
+        // Простая строка
+        processedButtons.push(row);
+      } else if (typeof row === 'object' && row !== null) {
+        // Одна кнопка-объект
+        const processedBtn = { ...row };
+        // Обрабатываем функцию в поле text
+        if (row.text && typeof row.text === 'object' && row.text.function) {
+          try {
+            const evaluated = await FunctionProcessor.evaluateResult(row.text, {}, context, interpolationContext);
+            processedBtn.text = String(evaluated ?? '');
+          } catch (e) {
+            console.error('❌ Failed to evaluate text function in replyKeyboard button:', e);
+            processedBtn.text = '❌ Error';
+          }
+        }
+        processedButtons.push(processedBtn);
+      } else {
+        processedButtons.push(row);
+      }
+    }
+    
+    return processedButtons;
+  }
+
   private createReplyKeyboard(buttons: any[], resizeKeyboard: boolean, oneTimeKeyboard: boolean): any {
     const keyboard = [];
     
