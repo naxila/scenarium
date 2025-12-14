@@ -636,8 +636,9 @@ export class TelegramAdapter {
     }
     
     console.log('🔍 DEBUG handleReplyKeyboardResponse - Button search result:', {
-      matchedButton: matchedButton ? JSON.stringify(matchedButton) : null,
-      matchedValue
+      matchedButton: matchedButton ? JSON.stringify(matchedButton).substring(0, 200) : null,
+      matchedValue,
+      hasOnClick: matchedButton && typeof matchedButton === 'object' ? !!matchedButton.onClick : false
     });
     
     // Если кнопка найдена
@@ -656,7 +657,6 @@ export class TelegramAdapter {
       
       // Если у кнопки есть свой onClick - выполняем его
       if (typeof matchedButton === 'object' && matchedButton.onClick) {
-        console.log('🔍 DEBUG - Executing button onClick');
         await this.botConstructor.processUserAction(userId, matchedButton.onClick);
         return true;
       }

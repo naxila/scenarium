@@ -141,24 +141,55 @@ export class SendMessageAction extends BaseActionProcessor {
                 replyKb.oneTimeKeyboard === true // по умолчанию false
               );
               
-              // Если есть onSent - сохраняем для обработки ответа через updateUserContext
-              // ВАЖНО: Делаем ГЛУБОКУЮ КОПИЮ onSent и buttons, потому что это ссылки
-              // на объекты в сценарии, и интерполяция их модифицирует навсегда!
+              // Сохраняем состояние reply keyboard если есть onSent ИЛИ onClick в кнопках
+              // ВАЖНО: onClick и onSent - это разные колбэки:
+              // - onClick - индивидуальный для каждой кнопки
+              // - onSent - общий для всех кнопок (выполняется если у кнопки нет onClick)
               const originalOnSent = action.replyKeyboard?.onSent;
               const originalButtons = action.replyKeyboard?.buttons;
-              if (originalOnSent) {
+              
+              // Проверяем, есть ли onClick в оригинальных кнопках (до интерполяции)
+              // onClick должен быть в оригинальных кнопках, так как интерполяция может его удалить
+              const hasOnClickInButtons = originalButtons?.some((row: any) => {
+                const rowButtons = Array.isArray(row) ? row : [row];
+                return rowButtons.some((btn: any) => typeof btn === 'object' && btn.onClick);
+              });
+              
+              // Также проверяем в интерполированных кнопках (на случай если onClick был добавлен через интерполяцию)
+              const hasOnClickInInterpolated = buttons.some((row: any) => {
+                const rowButtons = Array.isArray(row) ? row : [row];
+                return rowButtons.some((btn: any) => typeof btn === 'object' && btn.onClick);
+              });
+              
+              const hasOnClick = hasOnClickInButtons || hasOnClickInInterpolated;
+              
+              
+              // Сохраняем состояние если есть onSent ИЛИ onClick в кнопках
+              if (originalOnSent || hasOnClick) {
                 hasNewReplyKeyboardWithOnSent = true;
-                // Глубокая копия чтобы не модифицировать исходный сценарий
-                const onSentCopy = JSON.parse(JSON.stringify(originalOnSent));
+                // Глубокая копия оригинальных кнопок (чтобы сохранить onClick до интерполяции)
                 const buttonsCopy = JSON.parse(JSON.stringify(originalButtons));
+                
+                // Обрабатываем onClick в кнопках через processFunctionsInObject
+                // Это нужно для обработки функций внутри onClick (например, Switch)
+                for (const row of buttonsCopy) {
+                  const rowButtons = Array.isArray(row) ? row : [row];
+                  for (const btn of rowButtons) {
+                    if (typeof btn === 'object' && btn.onClick) {
+                      // Обрабатываем функции в onClick перед сохранением
+                      btn.onClick = await this.processFunctionsInObject(btn.onClick, context, interpolationContext);
+                    }
+                  }
+                }
+                
+                const onSentCopy = originalOnSent ? JSON.parse(JSON.stringify(originalOnSent)) : undefined;
                 // Используем updateUserContext для правильного сохранения в SessionManager
                 botConstructor.updateUserContext(currentUserId, {
                   awaitingReplyKeyboard: {
-                    buttons: buttonsCopy,  // копия кнопок
-                    onSent: onSentCopy     // копия onSent
+                    buttons: buttonsCopy,  // копия кнопок с обработанными onClick
+                    onSent: onSentCopy     // копия onSent (может быть undefined если только onClick)
                   }
                 });
-                console.log('🔍 DEBUG SendMessage - SET awaitingReplyKeyboard with DEEP COPY of onSent');
               }
             }
           }
