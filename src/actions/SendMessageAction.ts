@@ -148,36 +148,25 @@ export class SendMessageAction extends BaseActionProcessor {
               // - onClick - индивидуальный для каждой кнопки
               // - onSent - общий для всех кнопок (выполняется если у кнопки нет onClick)
               const originalOnSent = action.replyKeyboard?.onSent;
-              const originalButtons = action.replyKeyboard?.buttons;
               
-              // Проверяем, есть ли onClick в оригинальных кнопках (до интерполяции)
-              // onClick должен быть в оригинальных кнопках, так как интерполяция может его удалить
-              const hasOnClickInButtons = originalButtons?.some((row: any) => {
+              // Проверяем, есть ли onClick в обработанных кнопках (после обработки функций)
+              const hasOnClick = processedButtons.some((row: any) => {
                 const rowButtons = Array.isArray(row) ? row : [row];
-                return rowButtons.some((btn: any) => typeof btn === 'object' && btn.onClick);
+                return rowButtons.some((btn: any) => typeof btn === 'object' && btn && btn.onClick);
               });
-              
-              // Также проверяем в интерполированных кнопках (на случай если onClick был добавлен через интерполяцию)
-              const hasOnClickInInterpolated = buttons.some((row: any) => {
-                const rowButtons = Array.isArray(row) ? row : [row];
-                return rowButtons.some((btn: any) => typeof btn === 'object' && btn.onClick);
-              });
-              
-              const hasOnClick = hasOnClickInButtons || hasOnClickInInterpolated;
-              
               
               // Сохраняем состояние если есть onSent ИЛИ onClick в кнопках
               if (originalOnSent || hasOnClick) {
                 hasNewReplyKeyboardWithOnSent = true;
-                // Глубокая копия оригинальных кнопок (чтобы сохранить onClick до интерполяции)
-                const buttonsCopy = JSON.parse(JSON.stringify(originalButtons));
+                // Глубокая копия обработанных кнопок (с результатами функций)
+                const buttonsCopy = JSON.parse(JSON.stringify(processedButtons));
                 
                 // Обрабатываем onClick в кнопках через processFunctionsInObject
                 // Это нужно для обработки функций внутри onClick (например, Switch)
                 for (const row of buttonsCopy) {
                   const rowButtons = Array.isArray(row) ? row : [row];
                   for (const btn of rowButtons) {
-                    if (typeof btn === 'object' && btn.onClick) {
+                    if (typeof btn === 'object' && btn && btn.onClick) {
                       // Обрабатываем функции в onClick перед сохранением
                       btn.onClick = await this.processFunctionsInObject(btn.onClick, context, interpolationContext);
                     }
@@ -188,7 +177,7 @@ export class SendMessageAction extends BaseActionProcessor {
                 // Используем updateUserContext для правильного сохранения в SessionManager
                 botConstructor.updateUserContext(currentUserId, {
                   awaitingReplyKeyboard: {
-                    buttons: buttonsCopy,  // копия кнопок с обработанными onClick
+                    buttons: buttonsCopy,  // обработанные кнопки с результатами функций и обработанными onClick
                     onSent: onSentCopy     // копия onSent (может быть undefined если только onClick)
                   }
                 });
