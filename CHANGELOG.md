@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9-alpha] - 2024-12-15
+
+### Fixed
+- **Reply Keyboard Functions**: Fixed functions in reply keyboard button `text` and `value` fields not being evaluated before keyboard creation
+  - Functions (e.g., `Equals`) in button text are now properly evaluated before the keyboard is sent to Telegram
+  - Functions work in button list, `text`, `value`, and `onClick` fields
+  - Processed button results (with evaluated text) are correctly stored for click matching
+- **RequestApi onFailure**: Fixed `onFailure` callback not triggering when API returns successful HTTP status but `ok: false` in response body
+  - Now checks both HTTP status (`res.ok`) and response body `ok` field
+  - `onFailure` correctly triggers for application-level errors even with successful HTTP status codes
+  - Improved error message extraction from response body
+
+### Improved
+- Removed excessive debug logging throughout the codebase
+- Better error handling for API responses with mixed success indicators
+
 ## [0.1.8-alpha] - 2024-12-14
 
 ### Fixed

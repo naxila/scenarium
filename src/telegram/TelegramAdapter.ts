@@ -478,19 +478,10 @@ export class TelegramAdapter {
 
     // Проверка: ожидается ли ответ от Reply Keyboard
     const awaitingReplyKb = userContext?.awaitingReplyKeyboard;
-    console.log('🔍 DEBUG handleUserMessage - checking awaitingReplyKeyboard:', {
-      userId,
-      text,
-      hasAwaitingReplyKb: !!awaitingReplyKb,
-      awaitingReplyKb: awaitingReplyKb ? JSON.stringify(awaitingReplyKb).substring(0, 200) : null,
-      userContextKeys: userContext ? Object.keys(userContext) : []
-    });
     
     if (awaitingReplyKb && text.trim()) {
       try {
-        console.log('🔍 DEBUG - Processing reply keyboard response for text:', text);
         const handled = await this.handleReplyKeyboardResponse(userId, text, awaitingReplyKb);
-        console.log('🔍 DEBUG - Reply keyboard handled:', handled);
         if (handled) return;
       } catch (error) {
         console.error('Error processing reply keyboard response:', error);
@@ -546,7 +537,6 @@ export class TelegramAdapter {
     }
 
     try {
-      console.log('🔍 Callback data received:', data);
       
       const actionMappingService = ActionMappingService.getInstance();
       const action = actionMappingService.getAction(data);
@@ -609,12 +599,6 @@ export class TelegramAdapter {
    * Handle response from Reply Keyboard
    */
   private async handleReplyKeyboardResponse(userId: string, text: string, awaitingReplyKb: any): Promise<boolean> {
-    console.log('🔍 DEBUG handleReplyKeyboardResponse - START:', {
-      userId,
-      text,
-      awaitingReplyKb: JSON.stringify(awaitingReplyKb).substring(0, 300)
-    });
-    
     const { buttons, onSent } = awaitingReplyKb;
     
     // Ищем кнопку по тексту
@@ -635,25 +619,10 @@ export class TelegramAdapter {
       if (matchedButton) break;
     }
     
-    console.log('🔍 DEBUG handleReplyKeyboardResponse - Button search result:', {
-      matchedButton: matchedButton ? JSON.stringify(matchedButton).substring(0, 200) : null,
-      matchedValue,
-      hasOnClick: matchedButton && typeof matchedButton === 'object' ? !!matchedButton.onClick : false
-    });
-    
     // Если кнопка найдена
     if (matchedButton) {
-      console.log(`🔘 Reply keyboard button pressed: "${text}", value: "${matchedValue}"`);
-      
       // Очищаем состояние ожидания ПЕРЕД выполнением действия
-      console.log('🔍 DEBUG - Clearing awaitingReplyKeyboard BEFORE action');
       this.botConstructor.updateUserContext(userId, { awaitingReplyKeyboard: undefined });
-      
-      // Проверим что очистилось
-      const contextAfterClear = this.botConstructor.getUserContext(userId);
-      console.log('🔍 DEBUG - Context after clear:', {
-        awaitingReplyKb: !!contextAfterClear?.awaitingReplyKeyboard
-      });
       
       // Если у кнопки есть свой onClick - выполняем его
       if (typeof matchedButton === 'object' && matchedButton.onClick) {
@@ -663,7 +632,6 @@ export class TelegramAdapter {
       
       // Иначе выполняем общий onSent с переданным value
       if (onSent) {
-        console.log('🔍 DEBUG - Executing onSent');
         // Сохраняем value в контекст перед выполнением onSent
         this.botConstructor.updateUserContext(userId, { 
           replyKeyboardValue: matchedValue,
@@ -676,7 +644,6 @@ export class TelegramAdapter {
     
     // Кнопка не найдена - но все равно обрабатываем onSent если есть
     if (onSent) {
-      console.log(`🔘 Reply keyboard custom text (not matched): "${text}"`);
       this.botConstructor.updateUserContext(userId, { 
         awaitingReplyKeyboard: undefined,
         replyKeyboardValue: text,
@@ -686,7 +653,6 @@ export class TelegramAdapter {
       return true;
     }
     
-    console.log('🔍 DEBUG handleReplyKeyboardResponse - No handler, returning false');
     return false;
   }
 
@@ -748,14 +714,6 @@ export class TelegramAdapter {
   }
 
   async editMessageText(chatId: string, messageId: number, text: string, options?: any): Promise<void> {
-    console.log('🔍 TelegramAdapter.editMessageText DEBUG:', {
-      chatId: chatId,
-      messageId: messageId,
-      text: text.substring(0, 100) + '...',
-      options: options,
-      textLength: text.length
-    });
-    
     try {
       const result = await this.bot.editMessageText(text, {
         chat_id: chatId,
@@ -784,13 +742,6 @@ export class TelegramAdapter {
 
   // Удаление сообщения
   async deleteMessage(chatId: string, messageId: number): Promise<void> {
-    console.log('🔍 TelegramAdapter.deleteMessage DEBUG:', {
-      chatId: chatId,
-      messageId: messageId,
-      chatIdType: typeof chatId,
-      messageIdType: typeof messageId
-    });
-    
     try {
       const result = await this.bot.deleteMessage(chatId, messageId);
       console.log('✅ TelegramAdapter.deleteMessage SUCCESS:', result);

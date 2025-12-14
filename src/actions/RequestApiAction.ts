@@ -8,9 +8,6 @@ export class RequestApiAction extends BaseActionProcessor {
   static readonly actionType = 'RequestApi';
 
   async process(action: any, context: ProcessingContext): Promise<void> {
-    console.log('🔍🔍🔍 REQUEST API ACTION START 🔍🔍🔍');
-    console.log('🔍 Action:', JSON.stringify(action, null, 2));
-    
     // Create interpolation context for this action
     const interpolationContext = this.createInterpolationContext(context);
     
@@ -18,14 +15,12 @@ export class RequestApiAction extends BaseActionProcessor {
     interpolationContext.local.createScope();
     
     try {
-      console.log('🔍 Setting initial variables...');
       // Set action-specific variables
       interpolationContext.local.setVariable('method', action.method || 'GET');
       interpolationContext.local.setVariable('path', action.path);
       interpolationContext.local.setVariable('baseUrl', action.baseUrl);
       interpolationContext.local.setVariable('success', false);
       interpolationContext.local.setVariable('error', null);
-      console.log('🔍 Initial variables set');
       
       // АРХИТЕКТУРНОЕ УЛУЧШЕНИЕ: Используем унифицированный метод обработки функций
       let processedAction = { ...action };
@@ -37,7 +32,6 @@ export class RequestApiAction extends BaseActionProcessor {
       }
       
       // Сначала интерполируем основные параметры, но НЕ onSuccess и onFailure
-      console.log('🔍 Interpolating main action parameters...');
       const mainAction = { ...processedAction };
       delete mainAction.onSuccess;
       delete mainAction.onFailure;
@@ -57,11 +51,6 @@ export class RequestApiAction extends BaseActionProcessor {
       // onSuccess и onFailure будем интерполировать позже, после установки error в контекст
       const onSuccess = processedAction.onSuccess;
       const onFailure = processedAction.onFailure;
-    
-    console.log('🔍 Extracted parameters:');
-    console.log('🔍 - method:', method);
-    console.log('🔍 - path:', path);
-    console.log('🔍 - onFailure:', onFailure);
 
     // onStart
     if (onStart) {
@@ -103,7 +92,6 @@ export class RequestApiAction extends BaseActionProcessor {
     }
 
     // Выполняем запрос
-    console.log('🔍 Starting HTTP request...');
     let ok = false;
     let responseContext: any = { body: null, headers: {} };
     
@@ -122,8 +110,6 @@ export class RequestApiAction extends BaseActionProcessor {
       body: finalFetchOptions.body,
       timeout: timeoutMs
     };
-    
-    console.log('🔍 Request debug info:', JSON.stringify(requestDebug, null, 2));
     
     try {
       const controller = new AbortController();
@@ -156,12 +142,10 @@ export class RequestApiAction extends BaseActionProcessor {
       let bodyOk = true;
       if (responseContext.body && typeof responseContext.body === 'object' && 'ok' in responseContext.body) {
         bodyOk = responseContext.body.ok === true;
-        console.log('🔍 Body contains ok field:', bodyOk, 'body.ok value:', responseContext.body.ok);
       }
       
       // Финальный ok = HTTP статус успешен И тело ответа ok (если есть)
       ok = res.ok && bodyOk;
-      console.log('🔍 Final ok value:', ok, '(res.ok:', res.ok, ', bodyOk:', bodyOk, ')');
       
       // Добавляем debug информацию для успешного ответа
       responseContext.debugDescription = this.createDebugDescription(requestDebug, {
@@ -173,7 +157,6 @@ export class RequestApiAction extends BaseActionProcessor {
 
       // Если HTTP статус указывает на ошибку ИЛИ тело ответа содержит ok: false, создаем error объект
       if (!res.ok || !bodyOk) {
-        console.log('🔍 HTTP or body error detected, creating error object...');
         const errorInfo = {
           message: !res.ok 
             ? `HTTP ${res.status}: ${res.statusText}`
@@ -193,14 +176,9 @@ export class RequestApiAction extends BaseActionProcessor {
           })
         };
         responseContext.error = errorInfo;
-        console.log('🔍 Error object created:', JSON.stringify(errorInfo, null, 2));
-      } else {
-        console.log('🔍 HTTP request successful');
       }
       
     } catch (error: any) {
-      console.log('🔍 Fetch error caught:', error);
-      
       // Определяем более точный код ошибки
       let errorCode = 'UNKNOWN_ERROR';
       let errorMessage = String(error?.message || error);
@@ -236,15 +214,9 @@ export class RequestApiAction extends BaseActionProcessor {
       };
       
       responseContext.error = errorInfo;
-      console.log('🔍 Fetch error object created:', JSON.stringify(errorInfo, null, 2));
     }
 
     // Set response data in local scope for nested actions
-    console.log('🔍 Setting variables in local scope...');
-    console.log('🔍 - responseContext:', JSON.stringify(responseContext, null, 2));
-    console.log('🔍 - responseContext.error:', responseContext.error);
-    console.log('🔍 - ok:', ok);
-    
     interpolationContext.local.setVariable('response', responseContext);
     interpolationContext.local.setVariable('error', responseContext.error);
     interpolationContext.local.setVariable('ok', ok);
@@ -261,15 +233,8 @@ export class RequestApiAction extends BaseActionProcessor {
       interpolationContext: interpolationContext // Pass interpolation context to nested actions
     };
 
-    console.log('🔍 Next context created:');
-    console.log('🔍 - nextContext.localContext.error:', nextContext.localContext.error);
-    console.log('🔍 - nextContext.localContext.ok:', nextContext.localContext.ok);
-
     if (ok && onSuccess) {
-      console.log('🔍 Interpolating onSuccess...');
       const interpolatedOnSuccess = this.interpolate(onSuccess, interpolationContext);
-      console.log('🔍 Interpolated onSuccess:', JSON.stringify(interpolatedOnSuccess, null, 2));
-      console.log('🔍 Calling onSuccess...');
       
       // Если onSuccess содержит функцию, выполняем её через FunctionProcessor
       // FunctionProcessor.evaluateResult может обработать результат, если он содержит action напрямую
@@ -295,10 +260,7 @@ export class RequestApiAction extends BaseActionProcessor {
         await this.processNestedActions(interpolatedOnSuccess, nextContext);
       }
     } else if (!ok && onFailure) {
-      console.log('🔍 Interpolating onFailure...');
       const interpolatedOnFailure = this.interpolate(onFailure, interpolationContext);
-      console.log('🔍 Interpolated onFailure:', JSON.stringify(interpolatedOnFailure, null, 2));
-      console.log('🔍 Calling onFailure...');
       
       // Если onFailure содержит функцию, выполняем её через FunctionProcessor
       // FunctionProcessor.evaluateResult может обработать результат, если он содержит action напрямую
@@ -323,12 +285,9 @@ export class RequestApiAction extends BaseActionProcessor {
       } else {
         await this.processNestedActions(interpolatedOnFailure, nextContext);
       }
-    } else {
-      console.log('🔍 No callback called - ok:', ok, 'onSuccess:', !!onSuccess, 'onFailure:', !!onFailure);
     }
     
     } catch (error: any) {
-      console.log('🔍 Main catch block - pre-request error:', error);
       // Обработка ошибок интерполяции, валидации и других проблем до выполнения запроса
       const errorInfo = {
         message: String(error?.message || error),
@@ -338,8 +297,6 @@ export class RequestApiAction extends BaseActionProcessor {
         body: null, // Для ошибок до запроса body всегда null
         debugDescription: `=== PRE-REQUEST ERROR ===\nError: ${error?.message || String(error)}\nStack: ${error?.stack || 'No stack trace'}\n\nThis error occurred before the HTTP request was made, likely during interpolation or validation.`
       };
-      
-      console.log('🔍 Pre-request error object created:', JSON.stringify(errorInfo, null, 2));
       
       // Устанавливаем error в контекст
       interpolationContext.local.setVariable('error', errorInfo);
@@ -356,13 +313,8 @@ export class RequestApiAction extends BaseActionProcessor {
         interpolationContext: interpolationContext
       };
       
-      console.log('🔍 Pre-request nextContext created:');
-      console.log('🔍 - nextContext.localContext.error:', nextContext.localContext.error);
-      
       // Вызываем onFailure если он есть
       if (action.onFailure) {
-        console.log('🔍 Calling onFailure for pre-request error...');
-        console.log('🔍 onFailure content:', JSON.stringify(action.onFailure, null, 2));
         
         // Интерполируем onFailure
         const interpolatedOnFailure = this.interpolate(action.onFailure, interpolationContext);
@@ -388,8 +340,6 @@ export class RequestApiAction extends BaseActionProcessor {
         } else {
           await this.processNestedActions(interpolatedOnFailure, nextContext);
         }
-      } else {
-        console.log('🔍 No onFailure defined for pre-request error');
       }
       
     } finally {

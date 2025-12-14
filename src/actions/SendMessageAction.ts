@@ -19,14 +19,6 @@ export class SendMessageAction extends BaseActionProcessor {
           // Case 1: inlineActions is a function object
           if (typeof action.inlineActions === 'object' && action.inlineActions.function) {
             try {
-              console.log('🗺️ Processing inlineActions function before interpolation:', action.inlineActions.function);
-              console.log('🔍 Interpolation context debug:', {
-                hasLocal: !!interpolationContext.local,
-                hasUser: !!interpolationContext.user,
-                hasData: !!interpolationContext.data,
-                localMethods: interpolationContext.local ? Object.getOwnPropertyNames(interpolationContext.local) : 'undefined'
-              });
-              
               // ПРИНЦИП: Делегируем ответственность за контекст FunctionProcessor
               const processedInlineActions = await FunctionProcessor.evaluateResult(
                 action.inlineActions, 
@@ -34,7 +26,6 @@ export class SendMessageAction extends BaseActionProcessor {
                 context, 
                 interpolationContext
               );
-              console.log('🗺️ Processed inlineActions result:', processedInlineActions);
               processedAction.inlineActions = processedInlineActions;
             } catch (e) {
               console.error('❌ Failed to evaluate inlineActions function:', e);
@@ -43,10 +34,7 @@ export class SendMessageAction extends BaseActionProcessor {
           }
           // Case 2: inlineActions is an array - process functions inside array elements
           else if (Array.isArray(action.inlineActions)) {
-            console.log('🗺️ Processing inlineActions array with functions inside elements');
-            console.log('🗺️ Original inlineActions array:', JSON.stringify(action.inlineActions, null, 2));
             processedAction.inlineActions = await this.processInlineActionsArray(action.inlineActions, context, interpolationContext);
-            console.log('🗺️ Processed inlineActions array result:', JSON.stringify(processedAction.inlineActions, null, 2));
           }
         }
         
@@ -71,9 +59,7 @@ export class SendMessageAction extends BaseActionProcessor {
         let attachments = interpolatedAction.attachments;
         if (attachments && typeof attachments === 'object' && (attachments as any).function) {
           try {
-            console.log('🔍 SendMessageAction - Evaluating attachments function:', attachments);
             const evaluated = await FunctionProcessor.evaluateResult(attachments, {}, context, interpolationContext);
-            console.log('🔍 SendMessageAction - Attachments function result:', evaluated);
             attachments = evaluated;
           } catch (e) {
             console.error('Failed to evaluate attachments function:', e);
@@ -113,22 +99,13 @@ export class SendMessageAction extends BaseActionProcessor {
           let hasNewReplyKeyboardWithOnSent = false;
           
           const currentUserId = context.userContext.userId;
-          console.log('🔍 DEBUG SendMessage - START keyboard logic:', {
-            userId: currentUserId,
-            hasInlineActions: !!(interpolatedAction.inlineActions?.length),
-            hasReplyKeyboard: !!(interpolatedAction.replyKeyboard?.buttons),
-            clearKeyboard: interpolatedAction.clearKeyboard,
-            currentAwaitingReplyKb: !!context.userContext.data.awaitingReplyKeyboard
-          });
           
           // Добавляем inline клавиатуру если есть inlineActions
           if (interpolatedAction.inlineActions && Array.isArray(interpolatedAction.inlineActions) && interpolatedAction.inlineActions.length > 0) {
-            console.log('🔍 DEBUG SendMessage - Creating inline keyboard from actions:', JSON.stringify(interpolatedAction.inlineActions, null, 2));
             options.reply_markup = this.createCompactInlineKeyboard(
               interpolatedAction.inlineActions,
               messageActionIds // Передаем массив для сохранения ID действий
             );
-            console.log('🔍 DEBUG SendMessage - Created inline keyboard:', JSON.stringify(options.reply_markup, null, 2));
           }
           // Добавляем Reply клавиатуру если есть replyKeyboard (объект с buttons внутри)
           else if (interpolatedAction.replyKeyboard && interpolatedAction.replyKeyboard.buttons) {
@@ -174,6 +151,7 @@ export class SendMessageAction extends BaseActionProcessor {
                 }
                 
                 const onSentCopy = originalOnSent ? JSON.parse(JSON.stringify(originalOnSent)) : undefined;
+                // Логируем что сохраняем
                 // Используем updateUserContext для правильного сохранения в SessionManager
                 botConstructor.updateUserContext(currentUserId, {
                   awaitingReplyKeyboard: {
@@ -187,13 +165,11 @@ export class SendMessageAction extends BaseActionProcessor {
           // По умолчанию очищаем клавиатуру (если clearKeyboard !== false)
           else if (interpolatedAction.clearKeyboard !== false) {
             options.reply_markup = { remove_keyboard: true };
-            console.log('🔍 DEBUG SendMessage - Setting remove_keyboard: true');
           }
           
           // Очищаем старое состояние awaitingReplyKeyboard если не устанавливаем новое
           // Используем updateUserContext для правильной синхронизации с SessionManager
           if (!hasNewReplyKeyboardWithOnSent) {
-            console.log('🧹 DEBUG SendMessage - Clearing awaitingReplyKeyboard via updateUserContext');
             botConstructor.updateUserContext(currentUserId, {
               awaitingReplyKeyboard: undefined
             });
@@ -201,11 +177,6 @@ export class SendMessageAction extends BaseActionProcessor {
           
           // Проверяем результат очистки
           const contextAfterUpdate = botConstructor.getUserContext(currentUserId);
-          console.log('🔍 DEBUG SendMessage - END keyboard logic:', {
-            hasNewReplyKeyboardWithOnSent,
-            replyMarkup: options.reply_markup ? Object.keys(options.reply_markup) : null,
-            awaitingReplyKbAfter: !!contextAfterUpdate?.awaitingReplyKeyboard
-          });
           
           // ОГРАНИЧЕНИЕ TELEGRAM API:
           // reply_markup может быть только одним из: InlineKeyboardMarkup, ReplyKeyboardMarkup, 
@@ -227,27 +198,14 @@ export class SendMessageAction extends BaseActionProcessor {
           let message: any = null;
           const updateTarget = (context.localContext as any)?.__updateMessage__;
           
-          console.log('🔍 SendMessage DEBUG - Message operation:', {
-            hasUpdateTarget: !!updateTarget,
-            updateTargetMessageId: updateTarget?.messageId,
-            chatId: chatId,
-            text: text ? text.substring(0, 50) + '...' : '(no text)',
-            isUpdate: !!(updateTarget && updateTarget.messageId),
-            hasAttachments: hasAttachments
-          });
-          
           // Отправка вложений если есть
           if (hasAttachments) {
             message = await this.sendAttachments(adapter, chatId, attachments, options, text);
           } else if (updateTarget && updateTarget.messageId) {
-            console.log('🔍 SendMessage DEBUG - Updating existing message');
-            const result = await adapter.editMessageText(chatId, Number(updateTarget.messageId), text, options);
-            console.log('✅ SendMessage DEBUG - Update result:', result);
+            await adapter.editMessageText(chatId, Number(updateTarget.messageId), text, options);
             message = { message_id: Number(updateTarget.messageId) };
           } else {
-            console.log('🔍 SendMessage DEBUG - Sending new message');
             message = await adapter.sendMessage(chatId, text, options);
-            console.log('✅ SendMessage DEBUG - Send result:', message);
           }
           
           // Update local variables
@@ -264,23 +222,14 @@ export class SendMessageAction extends BaseActionProcessor {
 
           // Коллбек onSuccess с доступом к messageId
           if (interpolatedAction.onSuccess && message && message.message_id) {
-            console.log('🔍 SendMessage DEBUG - onSuccess triggered:', {
-              messageId: message.message_id,
-              onSuccessActions: interpolatedAction.onSuccess,
-              localScopes: interpolationContext.local.getAllScopes()
-            });
             
             // Update local variables with message info
             interpolationContext.local.setVariable('sent', true);
             
-            console.log('🔍 SendMessage DEBUG - After setting sent in local scope:', {
-              localScopes: interpolationContext.local.getAllScopes()
-            });
             
             // Process onSuccess actions with special handling for CURRENT_MESSAGE_ID
             const processedOnSuccess = interpolatedAction.onSuccess.map((action: any) => {
               if (action.action === 'Store' && action.value === 'CURRENT_MESSAGE_ID') {
-                console.log('🔍 SendMessage DEBUG - Replacing CURRENT_MESSAGE_ID with actual messageId:', message.message_id);
                 return {
                   ...action,
                   value: message.message_id.toString()
@@ -578,7 +527,9 @@ export class SendMessageAction extends BaseActionProcessor {
       // Если элемент - функция, обрабатываем её
       if (typeof row === 'object' && row !== null && row.function) {
         try {
+          console.log('🔍 DEBUG processReplyKeyboardButtons - Evaluating function:', row.function);
           const evaluated = await FunctionProcessor.evaluateResult(row, {}, context, interpolationContext);
+          console.log('🔍 DEBUG processReplyKeyboardButtons - Function result:', JSON.stringify(evaluated).substring(0, 200));
           if (evaluated != null) {
             if (Array.isArray(evaluated)) {
               // Если функция вернула массив, рекурсивно обрабатываем его
