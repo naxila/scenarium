@@ -151,21 +151,37 @@ export class RequestApiAction extends BaseActionProcessor {
         responseContext.body = await res.text();
       }
       
+      // Проверяем, есть ли в теле ответа поле ok, которое указывает на ошибку
+      // Некоторые API возвращают успешный HTTP статус, но ok: false в теле
+      let bodyOk = true;
+      if (responseContext.body && typeof responseContext.body === 'object' && 'ok' in responseContext.body) {
+        bodyOk = responseContext.body.ok === true;
+        console.log('🔍 Body contains ok field:', bodyOk, 'body.ok value:', responseContext.body.ok);
+      }
+      
+      // Финальный ok = HTTP статус успешен И тело ответа ok (если есть)
+      ok = res.ok && bodyOk;
+      console.log('🔍 Final ok value:', ok, '(res.ok:', res.ok, ', bodyOk:', bodyOk, ')');
+      
       // Добавляем debug информацию для успешного ответа
       responseContext.debugDescription = this.createDebugDescription(requestDebug, {
         status: res.status,
         headers: hdrs,
         body: responseContext.body,
-        ok: res.ok
+        ok: ok
       });
 
-      // Если HTTP статус указывает на ошибку, создаем error объект
-      if (!res.ok) {
-        console.log('🔍 HTTP error detected, creating error object...');
+      // Если HTTP статус указывает на ошибку ИЛИ тело ответа содержит ok: false, создаем error объект
+      if (!res.ok || !bodyOk) {
+        console.log('🔍 HTTP or body error detected, creating error object...');
         const errorInfo = {
-          message: `HTTP ${res.status}: ${res.statusText}`,
-          code: `HTTP_${res.status}`,
-          name: 'HttpError',
+          message: !res.ok 
+            ? `HTTP ${res.status}: ${res.statusText}`
+            : (responseContext.body?.error || responseContext.body?.message || 'Request failed'),
+          code: !res.ok 
+            ? `HTTP_${res.status}`
+            : (responseContext.body?.error_code || responseContext.body?.code || 'REQUEST_FAILED'),
+          name: !res.ok ? 'HttpError' : 'RequestError',
           status: res.status,
           statusText: res.statusText,
           body: responseContext.body, // Добавляем тело ответа сервера
@@ -173,7 +189,7 @@ export class RequestApiAction extends BaseActionProcessor {
             status: res.status,
             headers: hdrs,
             body: responseContext.body,
-            ok: res.ok
+            ok: ok
           })
         };
         responseContext.error = errorInfo;
