@@ -578,53 +578,92 @@ export class SendMessageAction extends BaseActionProcessor {
    * - object with text and onClick: display text, execute onClick action when pressed
    */
   /**
-   * Обрабатывает функции в поле text кнопок replyKeyboard
+   * Обрабатывает функции в кнопках replyKeyboard:
+   * - Функции как элементы массива (список кнопок)
+   * - Функции в полях text, value, onClick и других полях кнопок
    */
   private async processReplyKeyboardButtons(buttons: any[], context: ProcessingContext, interpolationContext: any): Promise<any[]> {
     const processedButtons = [];
     
     for (const row of buttons) {
+      // Если элемент - функция, обрабатываем её
+      if (typeof row === 'object' && row !== null && row.function) {
+        try {
+          const evaluated = await FunctionProcessor.evaluateResult(row, {}, context, interpolationContext);
+          if (evaluated != null) {
+            if (Array.isArray(evaluated)) {
+              // Если функция вернула массив, рекурсивно обрабатываем его
+              const processedArray = await this.processReplyKeyboardButtons(evaluated, context, interpolationContext);
+              processedButtons.push(...processedArray);
+            } else {
+              // Если функция вернула один элемент, рекурсивно обрабатываем его
+              const processed = await this.processReplyKeyboardButtons([evaluated], context, interpolationContext);
+              if (processed.length > 0) {
+                processedButtons.push(...processed);
+              }
+            }
+          }
+        } catch (e) {
+          console.error('❌ Failed to evaluate function in replyKeyboard buttons array:', e);
+        }
+        continue;
+      }
+      
       if (Array.isArray(row)) {
         // Ряд кнопок
         const processedRow = [];
         for (const btn of row) {
-          if (typeof btn === 'string') {
+          // Если элемент - функция, обрабатываем её
+          if (typeof btn === 'object' && btn !== null && btn.function) {
+            try {
+              const evaluated = await FunctionProcessor.evaluateResult(btn, {}, context, interpolationContext);
+              if (evaluated != null) {
+                if (Array.isArray(evaluated)) {
+                  processedRow.push(...evaluated);
+                } else {
+                  processedRow.push(evaluated);
+                }
+              }
+            } catch (e) {
+              console.error('❌ Failed to evaluate function in replyKeyboard button row:', e);
+            }
+          } else if (typeof btn === 'string') {
             processedRow.push(btn);
           } else if (typeof btn === 'object' && btn !== null) {
+            // Обрабатываем функции в объекте кнопки, но сохраняем onClick отдельно
+            // onClick обрабатывается позже при сохранении в awaitingReplyKeyboard
             const processedBtn = { ...btn };
-            // Обрабатываем функцию в поле text
-            if (btn.text && typeof btn.text === 'object' && btn.text.function) {
-              try {
-                const evaluated = await FunctionProcessor.evaluateResult(btn.text, {}, context, interpolationContext);
-                processedBtn.text = String(evaluated ?? '');
-              } catch (e) {
-                console.error('❌ Failed to evaluate text function in replyKeyboard button:', e);
-                processedBtn.text = '❌ Error';
-              }
-            }
-            processedRow.push(processedBtn);
+            // Временно сохраняем onClick
+            const originalOnClick = processedBtn.onClick;
+            // Удаляем onClick из обработки
+            delete processedBtn.onClick;
+            // Обрабатываем все остальные поля (text, value и т.д.)
+            const processedWithoutOnClick = await this.processFunctionsInObject(processedBtn, context, interpolationContext);
+            // Восстанавливаем onClick (он будет обработан отдельно позже)
+            processedWithoutOnClick.onClick = originalOnClick;
+            processedRow.push(processedWithoutOnClick);
           } else {
             processedRow.push(btn);
           }
         }
-        processedButtons.push(processedRow);
+        if (processedRow.length > 0) {
+          processedButtons.push(processedRow);
+        }
       } else if (typeof row === 'string') {
         // Простая строка
         processedButtons.push(row);
       } else if (typeof row === 'object' && row !== null) {
-        // Одна кнопка-объект
+        // Одна кнопка-объект - обрабатываем функции, но сохраняем onClick отдельно
         const processedBtn = { ...row };
-        // Обрабатываем функцию в поле text
-        if (row.text && typeof row.text === 'object' && row.text.function) {
-          try {
-            const evaluated = await FunctionProcessor.evaluateResult(row.text, {}, context, interpolationContext);
-            processedBtn.text = String(evaluated ?? '');
-          } catch (e) {
-            console.error('❌ Failed to evaluate text function in replyKeyboard button:', e);
-            processedBtn.text = '❌ Error';
-          }
-        }
-        processedButtons.push(processedBtn);
+        // Временно сохраняем onClick
+        const originalOnClick = processedBtn.onClick;
+        // Удаляем onClick из обработки
+        delete processedBtn.onClick;
+        // Обрабатываем все остальные поля (text, value и т.д.)
+        const processedWithoutOnClick = await this.processFunctionsInObject(processedBtn, context, interpolationContext);
+        // Восстанавливаем onClick (он будет обработан отдельно позже)
+        processedWithoutOnClick.onClick = originalOnClick;
+        processedButtons.push(processedWithoutOnClick);
       } else {
         processedButtons.push(row);
       }
