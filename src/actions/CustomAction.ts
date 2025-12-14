@@ -19,6 +19,15 @@ export class CustomAction extends BaseActionProcessor {
         console.log(`🔍 CustomAction: Executing function ${interpolatedAction.function}`);
         const result = await FunctionProcessor.evaluateResult(interpolatedAction, {}, context, interpolationContext);
         console.log(`🔍 CustomAction: Function result:`, result);
+        
+        // Если результат функции содержит action - обрабатываем его
+        if (result && typeof result === 'object' && result.action) {
+          console.log(`🔍 CustomAction: Function result contains action, processing it:`, result.action);
+          const actionProcessor = context.actionProcessor;
+          if (actionProcessor) {
+            await actionProcessor.processActions(result, context);
+          }
+        }
       }
       
       this.updateUserActivity(context);
