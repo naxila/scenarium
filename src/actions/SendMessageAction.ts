@@ -3,6 +3,11 @@ import { ProcessingContext } from '../types';
 import { FunctionProcessor } from '../core/FunctionProcessor';
 import { ActionMappingService } from '../telegram/ActionMappingService';
 import { ActionProcessor } from '../core/ActionProcessor';
+import * as https from 'https';
+import * as http from 'http';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 
 export class SendMessageAction extends BaseActionProcessor {
   static readonly actionType = 'SendMessage';
@@ -389,7 +394,138 @@ export class SendMessageAction extends BaseActionProcessor {
     console.log(`📎 Sending media group with ${mediaItems.length} items`);
     
     // Отправляем media group (NOTE: Telegram API не поддерживает reply_markup для media groups)
-    const messages = await adapter.sendMediaGroup(chatId, mediaItems);
+    let messages;
+    try {
+      messages = await adapter.sendMediaGroup(chatId, mediaItems);
+    } catch (error: any) {
+      // Логируем детали ошибки для отладки
+      console.log(`❌ Media group send error:`, {
+        message: error?.message,
+        errorCode: error?.response?.body?.error_code,
+        description: error?.response?.body?.description,
+        isWrongType: this.isWrongTypeError(error)
+      });
+      
+      // Если ошибка связана с "wrong type", применяем фикс со слешами ко ВСЕЙ media group
+      if (this.isWrongTypeError(error)) {
+        console.log(`⚠️ Media group send failed with "wrong type" error, applying double slash fix to ALL URLs in the group...`);
+        
+        // Пробуем фикс со Stack Overflow: модифицируем ВСЕ URL с двойными слешами в media group
+        let fixedCount = 0;
+        const fixedMediaGroup = mediaItems.map((item, index) => {
+          const media = item.media;
+          const isUrl = typeof media === 'string' && (media.startsWith('http://') || media.startsWith('https://'));
+          
+          if (isUrl) {
+            const fixedUrl = this.fixUrlWithDoubleSlashes(media);
+            fixedCount++;
+            console.log(`🔧 Fixed URL ${index + 1}/${mediaItems.length}: ${media.substring(0, 60)}... -> ${fixedUrl.substring(0, 60)}...`);
+            return {
+              ...item,
+              media: fixedUrl
+            };
+          }
+          // fileId оставляем без изменений
+          return item;
+        });
+        
+        console.log(`🔧 Applied double slash fix to ${fixedCount} URL(s) in media group (total items: ${mediaItems.length})`);
+        
+        // Добавляем caption к первому элементу если нужно
+        if (fixedMediaGroup.length > 0 && caption && caption.trim() && !hasAnyKeyboard) {
+          fixedMediaGroup[0].caption = caption;
+          if (options.parse_mode) {
+            fixedMediaGroup[0].parse_mode = options.parse_mode;
+          }
+        }
+        
+        try {
+          console.log(`🔧 Retrying media group with fixed URLs (double slashes applied to all URLs)...`);
+          messages = await adapter.sendMediaGroup(chatId, fixedMediaGroup);
+          console.log(`✅ Media group sent successfully with double slash fix applied to all URLs`);
+        } catch (slashFixError: any) {
+          // Если фикс со слешами не помог, пробуем пересобрать media group с локальными файлами
+          if (this.isWrongTypeError(slashFixError)) {
+            console.log(`⚠️ Double slash fix also failed, trying to rebuild with downloaded files...`);
+            
+            // Скачиваем все URL-файлы и создаем новый media group с локальными файлами
+            const tempFiles: string[] = [];
+            const newMediaGroup: any[] = [];
+            
+            try {
+              // Скачиваем ВСЕ URL-файлы из оригинальной media group (до фикса со слешами)
+              for (let i = 0; i < mediaItems.length; i++) {
+                const mediaItem = mediaItems[i];
+                const media = mediaItem.media;
+                const isUrl = typeof media === 'string' && (media.startsWith('http://') || media.startsWith('https://'));
+                
+                if (isUrl) {
+                  // Скачиваем файл (используем оригинальный URL, не модифицированный)
+                  console.log(`📥 Downloading file ${i + 1}/${mediaItems.length} from URL...`);
+                  const tempPath = await this.downloadFile(media);
+                  tempFiles.push(tempPath);
+                  
+                  // Создаем stream для media group
+                  const fileStream = fs.createReadStream(tempPath);
+                  newMediaGroup.push({
+                    type: mediaItem.type,
+                    media: fileStream
+                  });
+                  console.log(`✅ File ${i + 1} downloaded and added to media group`);
+                } else {
+                  // Если это fileId, оставляем как есть
+                  newMediaGroup.push(mediaItem);
+                }
+                
+                // Caption только для первого элемента
+                if (i === 0 && caption && caption.trim() && !hasAnyKeyboard) {
+                  newMediaGroup[0].caption = caption;
+                  if (options.parse_mode) {
+                    newMediaGroup[0].parse_mode = options.parse_mode;
+                  }
+                }
+              }
+              
+              // Пытаемся отправить пересобранный media group
+              console.log(`📎 Retrying media group with ${newMediaGroup.length} items (${tempFiles.length} downloaded files)`);
+              messages = await adapter.sendMediaGroup(chatId, newMediaGroup);
+              console.log(`✅ Media group sent successfully with downloaded files`);
+            } catch (retryError) {
+              console.error(`❌ Failed to send media group with downloaded files:`, retryError);
+              // Очищаем временные файлы перед пробросом ошибки
+              tempFiles.forEach(tempPath => {
+                try {
+                  if (fs.existsSync(tempPath)) {
+                    fs.unlinkSync(tempPath);
+                  }
+                } catch (unlinkError) {
+                  console.error(`⚠️ Failed to delete temporary file ${tempPath}:`, unlinkError);
+                }
+              });
+              throw retryError;
+            } finally {
+              // Очищаем временные файлы после отправки
+              tempFiles.forEach(tempPath => {
+                try {
+                  if (fs.existsSync(tempPath)) {
+                    fs.unlinkSync(tempPath);
+                    console.log(`🗑️ Temporary file deleted: ${tempPath}`);
+                  }
+                } catch (unlinkError) {
+                  console.error(`⚠️ Failed to delete temporary file ${tempPath}:`, unlinkError);
+                }
+              });
+            }
+          } else {
+            // Если это другая ошибка после фикса со слешами, пробрасываем её
+            throw slashFixError;
+          }
+        }
+      } else {
+        // Если это не ошибка "wrong type", пробрасываем ошибку дальше
+        throw error;
+      }
+    }
     
     // WORKAROUND: Если есть любая клавиатура (inline или reply), отправляем caption с кнопками отдельным сообщением
     if (hasAnyKeyboard && caption && caption.trim()) {
@@ -406,7 +542,151 @@ export class SendMessageAction extends BaseActionProcessor {
   }
   
   /**
-   * Send single attachment
+   * Модифицирует URL, добавляя двойные слеши в пути (фикс со Stack Overflow)
+   * Пример: https://example.com/img/example.jpg -> https://example.com//img//example.jpg
+   */
+  private fixUrlWithDoubleSlashes(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      // Заменяем одинарные слеши в пути на двойные
+      const fixedPath = urlObj.pathname.replace(/\//g, '//');
+      // Собираем URL обратно
+      return `${urlObj.protocol}//${urlObj.host}${fixedPath}${urlObj.search}${urlObj.hash}`;
+    } catch (err) {
+      // Если не удалось распарсить URL, возвращаем оригинал
+      return url;
+    }
+  }
+
+  /**
+   * Проверяет, является ли ошибка связанной с проблемами загрузки медиа по URL
+   * Включает: "wrong type of the web page content", "WEBPAGE_MEDIA_EMPTY" и другие связанные ошибки
+   */
+  private isWrongTypeError(error: any): boolean {
+    if (!error) return false;
+    
+    const errorMessage = error?.message || '';
+    const errorDescription = error?.response?.body?.description || '';
+    const errorBody = JSON.stringify(error?.response?.body || {});
+    const errorCode = error?.response?.body?.error_code;
+    
+    // Проверяем различные варианты ошибок, связанных с проблемами загрузки медиа по URL
+    const hasWrongTypeText = 
+      errorMessage.includes('wrong type of the web page content') ||
+      errorDescription.includes('wrong type of the web page content') ||
+      errorBody.includes('wrong type of the web page content') ||
+      errorMessage.includes('wrong type') ||
+      errorDescription.includes('wrong type');
+    
+    // Проверяем ошибку WEBPAGE_MEDIA_EMPTY (часто возникает для media group)
+    const hasWebpageMediaEmpty = 
+      errorMessage.includes('WEBPAGE_MEDIA_EMPTY') ||
+      errorDescription.includes('WEBPAGE_MEDIA_EMPTY') ||
+      errorBody.includes('WEBPAGE_MEDIA_EMPTY') ||
+      errorMessage.includes('webpage media empty') ||
+      errorDescription.includes('webpage media empty');
+    
+    // Для media group ошибка может приходить с error_code 400 и описанием проблем с медиа
+    const is400Error = errorCode === 400;
+    const hasMediaError = hasWrongTypeText || hasWebpageMediaEmpty;
+    
+    // Если это ошибка 400 и есть признаки проблем с медиа, считаем что это наша ошибка
+    return hasMediaError || (is400Error && (hasWrongTypeText || hasWebpageMediaEmpty));
+  }
+
+  /**
+   * Скачать файл по URL во временный файл
+   */
+  private downloadFile(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      try {
+        const urlObj = new URL(url);
+        const protocol = urlObj.protocol === 'https:' ? https : http;
+        const tempDir = os.tmpdir();
+        const fileName = path.basename(urlObj.pathname) || `temp_${Date.now()}.jpg`;
+        const tempPath = path.join(tempDir, `telegram_${Date.now()}_${fileName}`);
+        
+        const file = fs.createWriteStream(tempPath);
+        
+        protocol.get(url, (response) => {
+          if (response.statusCode !== 200) {
+            if (fs.existsSync(tempPath)) {
+              fs.unlinkSync(tempPath);
+            }
+            reject(new Error(`Failed to download file: ${response.statusCode}`));
+            return;
+          }
+          
+          response.pipe(file);
+          
+          file.on('finish', () => {
+            file.close();
+            resolve(tempPath);
+          });
+        }).on('error', (err) => {
+          if (fs.existsSync(tempPath)) {
+            fs.unlinkSync(tempPath);
+          }
+          reject(err);
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  /**
+   * Отправка медиа файла через скачивание (fallback метод)
+   */
+  private async sendMediaAsFile(adapter: any, chatId: string | number, url: string, type: string, options: any): Promise<any> {
+    let tempPath: string | null = null;
+    
+    try {
+      console.log(`📥 Downloading ${type} from URL for file upload: ${url.substring(0, 50)}...`);
+      tempPath = await this.downloadFile(url);
+      console.log(`✅ File downloaded to: ${tempPath}`);
+      
+      // Отправляем как файл (stream)
+      const fileStream = fs.createReadStream(tempPath);
+      
+      let response;
+      switch (type) {
+        case 'photo':
+          response = await adapter.sendPhoto(chatId, fileStream, options);
+          break;
+        case 'video':
+          response = await adapter.sendVideo(chatId, fileStream, options);
+          break;
+        case 'document':
+          response = await adapter.sendDocument(chatId, fileStream, options);
+          break;
+        case 'audio':
+          response = await adapter.sendAudio(chatId, fileStream, options);
+          break;
+        case 'animation':
+          response = await adapter.sendAnimation(chatId, fileStream, options);
+          break;
+        default:
+          response = await adapter.sendDocument(chatId, fileStream, options);
+      }
+      
+      console.log(`✅ ${type} sent successfully as file`);
+      return response;
+    } finally {
+      // Удаляем временный файл
+      if (tempPath && fs.existsSync(tempPath)) {
+        try {
+          fs.unlinkSync(tempPath);
+          console.log(`🗑️ Temporary file deleted: ${tempPath}`);
+        } catch (unlinkError) {
+          console.error(`⚠️ Failed to delete temporary file ${tempPath}:`, unlinkError);
+        }
+      }
+    }
+  }
+
+  /**
+   * Send single attachment with fallback for URL errors
    */
   private async sendSingleAttachment(adapter: any, chatId: string | number, attachment: any, options: any, caption?: string): Promise<any> {
     const attachmentType = attachment.type || 'document'; // photo, document, video, audio, voice, animation
@@ -425,24 +705,71 @@ export class SendMessageAction extends BaseActionProcessor {
     
     console.log(`📎 Sending ${attachmentType}:`, { file: typeof file === 'string' ? file.substring(0, 50) : file, hasCaption: !!caption });
     
-    // Вызываем соответствующий метод адаптера
-    switch (attachmentType) {
-      case 'photo':
-        return adapter.sendPhoto(chatId, file, options);
-      case 'document':
-        return adapter.sendDocument(chatId, file, options);
-      case 'video':
-        return adapter.sendVideo(chatId, file, options);
-      case 'audio':
-        return adapter.sendAudio(chatId, file, options);
-      case 'voice':
-        return adapter.sendVoice(chatId, file, options);
-      case 'animation':
-        return adapter.sendAnimation(chatId, file, options);
-      case 'sticker':
-        return adapter.sendSticker(chatId, file, options);
-      default:
-        return adapter.sendDocument(chatId, file, options);
+    // Если это fileId (не URL), отправляем напрямую
+    const isUrl = typeof file === 'string' && (file.startsWith('http://') || file.startsWith('https://'));
+    
+    try {
+      // Вызываем соответствующий метод адаптера
+      switch (attachmentType) {
+        case 'photo':
+          return await adapter.sendPhoto(chatId, file, options);
+        case 'document':
+          return await adapter.sendDocument(chatId, file, options);
+        case 'video':
+          return await adapter.sendVideo(chatId, file, options);
+        case 'audio':
+          return await adapter.sendAudio(chatId, file, options);
+        case 'voice':
+          return await adapter.sendVoice(chatId, file, options);
+        case 'animation':
+          return await adapter.sendAnimation(chatId, file, options);
+        case 'sticker':
+          return await adapter.sendSticker(chatId, file, options);
+        default:
+          return await adapter.sendDocument(chatId, file, options);
+      }
+    } catch (error: any) {
+      // Если ошибка связана с "wrong type of the web page content" и это URL, пробуем фикс со слешами
+      if (isUrl && this.isWrongTypeError(error)) {
+        console.log(`⚠️ URL send failed with "wrong type" error, trying fix with double slashes...`);
+        try {
+          // Пробуем фикс со Stack Overflow: добавляем двойные слеши в путь
+          const fixedUrl = this.fixUrlWithDoubleSlashes(file);
+          console.log(`🔧 Trying with fixed URL: ${fixedUrl.substring(0, 80)}...`);
+          
+          // Пытаемся отправить с модифицированным URL
+          switch (attachmentType) {
+            case 'photo':
+              return await adapter.sendPhoto(chatId, fixedUrl, options);
+            case 'document':
+              return await adapter.sendDocument(chatId, fixedUrl, options);
+            case 'video':
+              return await adapter.sendVideo(chatId, fixedUrl, options);
+            case 'audio':
+              return await adapter.sendAudio(chatId, fixedUrl, options);
+            case 'animation':
+              return await adapter.sendAnimation(chatId, fixedUrl, options);
+            default:
+              return await adapter.sendDocument(chatId, fixedUrl, options);
+          }
+        } catch (slashFixError: any) {
+          // Если фикс со слешами не помог, пробуем fallback с загрузкой файла
+          if (this.isWrongTypeError(slashFixError)) {
+            console.log(`⚠️ Double slash fix also failed, trying fallback method (download and send as file)...`);
+            try {
+              return await this.sendMediaAsFile(adapter, chatId, file, attachmentType, options);
+            } catch (fallbackError) {
+              console.error(`❌ All fallback methods failed:`, fallbackError);
+              throw new Error(`Failed to send ${attachmentType}: ${error.message}. All fallbacks failed: ${fallbackError instanceof Error ? fallbackError.message : 'Unknown error'}`);
+            }
+          } else {
+            // Если это другая ошибка после фикса со слешами, пробрасываем её
+            throw slashFixError;
+          }
+        }
+      }
+      // Если это не ошибка "wrong type" или не URL, пробрасываем ошибку дальше
+      throw error;
     }
   }
   
